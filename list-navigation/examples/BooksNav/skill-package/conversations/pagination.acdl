@@ -1,0 +1,83 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace examples.books_nav.pagination
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+
+import examples.books_nav.common.*
+
+import prompts.presentItemPrompt
+import slotTypes.TITLE
+
+// event and action to start pagination and retrieve a reference to the list to navigate through
+startEvent = utterances<Nothing>(["What books do you have?"])
+action ListReference getBooks()
+
+// simple pagination use case allowing a user to navigate through the fixed list of test books
+// at a rate of one page of 3 items at a time; after the user selects a item, a follow-up
+// response telling them some details of the book will be given
+//
+// Example Interaction:
+//      U: what books do you have?
+//      A: How about The Shining by Stephen King, It by Stephen King, or Pet Sematary by Stephen King.
+//      U: show me more
+//      A: How about The Green Mile by Stephen King, Under the Dome by Stephen King, or Doctor Sleep 
+//         by Stephen King.
+//      U: under the dome
+//      A: Under the Dome is a science fiction book by Stephen King; the summary is: A town is 
+//         inexplicably and suddenly sealed off from the rest of the world by an invisible force field.
+dialog Nothing SimplePagination() {
+    sample {
+        // build navigation config using all the defaults that are provided, only passing
+        // values for required arguments
+        booksNavigationConfig = buildNavigationConfig<BookItem, TITLE>(
+            // pagination and select APIs required for skill to pass
+            getPageApi = getBooksPageApi,
+            selectItemApi = selectBookApi,
+
+            // select-by-name event and API required for skill to pass
+            selectItemByNameEvent = selectBookByTitleEvent,
+            indexOfItemByNameApi = indexOfBookByNameApi,
+        )
+
+        // simple event and action to just get reference to list to navigate through
+        expect(Invoke, startEvent)
+        listRef = getBooks()
+
+        // call to list navigation component to generate interaction where a user navigates
+        // through the list of books until selecting one
+        book = navigateList<BookItem, TITLE>(
+            config = booksNavigationConfig,
+
+            listRef = listRef
+        )
+
+        // special API just to indicate that the session should end (after the up-coming response)
+        //
+        // Note: the current run-time behavior is to re-prompt on all responses where the prior API
+        //       returns shouldEndSession=false (which the list-nav component does as it doesn't
+        //       know whether a skill wishes to end a session or not), so the skill will need to 
+        //       utilize a API (like this one) to end the session if desired
+        // Note: once support for passing static values into API calls is added to ACDL, then
+        //       the list-nav component could take a "shouldEndSession" flag as input in the ACDL
+        //       dialog call above to more easily allow the developer to work-around this issue
+        // Note: Fixing the behavior of Notify+Bye response act would also allow the skill to directly
+        //       control the session ending by specifying the act in the follow-up response to 
+        //       navigation below
+        endSession(book)
+
+        // follow-up response to tell user about some details of the selected book
+        response(
+            act = Notify { actionName = endSession },
+            response = presentItemPrompt,
+            payload = BookItemPayload { book = book }
+        )
+    }
+}

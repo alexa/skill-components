@@ -1,0 +1,93 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "books nav",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "PlaceHolderIntent",
+          "samples": [
+            "Placeholder intent needed to compile ACDL skill"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "TITLE",
+          "values": [
+            {
+              "name": {
+                "value": "The Shining"
+              }
+            },
+            {
+              "name": {
+                "value": "It"
+              }
+            },
+            {
+              "name": {
+                "value": "Pet Sematary"
+              }
+            },
+            {
+              "name": {
+                "value": "The Green Mile"
+              }
+            },
+            {
+              "name": {
+                "value": "Under the Dome"
+              }
+            },
+            {
+              "name": {
+                "value": "Doctor Sleep"
+              }
+            },
+            {
+              "name": {
+                "value": "Dune"
+              }
+            },
+            {
+              "name": {
+                "value": "A Game of Thrones"
+              }
+            },
+            {
+              "name": {
+                "value": "Pride and Prejudice"
+              }
+            },
+            {
+              "name": {
+                "value": "Hyperion"
+              }
+            },
+            {
+              "name": {
+                "value": "Ready Player One"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace examples.books_nav
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import prompts.*
+
+import examples.books_nav.pagination.SimplePagination
+
+// main skill action, defining the deployable dialogs and standard
+// responses
+mySkill = skill(
+    locales = [Locale.en_US],
+    dialogs = [SimplePagination],
+    skillLevelResponses = SkillLevelResponses
+        {
+            welcome = prompts.AlexaConversationsWelcome,
+            out_of_domain = prompts.AlexaConversationsOutOfDomain,
+            bye = prompts.AlexaConversationsBye,
+            reqmore = prompts.AlexaConversationsRequestMore,
+            provide_help = prompts.AlexaConversationsProvideHelp
+        }
+)

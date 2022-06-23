@@ -1,0 +1,19 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.list_navigation.utils
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+// simple action to convert a ordinal (first, second, third) into a index (1, 2, 3)
+// Note: needed as ACDL doesn't have this support built in
+action NUMBER convertOrdinalToIndex(Ordinal ordinal)
+
+// simple action to generate a random index between 1 and the list size provided (inclusive)
+// Note: passing in list size currently commented out as passing such leads to 
+//       run-time issues; currently this method will only work correctly when 
+//       using session for data passing (ListNav.useSession is true on API side)
+action NUMBER generateRandomIndex(/*NUMBER listSize*/)

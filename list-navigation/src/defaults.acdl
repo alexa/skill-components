@@ -1,0 +1,71 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.list_navigation
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.list_navigation.types.*
+
+// default next/previous utterance sets for user requesting next or previous page of items be presented to them
+defaultNextPageEvent = utterances<Nothing>([
+    "next",
+    "next page",
+    "show me another few",
+    "show me more",
+    "I don't care for those",
+    "do you have any more?"
+])
+defaultPreviousPageEvent = utterances<Nothing>([
+    "previous",
+    "previous page",
+    "go back",
+    "show me the previous page",
+])
+
+// default response for presenting a page of items to a user; uses generic language as the type of
+// the item is unknown to the list nav component's source, skills will most likely want to override
+// this default, but it is still useful for demonstrations and on-boarding.
+// Note: this response requires each item to have a "label" field (otherwise run-time issues will appear)
+//       and only supports up to 5 items per page
+// Note: short names for response templates are needed to ensure FQN (including namespace) stays under
+//       64 character limit
+defaultPPR = apla("../response/prompts/defaultPresentPageResponse/document.json")
+
+// default selection utterance sets for when the user wants to select a item on the current page by
+// ordinal (first, second, third), index (1, 2, 3), or randomly
+//
+// Note: no default for select-by-name utterance set is provided right now as ACDL doesn't support 
+//       generic type parameters on utterance sets; thus each skill is required to define the event 
+//       themselves (though they can use th utterances provided here) and pass it into list nav component
+defaultSelectItemByOrdinalEvent = utterances<OrdinalSlotWrapper>([
+    "show item view on the {ordinal} one",
+    "show me more about the {ordinal} one",
+    "show me the {ordinal} one",
+    "show me the {ordinal}",
+    "the {ordinal}",
+    "{ordinal}"
+])
+defaultSelectItemByIndexEvent = utterances<IndexSlotWrapper>([
+    "show item view on number {index}",
+    "show me more about number {index}",
+    "show me number {index}",
+    "number {index}",
+    "{index}"
+])
+defaultSelectItemByNameUtterances = [
+    "{name}",
+    "{name} would be good",
+    "I like {name}",
+    "{name} sounds interesting",
+    "show me {name}"
+]
+defaultSelectRandomItemEvent = utterances<Nothing>([
+    "I don't care",
+    "any one of them will do",
+    "random"
+])
+

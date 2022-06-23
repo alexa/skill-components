@@ -1,0 +1,150 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.list_navigation
+	 
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.pagination.*
+import com.amazon.alexa.skill.components.list_navigation.selection.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+
+
+/**
+ * Reusable dialog that supports a user navigating through a list of items
+ * until they pick a item.
+ *
+ * Example interaction:
+ *     A > How about A, B or C; which would you like?
+ *     U > next
+ *     A > How about D, E, or F; want one?
+ *     U > the second one
+ *     [dialog returns item E] 
+ *
+ * Type Parameters:
+ *     Item: the type of each item in the list
+ *     ItemName: a slot type containing the names that can be used to refer to a item during
+ *               selection; needed to ensure item selection by name works properly
+ *
+ * Arguments:
+ *     config: configuration on which events/utterance sets and responses to use in the generated samples;
+ *             defaults are provided for all events and responses, see buildNavigationConfig
+ *     listRef: reference to list to allow user to navigate through
+ *
+ * Return Value: the item selected by the user when they finished navigating
+ *
+ * Limitations:
+ *     * A event or API call must proceed a call to this dialog
+ *     * a API call or response must follow a call to this dialog; responses can refer to the selectItemApi
+ *       specified in the configuration
+ */
+dialog Item navigateList<Item, ItemName>(
+    NavigationConfig<Item, ItemName> config,
+
+    ListReference listRef
+) {
+    sample {
+        firstPage = presentInitialPage(config.paginationConfig, listRef)
+
+        lastPage = loopThroughNextOrPrev(config.paginationConfig, listRef, firstPage)
+
+        /*return*/ selectItem(config.selectionConfig, listRef, lastPage)
+    }
+}
+
+/**
+ * Used to build the configuration that can be passed into navigateList; all
+ * config properties have defaults specified where possible, though APIs that
+ * utilize generic parameters must be specified by caller due to limitations in
+ * ACDL.
+ *
+ * Type Parameters:
+ *     Item: the type of each item in the list
+ *     ItemName: a slot type containing the names that can be used to refer to a item during
+ *               selection; needed to ensure item selection by name works properly
+ *
+ * Arguments:
+ *     getPageApi: called to get a specific page from the list being navigated with; needs to be defined
+ *                 by caller, but implementation can utilize handler provided by list nav component
+ *         Arguments:
+ *             listRef: reference to list being navigated
+ *             pageToken: indicates the page to retrieve
+ *         Returns: page of items requested
+ *     selectItemApi: called to retrieve a specific item from a given page, needed to work around ACDL
+ *                    issues with indexing into a list and to ensure all navigation samples end in a 
+ *                    single API to make follow-up responses possible; needs to be defined
+ *                    by caller, but implementation can utilize handler provided by list nav component
+ *         Arguments:
+ *             listRef: reference to list being navigated
+ *             page: the page to retrieve an item from
+ *             index: the index of the item in the page to retrieve (starts at 1)
+ *         Returns: Item retrieved
+ *     nextPageEvent: event to navigate to the next page
+ *     prevPageEvent: event to navigate to the previous page
+ *     presentPageResponse: response to present a page of items to the user; note that the default response
+ *                          requires each item in the list to have a "label" propety and only supports up to 
+ *                          (and including) 5 items per page
+ *         Payload:
+ *             page.items: the list of items for the current page
+ *     selectItemByOrdinalEvent: event for selecting a item on the current page by ordinal (first, second, etc.)
+ *     selectItemByIndexEvent: event for selecting a item on the current page by index (1, 2, 3, etc.)
+ *     selectItemByNameEvent: event for selecting a item on the current page by custom item name
+ *     selectRandomItemEvent: event for selecting a item on the current page at random
+ *     indexOfItemByNameApi: called when a user tries to select a item on the current page by name; needs to 
+ *                           be defined by caller, but implementation can utilize handler provided by list 
+ *                           nav component
+ *         Arguments:
+ *             listRef: list to select an item from
+ *             page: page to select an item from
+ *             name: name of the item to select
+ *         Returns: the selected item
+ *
+ * Return Value: constructed config object
+ *
+ * Limitations:
+ *     * must be called inside a sample, not at root/namespace level of a ACDL file due to limitations in ACDL
+ */
+dialog NavigationConfig<Item, ItemName> buildNavigationConfig<Item, ItemName>(
+    Action2<ListReference, Optional<String>, Page<Item>> getPageApi,
+    Action3<ListReference, Page<Item>, NUMBER, Item> selectItemApi,
+
+    // pagination config
+    Event<Nothing> nextPageEvent = defaultNextPageEvent,
+    Event<Nothing> prevPageEvent = defaultPreviousPageEvent,
+    Response presentPageResponse = defaultPPR,
+
+    // selection config
+    Event<OrdinalSlotWrapper> selectItemByOrdinalEvent = defaultSelectItemByOrdinalEvent,
+    Event<IndexSlotWrapper> selectItemByIndexEvent = defaultSelectItemByIndexEvent,
+    Event<ItemNameSlotWrapper<ItemName>> selectItemByNameEvent,
+    Event<Nothing> selectRandomItemEvent = defaultSelectRandomItemEvent,
+    Action3<ListReference, Page<Item>, ItemName, NUMBER> indexOfItemByNameApi,
+) {
+    sample {
+        paginationConfig = PaginationConfig<Item> {
+            nextEvent = nextPageEvent,
+            prevEvent = prevPageEvent,
+            getPageApi = getPageApi,
+            presentPageResponse = presentPageResponse
+        }
+        selectionConfig = SelectionConfig<Item, ItemName> {
+            selectByOrdinalEvent = selectItemByOrdinalEvent,
+            selectByIndexEvent = selectItemByIndexEvent,
+            selectByNameEvent = selectItemByNameEvent,
+            selectRandomlyEvent = selectRandomItemEvent,
+            
+            indexOfByNameApi = indexOfItemByNameApi,
+            
+            selectItemApi = selectItemApi
+        }
+
+        /*return*/ NavigationConfig<Item, ItemName> {
+            paginationConfig = paginationConfig,
+            selectionConfig = selectionConfig
+        }
+    }
+}
