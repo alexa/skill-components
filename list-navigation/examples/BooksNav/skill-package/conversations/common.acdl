@@ -1,0 +1,67 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace examples.books_nav.common
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+
+import slotTypes.TITLE
+
+// custom type for each item in the list we wish the user to navigate, a book for this example
+// skill
+type BookItem {
+    String title
+    String genre
+    String author
+    String summary
+
+    // need to define "label" property to use default presentPageResponse provided by list-nav 
+    // component, as the response prompt uses this property
+    String label
+
+    // need to define "name" property to use default itemMatcher used in select-by-name support
+    // provied by list-nav component
+    String name
+}
+
+// pagination and select APIs that list nav component requires a skill defines itself, though the 
+// handler to the APIs is provided by the component
+// NOTE: this is required to be defined by the skill until generics on actions are supported in ACDL
+action Page<BookItem> getBooksPageApi(
+    ListReference listRef, 
+    Optional<String> pageToken)
+action BookItem selectBookApi(
+    ListReference listRef, 
+    Page<BookItem> page,
+    NUMBER index)
+
+// select-by-name event and API that list nav component requires a skill defines itself, though the 
+// handler to the APIs is provided by the component; for books we use the custom TITLE catalog type
+// defined in the interaction model to allow users to select a book by title
+// NOTE: this is required to be defined by the skill until generics on actions and utterances sets 
+//       are supported in ACDL
+selectBookByTitleEvent = utterances<ItemNameSlotWrapper<TITLE>>(
+    defaultSelectItemByNameUtterances)
+action NUMBER indexOfBookByNameApi(
+    ListReference listRef, 
+    Page<BookItem> page, 
+    TITLE name)
+
+// payload type used in follow-up response after navigation is done (after user selects a book)
+type BookItemPayload {
+    BookItem book
+}
+
+// special API just to indicate that the session should end; needs to be defined by skill (due to
+// use of BookItem type defined in the skill), but can utilize util API handler provided by list 
+// nav component
+//
+// NOTE: can move this definition inside list navigation component once generics on ACDL actions
+//       is supported
+action endSession(BookItem book)

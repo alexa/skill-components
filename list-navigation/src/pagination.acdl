@@ -1,0 +1,146 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.list_navigation.pagination
+	 
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+import com.amazon.alexa.skill.components.list_navigation.utils.*
+
+// special Apis used only to record next/prev page token into session to ensure session-based
+// data passing can be used when enabled; 
+//
+// Note: these APIs are split out and called before the getPage API to limit the number of APIs 
+// utilizing the generic "Item" type (and thus the number of APIs that a skill would be required
+// to define themselves and pass into this component due to lack of generics on actions support
+// in ACDL)
+action Nothing recordInitialEvent()
+action Nothing recordNextEvent()
+action Nothing recordPrevEvent()
+
+// present a page of items to the user, basically just a wrapper around a single
+// response for now
+dialog Nothing presentPage<Item>(
+    PaginationConfig<Item> config,
+    Action actionCalled,
+
+    Page<Item> page,
+    ResponseAct nextAct = nothing
+) {
+    sample {
+        response(
+            act = Notify { actionName = actionCalled }, 
+            response = config.presentPageResponse,
+            payload = PagePayload<Item> { page = page },
+
+            nextAct = nextAct,
+        )
+    }
+}
+
+// retrieve and present the first page in a navigation interaction to the user;
+// starts with a API call and thus must be preceeded with a event or API call
+dialog Page<Item> presentInitialPage<Item>(
+    PaginationConfig<Item> config,
+
+    ListReference listRef,
+    ResponseAct nextAct = nothing  
+) {
+    sample {
+        recordInitialEvent()
+        getPage = config.getPageApi
+        initialPage = getPage(listRef, nothing)
+        presentPage(config, getPage, initialPage, nextAct)
+        /*return*/ initialPage
+    }
+}
+
+// retrieve and present the next page to the user; 
+// starts with a API call and thus must be preceeded with a event or API call
+dialog Page<Item> presentNextPage<Item>(
+    PaginationConfig<Item> config,
+
+    ListReference listRef,
+    Page<Item> currentPage,
+    ResponseAct nextAct = nothing
+) {
+    sample {
+        recordNextEvent()
+        getPage = config.getPageApi
+        page = getPage(listRef, currentPage.nextPageToken)
+        presentPage(config, getPage, page, nextAct)
+        /*return*/ page
+    }
+}
+
+// represents the navigate-next turn, complete with event, API call, and response
+dialog Page<Item> navToNextPage<Item>(
+    PaginationConfig<Item> config,
+
+    ListReference listRef,
+    Page<Item> currentPage,
+    ResponseAct nextAct = nothing
+) {
+    sample {
+        expect(Invoke, config.nextEvent)
+        presentNextPage(config, listRef, currentPage, nextAct)
+    }
+}
+
+// represents the navigate-previous turn, complete with event, API call, and response
+dialog Page<Item> navToPrevPage<Item>(
+    PaginationConfig<Item> config,
+
+    ListReference listRef,
+    Page<Item> currentPage,
+    ResponseAct nextAct = nothing
+) {
+    sample {
+        expect(Invoke, config.prevEvent)
+        recordPrevEvent()
+        getPage = config.getPageApi
+        page = getPage(listRef, currentPage.prevPageToken)
+        presentPage(config, getPage, page, nextAct)
+        /*return*/ page
+    }
+}
+
+// represents a interaction where the user loops through navigate next/prev turns until
+// the event after a call to this dialog (follow-up event) occurs; does account for 
+// possibility the user performs no next/prev before the follow-up event
+dialog Page<Item> loopThroughNextOrPrev<Item, ItemName>(
+    PaginationConfig<Item> paginationConfig,
+
+    ListReference listRef, 
+    Page<Item> page0,
+    ResponseAct nextAct = nothing
+) {
+
+    // up to 3 turns of next/prev modeled in such a way to reduce duplication of 
+    // any turn type (next/prev) at any one level (which could lead to 
+    // crowding out certain events)
+    // Note: this loop unrolling was found to be the best way to represent a general
+    //       loop in ACDL for list nav use case, as ACDL doesn't contain any syntax
+    //       for representing loops
+    sample {
+        // pass-through to model no next/prev before selecting item
+        /*return*/ page0
+    }
+    sample {
+        /*return*/ navToNextPage(paginationConfig, listRef, page0, nextAct)
+    }
+    sample {
+        page1 = navToPrevPage(paginationConfig, listRef, page0, nextAct)
+        /*return*/ navToNextPage(paginationConfig, listRef, page1, nextAct)
+    }
+    sample {
+        page1 = navToNextPage(paginationConfig, listRef, page0, nextAct)
+        page2 = navToPrevPage(paginationConfig, listRef, page1, nextAct)
+        /*return*/ navToNextPage(paginationConfig, listRef, page2, nextAct)
+    }
+}

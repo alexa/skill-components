@@ -1,0 +1,73 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "Example skill for list navigation",
+          "examplePhrases": [
+            "Alexa open books nav"
+          ],
+          "name": "Books-nav",
+          "description": "Example skill for list navigation component that allows a list of books to be navigated"
+        }
+      },
+      "isAvailableWorldwide": true,
+      "category": "KNOWLEDGE_AND_TRIVIA",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "interfaces": [
+          {
+            "type": "ALEXA_PRESENTATION_APL",
+            "supportedViewports": [
+              {
+                "mode": "HUB",
+                "shape": "ROUND",
+                "minWidth": 100,
+                "maxWidth": 599,
+                "minHeight": 100,
+                "maxHeight": 599
+              },
+              {
+                "mode": "HUB",
+                "shape": "RECTANGLE",
+                "minHeight": 600,
+                "maxHeight": 959,
+                "minWidth": 960,
+                "maxWidth": 1279
+              },
+              {
+                "mode": "HUB",
+                "shape": "RECTANGLE",
+                "minHeight": 600,
+                "maxHeight": 1279,
+                "minWidth": 1280,
+                "maxWidth": 1920
+              },
+              {
+                "mode": "TV",
+                "shape": "RECTANGLE",
+                "minHeight": 540,
+                "maxHeight": 540,
+                "minWidth": 960,
+                "maxWidth": 960
+              }
+            ]
+          }
+        ],
+        "dialogManagement": {
+          "sessionStartDelegationStrategy": {
+            "target": "AMAZON.Conversations"
+          },
+          "dialogManagers": [
+            {
+              "type": "AMAZON.Conversations"
+            }
+          ]
+        }
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}

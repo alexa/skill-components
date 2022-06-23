@@ -1,0 +1,80 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.list_navigation.types
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+// reference to a list that can be navigated; abstract type used over just a List
+// object to allow for dyanmic list providers in the API side (possibly mapping
+// on to a list source of unknown size like a DDB table)
+type ListReference {
+    String id
+}
+
+// a single page of items to present to the user; contains tokens pointing to
+// next and previous pages as well to support easy navigation
+type Page<Item> {
+    List<Item> items
+
+    // size of the list of items above
+    // Note: ACDL does have a built-in size() action, but it can't be used to pass the 
+    // size into a API, so need this extra property
+    NUMBER itemCount
+
+    Optional<String> prevPageToken
+    String pageToken
+    Optional<String> nextPageToken
+}
+
+// payload type passed into the presentPageResponse
+type PagePayload<Item> {
+    Page<Item> page
+}
+
+// slot wrapper types for a ordinal, index, or generic ItemName type; 
+// used in selectItem dialog for modeling the events for item selection
+type OrdinalSlotWrapper {
+    // first, second, third, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#ordinal
+    Ordinal ordinal
+}
+type IndexSlotWrapper {
+    // number one, two, three, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#number
+    NUMBER index
+}
+type ItemNameSlotWrapper<ItemName> {
+    ItemName name
+}
+
+// root config object bringing together configuration for pagination and item selection
+type NavigationConfig<Item, ItemName> {
+    PaginationConfig<Item> paginationConfig
+    SelectionConfig<Item, ItemName> selectionConfig
+}
+
+// configuration for next/prev pagination
+// see buildNavigationConfig dialog for details on properties
+type PaginationConfig<Item> {
+    Event<Nothing> nextEvent
+    Event<Nothing> prevEvent
+
+    Action2<ListReference<Item>, Optional<String>, Page<Item>> getPageApi
+
+    Response presentPageResponse
+}
+
+// configuration for item selection
+// see buildNavigationConfig dialog for details on properties
+type SelectionConfig<Item, ItemName> {
+    Event<OrdinalSlotWrapper> selectByOrdinalEvent
+    Event<IndexSlotWrapper> selectByIndexEvent
+    Event<ItemNameSlotWrapper<ItemName>> selectByNameEvent
+    Event<Nothing> selectRandomlyEvent
+
+    Action3<ListReference<Item>, Page<Item>, ItemName, NUMBER> indexOfByNameApi
+
+    Action3<ListReference<Item>, Page<Item>, NUMBER, Item> selectItemApi
+}

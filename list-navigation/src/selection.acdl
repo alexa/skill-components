@@ -1,0 +1,71 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.list_navigation.selection
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+import com.amazon.alexa.skill.components.list_navigation.utils.*
+
+
+// represents the select-item turn, allowing the user to select a item from the current page
+// in one of 4 different ways: by ordinal, by index, by name, or randomly
+dialog Item selectItem<Item, ItemName>(
+    SelectionConfig<Item, ItemName> config,
+
+    ListReference listRef,
+    Page<Item> currentPage
+) {
+    // by ordinal
+    sample {
+        slotValues = expect(Invoke, config.selectByOrdinalEvent)
+
+        index = convertOrdinalToIndex(slotValues.ordinal)
+
+        api = config.selectItemApi
+        /*return*/ api(listRef, currentPage, index)
+    }
+
+    // by index
+    sample {
+        slotValues = expect(Invoke, config.selectByIndexEvent)
+
+        index = slotValues.index
+
+        api = config.selectItemApi
+        /*return*/ api(listRef, currentPage, index)
+    }
+
+    // by name
+    sample {
+        slotValues = expect(Invoke, config.selectByNameEvent)
+
+        indexOfApi = config.indexOfByNameApi
+        index = indexOfApi(listRef, currentPage, slotValues.name)
+
+        api = config.selectItemApi
+        /*return*/ api(listRef, currentPage, index)
+    }
+
+    // randomly
+    sample {
+        expect(Invoke, config.selectRandomlyEvent)
+
+        // NOTE: passing in the item count here causes inaccuracy in action prediction,
+        //       so random index generation only currently works when using session for
+        //       data passing
+        index = generateRandomIndex(/*currentPage.itemCount*/)
+
+        api = config.selectItemApi
+        /*return*/ api(listRef, currentPage, index)
+    }
+
+}
+
+
+
