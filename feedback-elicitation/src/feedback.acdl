@@ -1,0 +1,76 @@
+// Copyright <first-edit-year> Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.feedback_elicitation
+          
+//ac-core libraries
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+import prompts.*
+import displays.*
+
+//responses
+//Note: have to use artifically short names until 64 char response template length is fixed
+
+
+defSavRes = apla("../response/prompts/notifysaverating/document.json")
+defInvRes = apla("../response/prompts/invalidrating/document.json")
+defFbVis = apl("../response/display/defaultFbResVis/document.json")
+
+// Declare a type to represent the information that 
+// will be extracted from the utterance event
+type RatingRequest {
+    NUMBER rating
+}
+// Declare the list of utterances to represent the request for the rating
+defaultInformRatingEvent = utterances<RatingRequest>([
+    "my score is {rating}",
+    "that was a {rating} conversation",
+    "i rate you a {rating}",
+    "{rating}"
+])
+
+// Declare the type for the APLA document's payload
+type RatingResponsePayload {
+    RatingRequest ratingResult
+}
+
+@validateArg((rating >= 1 && rating <= 5) || (rating in ["one", "two", "three", "four","five"]), defInvRes, defaultSaveFeedbackAction.arguments.rating)
+action RatingRequest defaultSaveFeedbackAction(NUMBER rating)
+
+multiModalFeedbackResponse = MultiModalResponse {
+    apla = defSavRes,
+    apl = defFbVis }
+
+dialog Nothing elicitRating(
+    Response notifyResponse, 
+    Action notifyAction,
+    Thing payload, 
+
+    Event <RatingRequest> informRatingEvent = defaultInformRatingEvent,
+    Action1 <NUMBER, RatingRequest> saveRatingAction = defaultSaveFeedbackAction,
+    Response requestRatingResponse = defInvRes,
+    Response notifySaveRatingResponse = multiModalFeedbackResponse,
+    ResponseAct nextAct = nothing
+) {
+    sample {
+        response(notifyResponse, 
+            Notify {actionName = notifyAction, success = true},
+            Offer {actionName = saveRatingAction, arguments = [saveRatingAction.arguments.arg0]}, 
+            payload = payload)
+        
+        slotValues = expect(Invoke, informRatingEvent)
+        ensure(RequestArguments {arguments = [saveRatingAction.arguments.arg0], response = requestRatingResponse })
+        
+        ratingResult = saveRatingAction(slotValues.rating)
+
+        response(
+            notifySaveRatingResponse,
+            Notify {actionName = saveRatingAction, success = true},
+            payload = RatingResponsePayload{ ratingResult = ratingResult },
+            nextAct = nextAct
+        )
+    }
+}

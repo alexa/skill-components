@@ -1,0 +1,25 @@
+{
+    "type": "APLA",
+    "version": "0.8",
+    "mainTemplate": {
+        "parameters": [
+            "payload"
+        ],
+        "item": {
+            "type": "Selector",
+            "items": [
+              {
+                  "type": "Speech",
+                  "when": "${payload.flightResponse.cost == ''}",
+                  "contentType": "text",
+                  "content": "Sorry, I couldn't find any flights from ${payload.flightResponse.departureCity} to ${payload.flightResponse.arrivalCity}."
+              },
+              {
+                  "type": "Speech",
+                  "contentType": "SSML",
+                  "content": "<speak>The Cheapest flight I found from ${payload.flightResponse.departureCity} to ${payload.flightResponse.arrivalCity} is $${payload.flightResponse.cost}. It is at ${payload.flightResponse.time} ${payload.flightResponse.date} with ${payload.flightResponse.airline}. Have a great trip! <break time=\"900ms\"/> Please rate your Flight Search experience from 1 to 5, with 5 being the best. How was it? </speak>"
+              }
+            ]
+        }
+    }
+}

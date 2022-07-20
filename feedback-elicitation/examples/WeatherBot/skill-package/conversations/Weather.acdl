@@ -1,0 +1,82 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+// In Alexa Conversations Description Language (ACDL) files, you organize name declarations into namespaces. 
+// Each ACDL file corresponds to a module that consists of a single namespace declaration.
+namespace examples.weatherbot
+
+//ac-core libraries
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.Nothing
+import com.amazon.alexa.skill.components.feedback_elicitation.*
+import prompts.*
+
+// Declare a type for the information you want to extract from the utterances
+// In this example, we want to extract the name of a city and date
+type CityAndDate {
+    optional US_CITY cityName
+    optional DATE date
+}
+
+// Declare an event using your annotated utterances. 
+// In the following example, we declare WeatherEvent as the name for our set of annotated utterances. 
+// In your dialog sample, you use WeatherEvent to describe the user utterance event. 
+// Note the interpolated strings. 
+// The ACDL compiler makes sure that {cityName}, {date} matches one of the properties of the WeatherRequest type
+getWeatherEvent = utterances<CityAndDate>(
+    [
+        "What's the weather {date} in {cityName}",
+        "what is the weather {date}",
+        "How is the weather {date}",
+        "How is weather in {cityName} {date}",
+        "how is weather",
+        "can you please give me weather report for {date}"
+    ]
+)
+
+// Declare a type for the information you want to return as reponse
+type WeatherResult {
+    US_CITY cityName
+    NUMBER highTemp
+    NUMBER lowTemp
+}
+
+// Declare the type for the APLA document's payload
+type ResponsePayload {
+    WeatherResult weatherResult
+}
+
+// Declare the signature of an action to represent the skill logic
+// Describe the interaction using the business logic that is responsible for retrieving the weather forecast for a city. 
+action WeatherResult getWeather(US_CITY cityName, DATE date)
+
+// Describe the dialog flow
+dialog Nothing Weather {
+    sample {
+        // Declare the expectation that the user will ask for the weather
+        weatherRequest = expect(Invoke, getWeatherEvent)
+
+        //Represents the requirement that the referenced action argument must be given a value
+        ensure(
+            RequestArguments {arguments = [getWeather.arguments.cityName], response = request_city_apla},
+            RequestArguments {arguments = [getWeather.arguments.date], response = request_date_apla},
+            RequestArguments {arguments = [getWeather.arguments.cityName, getWeather.arguments.date], response = request_city_date_apla}
+        )
+        // Describe the action that represents the skill's logic to retrieve
+        // the result following the above event
+        weatherResult = getWeather(weatherRequest.cityName, weatherRequest.date)
+
+        // Reusable dialog call -- collects and saves user feedback
+        // Describe the action that represents the response to the user.
+        // The "weather_apla" is the name of the APLA document which is
+        // declared as a separate JSON-based document outside of ACDL.
+        // The ACDL compiler creates the name automatically in the "prompts" namespace.
+        elicitRating(
+            notifyResponse = weather_apla, 
+            notifyAction = getWeather, 
+            payload = ResponsePayload {weatherResult = weatherResult}
+        )
+    }
+}

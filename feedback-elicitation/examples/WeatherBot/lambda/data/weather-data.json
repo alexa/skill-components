@@ -1,0 +1,27 @@
+{   "today": {
+        "seattle": {
+            "lowTemperature": 50,
+            "highTemperature": 65
+        },
+        "boston": {
+            "lowTemperature": 48,
+            "highTemperature": 63
+        },
+        "new york": {
+            "lowTemperature": 51,
+            "highTemperature": 62
+        },
+        "los angles": {
+            "lowTemperature": 51,
+            "highTemperature": 62
+        },
+        "chicago": {
+            "lowTemperature": 51,
+            "highTemperature": 62
+        },
+        "houston": {
+            "lowTemperature": 51,
+            "highTemperature": 62
+        }
+    }
+}

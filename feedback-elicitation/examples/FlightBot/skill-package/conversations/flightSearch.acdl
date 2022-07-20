@@ -1,0 +1,216 @@
+namespace com.flightsearch
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.US_CITY
+import com.amazon.ask.types.builtins.AMAZON.DATE
+import com.amazon.ask.types.builtins.AMAZON.NUMBER
+import com.amazon.ask.types.builtins.AMAZON.TIME
+import slotTypes.Airline
+
+// ACDL primitive types
+import com.amazon.alexa.schema.String
+import com.amazon.alexa.schema.Nothing
+
+// APLA documents import
+import prompts.*
+// APL documents import
+import displays.*
+
+// Import feedback elicitation skill component
+import com.amazon.alexa.skill.components.feedback_elicitation.elicitRating
+
+// Multimodal response for Welcome 
+multiModalWelcome = MultiModalResponse {
+  apl = WelcomeResponseVisual,
+  apla = AlexaConversationsWelcome
+}
+
+// Multimodal response for Out of domain
+multimodalOutOfDomain = MultiModalResponse {
+  apl = OutOfDomainResponseVisual,
+  apla = AlexaConversationsOutOfDomain
+}
+
+// Skill action to set the skill-wide assets
+mySkill = skill(
+ locales = [Locale.en_US],
+ dialogs = [FlightSearch],
+ skillLevelResponses = SkillLevelResponses
+     {
+         welcome = multiModalWelcome,
+         out_of_domain = multimodalOutOfDomain,
+         bye = AlexaConversationsBye,
+         reqmore = AlexaConversationsRequestMore,
+         provide_help = AlexaConversationsProvideHelp
+     }
+)
+
+// Declare a type to represent the information that
+// will be extracted from FlightSearchUtterances event 
+type FlightSearchDetails {
+    optional DATE date
+    optional US_CITY arrivalCity
+    optional US_CITY departureCity
+  }
+
+// FlightDetails object we will return from our API
+type FlightDetails {
+    DATE date
+    NUMBER cost
+    US_CITY arrivalCity
+    US_CITY departureCity
+    TIME time
+    Airline airline
+    Display display
+  }
+
+// Display object we will return from our API
+type Display {
+    String headerTitle
+    String headerSubtitle
+    String primaryText
+    String secondaryText
+    String textAlignment
+    String titleText
+}
+
+// Payload declaration
+type FlightDetailsPayload {
+    FlightDetails flightResponse
+  }
+
+// API definition
+action FlightDetails FlightFinder(DATE date, US_CITY arrivalCity, US_CITY departureCity)
+
+// Variations of how a user might request the flight search
+// user can provide any of the optional slots: date, arrivalCity and departureCity
+@locale(
+    Locale.en_US
+  )
+FlightSearchUtterances = utterances<FlightSearchDetails>(
+    [
+      "help me to find the cheapest flight",
+      "I want to find the cheapest flight",
+      "Find me the cheapest flight",
+      "Search for a cheap flight",
+      "Find me a flight",
+      "I would like to search for a cheap flight",
+      "I want to travel from {departureCity} to {arrivalCity} on {date}",
+      "I want to fly from {departureCity} to {arrivalCity} on {date}",
+      "I want to go from {departureCity} to {arrivalCity} on {date}",
+      "I want to travel to {arrivalCity} from {departureCity} on {date}",
+      "I want to fly to {arrivalCity} from {departureCity} on {date}",
+      "I want to go to {arrivalCity} from {departureCity} on {date}",
+      "I want to travel from {departureCity} to {arrivalCity} {date}",
+      "I want to fly from {departureCity} to {arrivalCity} {date}",
+      "I want to go from {departureCity} to {arrivalCity} {date}",
+      "I want to travel to {arrivalCity} from {departureCity} {date}",
+      "I want to fly to {arrivalCity} from {departureCity} {date}",
+      "I want to go to {arrivalCity} from {departureCity} {date}",
+      "I want to fly to {arrivalCity} from {departureCity}",
+      "I want to go to {arrivalCity} from {departureCity}",
+      "I want to travel to {arrivalCity} from {departureCity}",
+      "from {departureCity} to {arrivalCity}",
+      "I want to travel from {departureCity} on {date}",
+      "I want to fly from {departureCity} on {date}",
+      "I want to go from {departureCity} on {date}",
+      "I want to travel from {departureCity} {date}",
+      "I want to fly from {departureCity} {date}",
+      "I want to go from {departureCity} {date}",
+      "I want to go to {arrivalCity} on {date}",
+      "I want to fly to {arrivalCity} on {date}",
+      "I would like go to {arrivalCity} on {date}",
+      "I want to go to {arrivalCity} {date}",
+      "I want to fly to {arrivalCity} {date}",
+      "I would like go to {arrivalCity} {date}",
+      "from {departureCity}",
+      "to {arrivalCity}",
+      "I am traveling from {departureCity}",
+      "I want to fly from {departureCity}",
+      "I want to travel from {departureCity}",
+      "I want to go to {arrivalCity}",
+      "I want to fly to {arrivalCity}",
+      "I would like go to {arrivalCity}",
+      "on {date}",
+      "{date}"
+    ]
+  )
+
+// Variations of how a user might confirm their request
+@locale(
+    Locale.en_US
+  )
+  AffirmUtterances = utterances<Nothing>(
+    [
+      "correct",
+      "OK",
+      "Yeap",
+      "Yep",
+      "Yes"
+    ]
+  )
+
+// Dialog between user and Alexa
+@locale(
+    Locale.en_US
+  )
+  dialog Nothing FlightSearch {
+    sample {
+        // Declare the expectation that user will request for Flight search
+        findCheapFlights = expect (Invoke, FlightSearchUtterances)
+        
+        // Ensures that all optional slots are provided by the user
+        // Provides a response expression for each of the arguments 
+        ensure(
+          RequestArguments {arguments = [FlightFinder.arguments.departureCity], response = RequestDepartureCityPrompt},
+          RequestArguments {arguments = [FlightFinder.arguments.arrivalCity], response = RequestArrivalCityPrompt},
+          RequestArguments {arguments = [FlightFinder.arguments.date], response = RequestDatePrompt}
+          )
+
+        // Skill response to the user
+        // Confirmation response act with payload to pass FlightSearchConfirmPrompt APLA document
+        response(
+            response = MultiModalResponse {
+              apla = FlightSearchConfirmPrompt
+            },
+            act = ConfirmAction {
+              actionName = FlightFinder
+            },
+            payload = FlightSearchDetails {
+              date = findCheapFlights.date,
+              arrivalCity = findCheapFlights.arrivalCity,
+              departureCity = findCheapFlights.departureCity
+            }
+          )
+        
+        // Declare the expectation that user confirms the request before calling the API
+        expect (Affirm, AffirmUtterances)
+
+        // Using explicit arguments
+        flightResult = FlightFinder(
+            date = findCheapFlights.date,
+            arrivalCity = findCheapFlights.arrivalCity,
+            departureCity = findCheapFlights.departureCity
+          )
+        
+        // Multimodal response for Flight Search Response to pass as an argument to elicitRating
+        multiModalFlightSearchResponse = MultiModalResponse {
+            apla = FlightSearchResponsePrompt,
+            apl = FlightSearchResponseVisual 
+          }
+        
+        // Multimodal response for Feedback Response to pass as an argument to elicitRating
+        multiModalFeedbackResponse = MultiModalResponse {
+            apla = FeedbackResponsePrompt,
+            apl = FeedbackResponseVisual 
+          }
+        
+        // Reusable dialog call -- collects and saves user feedback
+        elicitRating(
+            notifyResponse = multiModalFlightSearchResponse, 
+            notifyAction = FlightFinder, 
+            payload = FlightDetailsPayload {flightResponse = flightResult},
+            notifySaveRatingResponse = multiModalFeedbackResponse
+         )
+    }
+  }

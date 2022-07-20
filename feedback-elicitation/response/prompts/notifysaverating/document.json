@@ -1,0 +1,20 @@
+{
+  "type": "APL-A",
+  "version": "0.1",
+  "license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+  "mainTemplate": {
+    "parameters": [
+      "payload"
+    ],
+    "item": {
+      "type": "RandomSelector",
+      "items": [
+        {
+          "type": "Speech",
+          "contentType": "text",
+          "content": "Thank you for the feedback! ${payload.ratingResult.rating >= 4 ? 'Glad that you enjoyed the experience' : (payload.ratingResult.rating <= 3 ? 'All right! We will continue to improve' : 'Sorry about that. We will fix the concern soon!')}"
+        }
+      ]
+    }
+  }
+}

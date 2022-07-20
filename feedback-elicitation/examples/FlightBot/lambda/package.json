@@ -1,0 +1,20 @@
+{
+    "name": "@examples/flight-search-lambda",
+    "version": "0.0.1",
+    "description": "Lambda source for example skill that allows a user to search for a flight",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:alexa/skill-components.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "license": "AmznSL-1.0",
+    "dependencies": {
+        "@alexa-skill-components/feedback-elicitation": "^0.0.1",
+        "ask-sdk-core": "^2.7.0",
+        "ask-sdk-model": "^1.19.0",
+        "aws-sdk": "^2.326.0"
+    }
+}

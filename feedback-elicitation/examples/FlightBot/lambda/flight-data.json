@@ -1,0 +1,436 @@
+{
+    "new york": {
+       "los angeles":
+       {
+           "cost": "450",
+           "time": "12 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "JFK",
+           "arrivalAirport": "LAX",
+           "departureTime": "12:00 PM EST",
+           "arrivalTime": "14:55 PM PST"
+       },
+       "las vegas":
+       {
+           "cost": "340",
+           "time": "2 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "LGA",
+           "arrivalAirport": "LAS",
+           "departureTime": "02:00 PM EST",
+           "arrivalTime": "04:35 PM PST"
+       },
+       "seattle":
+       {
+           "cost": "470",
+           "time": "11 am",
+           "airline": "Harpy Intercontinental",
+           "departureAirport": "EWR",
+           "arrivalAirport": "SEA",
+           "departureTime": "11:00 AM EST",
+           "arrivalTime": "02:15 PM PST"
+       },
+       "boston":
+       {
+           "cost": "150",
+           "time": "7 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "LGA",
+           "arrivalAirport": "BOS",
+           "departureTime": "07:00 PM EST",
+           "arrivalTime": "08:25 PM EST"
+       },
+       "chicago":
+       {
+           "cost": "250",
+           "time": "3 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "EWR",
+           "arrivalAirport": "ORD",
+           "departureTime": "02:00 PM EST",
+           "arrivalTime": "04:35 PM CST"
+       },
+       "san francisco":
+       {
+           "cost": "520",
+           "time": "8 am",
+           "airline": "Griffin Air",
+           "departureAirport": "JFK",
+           "arrivalAirport": "SFO",
+           "departureTime": "08:00 AM EST",
+           "arrivalTime": "11:20 AM PST"
+       }
+    },
+   "los angeles": {
+       "new york":
+       {
+           "cost": "450",
+           "time": "12 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "LAX",
+           "arrivalAirport": "EWR",
+           "departureTime": "12:00 PM PST",
+           "arrivalTime": "08:35 PM EST"
+       },
+       "las vegas":
+       {
+           "cost": "140",
+           "time": "2 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "LAX",
+           "arrivalAirport": "LAS",
+           "departureTime": "12:00 PM PST",
+           "arrivalTime": "1:15 PM PST"
+       },
+       "seattle":
+       {
+           "cost": "180",
+           "time": "11 am",
+           "airline": "Harpy Intercontinental",
+           "departureAirport": "LAX",
+           "arrivalAirport": "SEA",
+           "departureTime": "11:00 AM PST",
+           "arrivalTime": "01:45 PM PST"
+       },
+       "boston":
+       {
+           "cost": "470",
+           "time": "4 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "LAX",
+           "arrivalAirport": "BOS",
+           "departureTime": "07:00 PM PST",
+           "arrivalTime": "01:35 AM EST"
+       },
+       "chicago":
+       {
+           "cost": "250",
+           "time": "3 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "LAX",
+           "arrivalAirport": "ORD",
+           "departureTime": "03:00 PM PST",
+           "arrivalTime": "09:10 PM CST"
+       },
+       "san Francisco":
+       {
+           "cost": "220",
+           "time": "8 am",
+           "airline": "Griffin Air",
+           "departureAirport": "LAX",
+           "arrivalAirport": "SFO",
+           "departureTime": "12:00 PM PST",
+           "arrivalTime": "01:25 PM PST"
+       }
+    },
+  "las vegas": {
+       "new york":
+       {
+           "cost": "450",
+           "time": "12 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "LAS",
+           "arrivalAirport": "EWR",
+           "departureTime": "12:00 PM PST",
+           "arrivalTime": "08:00 PM EST"
+       },
+       "los angeles":
+       {
+           "cost": "150",
+           "time": "2 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "LAS",
+           "arrivalAirport": "LAX",
+           "departureTime": "02:00 PM PST",
+           "arrivalTime": "03:15 PM PST"
+       },
+       "seattle":
+       {
+           "cost": "270",
+           "time": "11 am",
+           "airline": "Harpy Intercontinental",
+           "departureAirport": "LAS",
+           "arrivalAirport": "SEA",
+           "departureTime": "11:00 AM PST",
+           "arrivalTime": "01:10 PM PST"
+       },
+       "boston":
+       {
+           "cost": "350",
+           "time": "4 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "LAS",
+           "arrivalAirport": "BOS",
+           "departureTime": "04:00 PM PST",
+           "arrivalTime": "00:10 AM EST"
+       },
+       "chicago":
+       {
+           "cost": "250",
+           "time": "3 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "LAS",
+           "arrivalAirport": "ORD",
+           "departureTime": "03:00 PM PST",
+           "arrivalTime": "08:45 PM CST"
+       },
+       "san francisco":
+       {
+           "cost": "520",
+           "time": "8 am",
+           "airline": "Griffin Air",
+           "departureAirport": "LAS",
+           "arrivalAirport": "SFO",
+           "departureTime": "08:00 AM PST",
+           "arrivalTime": "09:35 PM PST"
+       }
+    },
+    "seattle": {
+       "new york":
+       {
+           "cost": "450",
+           "time": "12 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "SEA",
+           "arrivalAirport": "EWR",
+           "departureTime": "12:00 PM PST",
+           "arrivalTime": "08:20 PM EST"
+       },
+       "los angeles":
+       {
+           "cost": "340",
+           "time": "2 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "SEA",
+           "arrivalAirport": "LAX",
+           "departureTime": "02:00 PM PST",
+           "arrivalTime": "04:50 PM PST"
+       },
+       "las vegas":
+       {
+           "cost": "150",
+           "time": "11 am",
+           "airline": "Harpy Intercontinental",
+           "departureAirport": "SEA",
+           "arrivalAirport": "LAS",
+           "departureTime": "11:00 AM PST",
+           "arrivalTime": "01:35 PM PST"
+       },
+       "boston":
+       {
+           "cost": "270",
+           "time": "5 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "SEA",
+           "arrivalAirport": "BOS",
+           "departureTime": "12:00 PM PST",
+           "arrivalTime": "01:20 AM EST"
+       },
+       "chicago":
+       {
+           "cost": "250",
+           "time": "3 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "SEA",
+           "arrivalAirport": "ORD",
+           "departureTime": "03:00 PM PST",
+           "arrivalTime": "09:00 PM CST"
+       },
+       "san francisco":
+       {
+           "cost": "220",
+           "time": "8 am",
+           "airline": "Griffin Air",
+           "departureAirport": "SEA",
+           "arrivalAirport": "SFO",
+           "departureTime": "08:00 AM PST",
+           "arrivalTime": "10:15 AM EST"
+       }
+    },
+  "boston": {
+       "new york":
+       {
+           "cost": "450",
+           "time": "12 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "BOS",
+           "arrivalAirport": "EWR",
+           "departureTime": "12:00 PM EST",
+           "arrivalTime": "01:25 PM EST"
+       },
+       "los angeles":
+       {
+           "cost": "340",
+           "time": "2 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "BOS",
+           "arrivalAirport": "LAX",
+           "departureTime": "02:00 PM EST",
+           "arrivalTime": "05:10 PM PST"
+       },
+       "las vegas":
+       {
+           "cost": "470",
+           "time": "11 am",
+           "airline": "Harpy Intercontinental",
+           "departureAirport": "BOS",
+           "arrivalAirport": "LAS",
+           "departureTime": "11:00 AM EST",
+           "arrivalTime": "01:45 PM PST"
+       },
+       "seattle":
+       {
+           "cost": "150",
+           "time": "7 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "BOS",
+           "arrivalAirport": "SEA",
+           "departureTime": "07:00 PM EST",
+           "arrivalTime": "10:20 PM PST"
+       },
+       "chicago":
+       {
+           "cost": "250",
+           "time": "3 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "BOS",
+           "arrivalAirport": "ORD",
+           "departureTime": "03:00 PM EST",
+           "arrivalTime": "04:50 PM CST"
+       },
+       "san francisco":
+       {
+           "cost": "520",
+           "time": "8 am",
+           "airline": "Griffin Air",
+           "departureAirport": "BOS",
+           "arrivalAirport": "SFO",
+           "departureTime": "08:00 AM EST",
+           "arrivalTime": "11:35 AM PST"
+       }
+    },
+    "chicago": {
+       "new york":
+       {
+           "cost": "450",
+           "time": "12 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "ORD",
+           "arrivalAirport": "LGA",
+           "departureTime": "12:00 PM CST",
+           "arrivalTime": "03:10 PM EST"
+       },
+       "los angeles":
+       {
+           "cost": "340",
+           "time": "2 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "ORD",
+           "arrivalAirport": "LAX",
+           "departureTime": "02:00 PM CST",
+           "arrivalTime": "04:20 PM PST"
+       },
+       "las vegas":
+       {
+           "cost": "470",
+           "time": "11 am",
+           "airline": "Harpy Intercontinental",
+           "departureAirport": "ORD",
+           "arrivalAirport": "LAS",
+           "departureTime": "11:00 AM CST",
+           "arrivalTime": "12:50 PM PST"
+       },
+       "seattle":
+       {
+           "cost": "150",
+           "time": "7 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "ORD",
+           "arrivalAirport": "SEA",
+           "departureTime": "07:00 PM CST",
+           "arrivalTime": "09:35 PM PST"
+       },
+       "boston":
+       {
+           "cost": "250",
+           "time": "3 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "ORD",
+           "arrivalAirport": "BOS",
+           "departureTime": "03:00 PM CST",
+           "arrivalTime": "06:20 PM EST"
+       },
+       "san francisco":
+       {
+           "cost": "520",
+           "time": "8 am",
+           "airline": "Griffin Air",
+           "departureAirport": "ORD",
+           "arrivalAirport": "SFO",
+           "departureTime": "08:00 AM CST",
+           "arrivalTime": "10:35 AM PST"
+       }
+    },
+    "san francisco": {
+       "new york":
+       {
+           "cost": "450",
+           "time": "12 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "SFO",
+           "arrivalAirport": "JFK",
+           "departureTime": "12:00 PM PST",
+           "arrivalTime": "08:40 PM EST"
+       },
+       "los angeles":
+       {
+           "cost": "340",
+           "time": "2 pm",
+           "airline": "Hippogriff Air Lines",
+           "departureAirport": "SFO",
+           "arrivalAirport": "LAX",
+           "departureTime": "02:00 PM PST",
+           "arrivalTime": "03:35 PM PST"
+       },
+       "las vegas":
+       {
+           "cost": "470",
+           "time": "11 am",
+           "airline": "Harpy Intercontinental",
+           "departureAirport": "SFO",
+           "arrivalAirport": "LAS",
+           "departureTime": "11:00 AM PST",
+           "arrivalTime": "12:35 PM PST"
+       },
+       "seattle":
+       {
+           "cost": "150",
+           "time": "7 pm",
+           "airline": "Lightning Airways",
+           "departureAirport": "SFO",
+           "arrivalAirport": "SEA",
+           "departureTime": "07:00 PM PST",
+           "arrivalTime": "09:10 PM PST"
+       },
+       "boston":
+       {
+           "cost": "250",
+           "time": "3 pm",
+           "airline": "Jet Blue",
+           "departureAirport": "SFO",
+           "arrivalAirport": "BOS",
+           "departureTime": "03:00 PM PST",
+           "arrivalTime": "11:50 PM EST"
+       },
+       "chicago":
+       {
+           "cost": "520",
+           "time": "8 am",
+           "airline": "Griffin Air",
+           "departureAirport": "SFO",
+           "arrivalAirport": "ORD",
+           "departureTime": "08:00 AM PST",
+           "arrivalTime": "14:20 PM CST"
+       }
+    }
+  }
