@@ -1,13 +1,14 @@
 {
   "name": "@alexa-skill-components/feedback-elicitation",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "publisher": "Amazon",
   "description": "Alexa skill component for eliciting feedback from users",
   "license": "AmznSL-1.0",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:alexa/skill-components.git"
+    "url": "git@github.com:alexa/skill-components.git",
+    "directory": "feedback-elicitation"
   },
   "types": "dist/index.d.ts",
   "files": [
