@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./docs/assets/feedback_elicitation.png">
+  <img src="https://m.media-amazon.com/images/G/01/ask/SkillComponents/skillcomp_feedback._CB631945186_.png">
   <br/>
   <h1 align="center">Feedback Elicitation Skill Component</h1>
 </p>
@@ -19,7 +19,7 @@ Gather feedback on interactions to help drive skill development.
 * [Known issues](#known-issues)
 
 ## Introduction
-Alexa Skill Components encapsulate best customer experience (CX) design practices to reduce your development time. Learn more about Skill Components in the [Skill Components Getting Started guide](../README.md#components). The Feedback Elicitation component provides functionality to collect user feedback about your skill, an interaction, or experience that your skill delivers. Use it to ask for feedback about the latest interaction your customer had, or to rate your skill in the Skill store, or to obtain feedback about a product or service your customer was interested in. 
+Alexa Skill Components encapsulate best customer experience (CX) design practices to reduce your development time. Learn more about Skill Components in the [Skill Components Getting Started guide](../README.md#getting-started). The Feedback Elicitation component provides functionality to collect user feedback about your skill, an interaction, or experience that your skill delivers. Use it to ask for feedback about the latest interaction your customer had, or to rate your skill in the Skill store, or to obtain feedback about a product or service your customer was interested in. 
 
 ### When should I use this component?
 Are you building an app in which you would like to get feedback from customers? Do you need to build an interaction where they can give the feedback about the interaciton from the user? Use the pre-built interaction patterns within the Feedback Elicitation Skill Component to build out and customize such interactions.
@@ -235,5 +235,5 @@ Alexa > Thank you for the feedback!
 
 **No return value on dialog**
 
-The [`elicitRating`](./docs/REFERENCE.md#elicit-rating) reusable dialog currently does not return the rating value the user provides.
+The [`elicitRating`](./docs/REFERENCE.md#elicitrating) reusable dialog currently does not return the rating value the user provides.
 
