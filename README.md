@@ -4,7 +4,16 @@
   <h1 align="center">Alexa Skill Components</h1>
 </p>
 
-Develop better Alexa skills faster with the aid of high-quality pre-made skill components.
+Develop better Alexa skills faster with high-quality pre-made skill components.
+
+**Please note**: Alexa Skill Components are being provided as a pre-production alpha 
+release in Developer Preview with limited support. Our goal is to solicit feedback on our approach and design building towards their broader general availability in the future. While we will make every effort to minimize it, we do not make any backwards compatibility or rapid 
+turn-around bug-fix promises with this pre-production alpha release. You can [sign 
+up for the developer preview](https://build.amazonalexadev.com/2022-Skill-Components-Interest.html) here to use these components.
+
+We will be actively making updates to these components and we look forward to mature them with your feedback. So, check back in here to get the latest and greatest version. 
+
+[Sign up and join us](https://build.amazonalexadev.com/2022-Skill-Components-Interest.html) in our effort to help you build more engaging Alexa skills faster!
 
 ## Table of Contents
 
