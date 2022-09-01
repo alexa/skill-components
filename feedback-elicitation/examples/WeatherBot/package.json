@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@alexa/acdl": "^0.1.13",
-    "ask-cli-x": "^2.22.4-beta.13",
+    "ask-cli-x": "^2.22.4-beta.16",
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.181",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
