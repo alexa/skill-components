@@ -1,8 +1,15 @@
 {
-    "name": "@alexa-components/account-linking-reusable-component",
-    "version": "1.0.0",
-    "description": "AC Reusable component for Linking Account",
+    "name": "@alexa-skill-components/account-linking",
+    "version": "0.0.1",
+    "publisher": "Amazon",
+    "description": "Alexa skill component for verifying a account is linked",
+    "license": "AmznSL-1.0",
     "main": "dist/index.js",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:alexa/skill-components.git",
+        "directory": "account-linking"
+    },
     "types": "dist/index.d.ts",
     "files": [
         "dist/*",
@@ -11,13 +18,17 @@
         "build"
     ],
     "scripts": {
-        "build": "npm run lint && npm run test && acc && tsc",
-        "lint": "eslint --fix --max-warnings 0 -c .eslintrc.js 'lambda/*.{ts,tsx}'",
-        "clean": "rm -rf dist && rm -rf build && rm -rf node_modules && rm -rf package-lock.json",
-        "test": "jest --testTimeout=10000"
+        "clean": "rm -rf dist && rm -rf build && rm -rf node_modules && rm -rf *.tgz",
+        "compile-ts": "tsc",
+        "compile-acdl": "acc",
+        "compile": "npm run compile-ts && npm run compile-acdl",
+        "lint": "eslint --fix --max-warnings 0 -c .eslintrc.js 'src/**/*.{ts,tsx}'",
+        "test": "jest --testTimeout=10000",
+        "build": "npm run compile && npm pack",
+        "clean-build": "npm run clean && npm install && npm run build",
+        "release": "npm run build && npm run lint && npm run test",
+        "clean-release": "npm run clean && npm install && npm run release"
     },
-    "license": "ISC",
-    "author": "ask-mosaic@amazon.com",
     "devDependencies": {
         "@alexa/acdl": "^0.1.13",
         "@types/jest": "^26.0.24",

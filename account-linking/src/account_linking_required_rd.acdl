@@ -21,7 +21,7 @@ defResponse = MultiModalResponse {
 action isAccountLinkedResponseType isAccountLinked()
 
 // Dialogs Declarations
-dialog void AccountLinkingRequiredRD(Response AccountLinkingRequiredPrompt = defResponse) {
+dialog void validateAccountIsLinked(Response linkingRequiredPrompt = defResponse) {
     sample {
         // <detects absence/presence of access token in request>.
         isAccountLinkedResponse = isAccountLinked()
@@ -30,7 +30,7 @@ dialog void AccountLinkingRequiredRD(Response AccountLinkingRequiredPrompt = def
             // {send Account Linking Card}
             response(act = Notify {actionName = isAccountLinked},
                 nextAct = Bye {},
-                response = AccountLinkingRequiredPrompt
+                response = linkingRequiredPrompt
             )
         } 
     }

@@ -9,9 +9,9 @@ Alexa Skill Components encapsulate best customer experience (CX) design practice
 * Displays a default APL screen on multimodal device
 * Sends a ‘link account card’ to the user’s Alexa companion app on their mobile device
 
-### Pre-requisite 
+### Pre-requisite
 
-1. Any existing ACDL Alexa Skill or [Get Started with ACDL Alexa Skill](https://developer.amazon.com/en-US/docs/alexa/conversations/acdl-get-started.html). 
+1. Any existing ACDL Alexa Skill or [Get Started with ACDL Alexa Skill](https://developer.amazon.com/en-US/docs/alexa/conversations/acdl-get-started.html).
 2. [Configure Account Linking in the developer console for your skill](https://developer.amazon.com/en-US/docs/alexa/account-linking/steps-to-implement-account-linking.html#step-2-configure-account-linking-in-the-developer-console)
 3. [ASK Developer Console](https://developer.amazon.com/alexa/console/ask) and ASK-CLI-X (https://www.npmjs.com/package/ask-cli-x)
 4. [ASK SDK v2.11.0](https://www.npmjs.com/package/ask-sdk)
@@ -21,7 +21,7 @@ Alexa Skill Components encapsulate best customer experience (CX) design practice
 
 * [Alexa Skills Kit Toolkit for VS Code](https://marketplace.visualstudio.com/items?itemName=ask-toolkit.alexa-skills-kit-toolkit)
 * [Local Debug](https://developer.amazon.com/en-US/docs/alexa/ask-toolkit/vs-code-testing-simulator.html) using VSCode
-* TypeScript - 3.9.9
+* TypeScript - 4.1.2
 
 # Installation
 
@@ -30,7 +30,7 @@ Alexa Skill Components encapsulate best customer experience (CX) design practice
 ## Steps at a Glance
 
 * Step 1. Add Account Linking Reusable Dialog as dependency
-* Step 2. Update your existing skill to Invoke Account Linking Reusable Dialog 
+* Step 2. Update your existing skill to Invoke Account Linking Reusable Dialog
 * Step 3. Modify Lambda Methods
 
 Step 1: Add Account Linking reusable dialog as dependency
@@ -39,7 +39,7 @@ Step 1: Add Account Linking reusable dialog as dependency
 
 * Use npm to install the dependencies.
 
-npm i @alexa-components/account-linking-reusable-component
+npm i @alexa-skill-components/account-linking
 
 * Alternatively, on your existing ACDL skill packages, you can add account linking RD component as dependencies inside package.json file as shown below
 
@@ -48,7 +48,7 @@ npm i @alexa-components/account-linking-reusable-component
     // your existing package.json content
     "dependencies": {
         // your existing package dependencies
-        "@alexa-components/account-linking-reusable-component": "*"
+        "@alexa-skill-components/account-linking": "*"
     }
 } 
 ```
@@ -56,23 +56,28 @@ npm i @alexa-components/account-linking-reusable-component
 
 Step 2 : Update your existing skill to Invoke Reusable Dialog
 
-*1. Invoke account linking required RD sample in your existing ACDL dialog from where you want to validate the account linking check.* 
+*1. Invoke account linking required RD sample in your existing ACDL dialog from where you want to validate the account linking check.*
 
-* For example highlighted text is the invocation of the account linking RD. You will need to provide the customized APLA prompt document which you would like to respond to customer in case when account linking is not setup/or correctly configured. 
+* For example highlighted text is the invocation of the account linking RD. You will need to provide the customized APLA & APL prompt document which you would like to respond to customer in case when account linking is not setup/or correctly configured.
 * Example prompt message: You need a Ride Hailer account to order a ride. Open your Alexa app and click the link to connect to your Ride Hailer account.
 
 ACDL Sample Example consuming Account Linking Reusable Dialog
 ```
 namespace com.example.skill.name
 
-import com.amazon.alexa.accountlinking.required.AccountLinkingRequiredRD
-import prompts.AccountLinkingRequiredPrompt
+import com.amazon.alexa.accountlinking.required.validateAccountIsLinked
+import prompts.AccountLinkingRequiredAPLAPrompt
+import prompts.AccountLinkingRequiredAPLPrompt
 
 dialog Nothing RideHailerDialog {
     sample {
         ...
         ...
-        AccountLinkingRequiredRD(AccounLinkingRequiredPrompt)
+        defResponse = MultiModalResponse {
+            apla =  AccountLinkingRequiredAPLAPrompt,
+            apl = AccountLinkingRequiredAPLPrompt
+        }
+        validateAccountIsLinked(defResponse)
         ...
         ...
     }
@@ -88,9 +93,9 @@ Step 3 : Modify Lambda Methods.
 
 1. Import the GetAccountLinkingStatusHandler  into your main Lambda index file.
 
-*Javascript:* In index.js, an example to import @alexa-components/account-linking-reusable-component
+*Javascript:* In index.js, an example to import @alexa-skill-components/account-linking
 ```
-const accountLinking = require('@alexa-components/account-linking-reusable-component');
+const accountLinking = require('@alexa-skill-components/account-linking');
 
 exports.handler = Alexa.SkillBuilders.custom()
  .addRequestHandlers(
@@ -101,7 +106,7 @@ exports.handler = Alexa.SkillBuilders.custom()
 ```
 *Typescript:* In index.ts, use this syntax instead for the importing.
 ```
-import { GetAccountLinkingDetailsHandler } from "@alexa-components/account-linking-reusable-component"
+import { GetAccountLinkingDetailsHandler } from "@alexa-skill-components/account-linking"
 
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
@@ -114,7 +119,7 @@ exports.handler = Alexa.SkillBuilders.custom()
 ## Future Components
 
 We are continuously working on upgrading the Account Linking Reusable Dialog Skill Component with a more robust VUI and multimodal elements. We want to ensure our experiences maximize interactivity with Alexa devices with screens, and we will update with new features, such as account linking as an optional flow in the skill experience.
-Check out for new npm updates to obtain the latest instance of the Account Linking Reusable Dialog Skill Component package. 
+Check out for new npm updates to obtain the latest instance of the Account Linking Reusable Dialog Skill Component package.
 
 
 ## Got Feedback?
