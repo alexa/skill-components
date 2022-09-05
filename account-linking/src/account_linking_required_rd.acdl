@@ -1,0 +1,37 @@
+namespace com.amazon.alexa.accountlinking.required
+
+import com.amazon.alexa.ask.conversations.*
+import displays.*
+import slotTypes.AccountLinkingStatus
+
+// Type Declaration
+type isAccountLinkedResponseType {
+    AccountLinkingStatus accountLinkedStatus
+}
+
+// Default response
+defaultAccountLinkingRDAPL = apl("../response/display/DefaultAccountLinkingRDAPL/document.json")
+defaultAccountLinkingRDAPL_A = apla("../response/prompts/DefaultAccountLinkingRDAPL-A/document.json")
+defResponse = MultiModalResponse {
+    apla =  defaultAccountLinkingRDAPL_A,
+    apl = defaultAccountLinkingRDAPL
+}
+
+// Skill API Declaration
+action isAccountLinkedResponseType isAccountLinked()
+
+// Dialogs Declarations
+dialog void AccountLinkingRequiredRD(Response AccountLinkingRequiredPrompt = defResponse) {
+    sample {
+        // <detects absence/presence of access token in request>.
+        isAccountLinkedResponse = isAccountLinked()
+        if (isAccountLinkedResponse.accountLinkedStatus == "unlinked") {
+            // A: Before I can ..., you need to linked your account. Please visit the Alexa app to link your account. 
+            // {send Account Linking Card}
+            response(act = Notify {actionName = isAccountLinked},
+                nextAct = Bye {},
+                response = AccountLinkingRequiredPrompt
+            )
+        } 
+    }
+}

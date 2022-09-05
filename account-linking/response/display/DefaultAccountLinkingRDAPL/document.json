@@ -1,0 +1,28 @@
+{
+    "type": "APL",
+    "version": "1.8",
+    "license": "Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+    "mainTemplate": {
+        "parameters": [
+            "payload"
+        ],
+        "items": [
+            {
+                "type": "Container",
+                "items": [
+                    {
+                        "text": "Please follow the instruction on your connected device to link your account.",
+                        "fontSize": "16dp",
+                        "textAlign": "center",
+                        "textAlignVertical": "center",
+                        "type": "Text",
+                        "height": "100%",
+                        "width": "100%"
+                    }
+                ],
+                "height": "100%",
+                "width": "100%"
+            }
+        ]
+    }
+}

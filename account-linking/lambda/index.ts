@@ -1,0 +1,1 @@
+export { GetAccountLinkingDetailsHandler } from "./get-account-linking-details-handler";
