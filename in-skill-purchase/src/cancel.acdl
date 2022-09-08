@@ -1,0 +1,60 @@
+namespace com.amazon.alexa.skill.components.inSkillPurchase.cancel
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.alexa.schema.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import prompts.*
+import slotTypes.*
+import com.amazon.alexa.skill.components.inSkillPurchase.purchase.*
+
+dCPR = apla("../response/prompts/cancel_product_apla/document.json")
+dPNAR = apla("../response/prompts/product_not_available_for_cancel_apla/document.json")
+dummy = apla("../response/prompts/dummy_response_apla/document.json")
+
+type CancelSpecificProductRequest {
+    ProductName productName
+}
+
+defaultCancelEvent = utterances<CancelSpecificProductRequest>([
+    "cancel my {productName}", 
+    "cancel {productName}",
+    "I want to cancel {productName}",
+    "I want to cancel my {productName}",
+    "I'd like to cancel {productName}",
+    "I'd like to cancel my {productName}",
+    "I would like to cancel {productName}",
+    "I would like to cancel my {productName}",
+    "I hope to cancel {productName}",
+    "I hope to cancel my {productName}",
+    "please cancel {productName}",
+    "please cancel my {productName}",
+])
+
+// API Declaration
+action sendCancelDirective(String productId)
+
+dialog Nothing cancelPurchase (
+    Response productNotAvailableForCancelResponse = dPNAR,
+    Response cancelProductResponse = dCPR,
+    Event <CancelSpecificProductRequest> cancelEvent = defaultCancelEvent,
+){
+    sample {
+        cancelEventRequest = expect(Invoke, cancelEvent)
+
+        ensure(
+            RequestArguments { arguments = [getProductID.arguments.productName], response = cancelProductResponse},
+        )
+
+        getProductIDResponse = getProductID(cancelEventRequest.productName)
+        cancelProductPurchaseable = getProductIDResponse.purchasable
+        cancelProductId = getProductIDResponse.productId
+        if (cancelProductPurchaseable == "false") {
+            response(act = Notify {actionName = getProductID},
+                payload = ProductNamePayload { productName = cancelEventRequest.productName },
+                response = productNotAvailableForCancelResponse)
+        } else {
+            sendCancelDirective(productId = cancelProductId)
+            // dummy response to pass compile
+            response(dummy, Notify{actionName = sendCancelDirective})
+        }
+    }
+}

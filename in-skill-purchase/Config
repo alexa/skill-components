@@ -1,0 +1,31 @@
+package.ISPReusableComponent = {
+    interfaces = (1.0);
+
+    deploy = {
+        generic = true;
+    };
+
+    build-environment = {
+        chroot = basic;
+        network-access = blocked;
+    };
+
+    build-system = npm-pretty-much;
+    build-tools = {
+        1.0 = {
+            NpmPrettyMuch = 1.0;
+            NodeJS = 12.x;
+        };
+    };
+
+    dependencies = {
+        1.0 = {
+        };
+    };
+
+    runtime-dependencies = {
+        1.0 = {
+            NodeJS = 12.x;
+        };
+    };
+};
