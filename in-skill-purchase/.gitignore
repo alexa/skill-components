@@ -8,3 +8,9 @@ dist/
 coverage/
 lib/
 package-lock.json
+# mac file
+.DS_Store
+# compiled TS code
+*.tgz
+# ask settings
+.ask/
