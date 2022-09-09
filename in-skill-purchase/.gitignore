@@ -1,0 +1,16 @@
+.*
+!/.eslintrc.js
+!/.gitignore
+/build
+/skill-package/build
+/node_modules
+dist/
+coverage/
+lib/
+package-lock.json
+# mac file
+.DS_Store
+# compiled TS code
+*.tgz
+# ask settings
+.ask/

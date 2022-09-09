@@ -1,0 +1,55 @@
+namespace com.amazon.alexa.skill.components.inSkillPurchase.resume
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.alexa.schema.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import prompts.*
+import slotTypes.*
+
+dPS = apla("../response/prompts/purchase_success_apla/document.json")
+dAP = apla("../response/prompts/already_purchase_apla/document.json")
+dRC = apla("../response/prompts/reject_cancel_apla/document.json")
+dCS = apla("../response/prompts/continue_skill_apla/document.json")
+
+type GetPurchaseResultResponse {
+    ResumeName name
+    PurchaseResult status
+}
+
+resumeEvent = utterances([
+    "Do not invoke this manually for resume"
+])
+
+action GetPurchaseResultResponse getPurchaseResult()
+
+dialog Nothing resumeAfterPurchase 
+(
+    Response purchaseSuccessResponse=dPS, 
+    Response alreadyPurchasedResponse = dAP, 
+    Response rejectCancelResponse= dRC, 
+    Response continueSkillResponse= dCS
+) {
+    sample {
+        expect(Invoke, resumeEvent)
+
+        getPurchaseResultResponse = getPurchaseResult()
+         
+        if (getPurchaseResultResponse.name == "Buy") {
+            if (getPurchaseResultResponse.status == "ACCEPTED") {
+                response(act = Notify {actionName = getPurchaseResult},
+                    response = purchaseSuccessResponse)
+            } else if (getPurchaseResultResponse.status == "ALREADY_PURCHASED") {
+                response(act = Notify {actionName = getPurchaseResult},
+                    response = alreadyPurchasedResponse)
+            } else if (getPurchaseResultResponse.status == "DECLINED" || getPurchaseResultResponse.status == "ERROR") {
+                response(act = Notify {actionName = getPurchaseResult},
+                    response = continueSkillResponse)
+            }
+        } else if (getPurchaseResultResponse.name == "Cancel" && getPurchaseResultResponse.status == "DECLINED") {
+            response(act = Notify {actionName = getPurchaseResult},
+                response = rejectCancelResponse)   
+        } else {
+            response(act = Notify {actionName = getPurchaseResult},
+                response = continueSkillResponse)
+        }  
+    }
+ }

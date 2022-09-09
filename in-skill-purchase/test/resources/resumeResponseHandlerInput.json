@@ -1,0 +1,124 @@
+{
+    "requestEnvelope": {
+        "version": "1.0",
+        "session": {
+            "new": false,
+            "sessionId": "amzn1.echo-api.session.fakeSessionID",
+            "application": {
+                "applicationId": "amzn1.ask.skill.fakeApplicationID"
+            },
+            "user": {
+                "userId": "amzn1.ask.account.fakeUserID"
+            }
+        },
+        "context": {
+            "System": {
+                "application": {
+                    "applicationId": "amzn1.ask.skill.fakeApplicationID"
+                },
+                "user": {
+                    "userId": "amzn1.ask.account.fakeUserID"
+                },
+                "device": {
+                    "deviceId": "amzn1.ask.device.fakeDeviceID",
+                    "supportedInterfaces": {}
+                },
+                "apiEndpoint": "https://api.amazonalexa.com",
+                "apiAccessToken": "fakeAPIAccessToken"
+            },
+            "Viewport": {
+                "experiences": [
+                    {
+                        "arcMinuteWidth": 346,
+                        "arcMinuteHeight": 216,
+                        "canRotate": false,
+                        "canResize": false
+                    }
+                ],
+                "mode": "HUB",
+                "shape": "RECTANGLE",
+                "pixelWidth": 1280,
+                "pixelHeight": 800,
+                "dpi": 213,
+                "currentPixelWidth": 1280,
+                "currentPixelHeight": 800,
+                "touch": [
+                    "SINGLE"
+                ],
+                "keyboard": null,
+                "video": {
+                    "codecs": [
+                        "H_264_42",
+                        "H_264_41"
+                    ]
+                }
+            },
+            "Viewports": [
+                {
+                    "type": "APL",
+                    "id": "main",
+                    "shape": "RECTANGLE",
+                    "dpi": 213,
+                    "presentationType": "STANDARD",
+                    "canRotate": false,
+                    "configuration": {
+                        "current": {
+                            "mode": "HUB",
+                            "video": {
+                                "codecs": [
+                                    "H_264_42",
+                                    "H_264_41"
+                                ]
+                            },
+                            "size": {
+                                "type": "DISCRETE",
+                                "pixelWidth": 1280,
+                                "pixelHeight": 800
+                            }
+                        }
+                    }
+                }
+            ],
+            "Extensions": {
+                "available": {
+                    "aplext:backstack:10": {}
+                }
+            }
+        },
+        "request": {
+            "type": "Connections.Response",
+            "requestId": "amzn1.echo-api.request.d4b3a84f-0d55-4db1-803f-3d59137fb494",
+            "timestamp": "2021-11-30T19:24:04Z",
+            "locale": "en-US",
+            "status": {
+                "code": "200",
+                "message": "OK"
+            },
+            "name": "Buy",
+            "payload": {
+                "purchaseResult": "ACCEPTED",
+                "productId": "amzn1.adg.product.93f12e35-a421-45f9-a855-b678cef59d07"
+            },
+            "token": "correlationToken"
+        }
+    },
+    "context": {
+        "callbackWaitsForEmptyEventLoop": true,
+        "functionVersion": "$LATEST",
+        "functionName": "in-skill-purchase-rc-test-skill",
+        "memoryLimitInMB": "128",
+        "logGroupName": "/aws/lambda/in-skill-purchase-rc-test-skill",
+        "logStreamName": "2021/11/15/[$LATEST]5a967237d4f4443b9f5e64ddf018ac7d",
+        "invokedFunctionArn": "arn:aws:lambda:us-east-1:786310803673:function:in-skill-purchase-rc-test-skill",
+        "awsRequestId": "fakeRequestID"
+    },
+    "attributesManager": {},
+    "responseBuilder": {},
+    "serviceClientFactory": {
+        "apiConfiguration": {
+            "apiClient": {},
+            "apiEndpoint": "https://api.amazonalexa.com",
+            "authorizationValue": "fakeValue"
+        }
+    }
+}

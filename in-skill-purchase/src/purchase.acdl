@@ -1,0 +1,159 @@
+namespace com.amazon.alexa.skill.components.inSkillPurchase.purchase
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.alexa.schema.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import prompts.*
+import slotTypes.*
+
+dCP = apla("../response/prompts/choose_product_apla/document.json")
+dCS = apla("../response/prompts/continue_skill_apla/document.json")
+dPNA = apla("../response/prompts/product_not_available_apla/document.json")
+dRP = apla("../response/prompts/request_product_apla/document.json")
+dD = apla("../response/prompts/dummy_response_apla/document.json")
+
+// Type declaration
+type ChooseProductPayload {
+    InSkillProductListResponse response
+}
+
+type ProductNamePayload {
+    ProductName productName
+}
+
+type InSkillProductListResponse {
+    List<Product> inSkillProductList
+}
+
+type GetProductIDResponse {
+    Purchasable purchasable
+    String productId
+}
+
+type Product {
+    String productId
+    ProductName productName
+    String productSummary
+}
+
+type BuySpecificProductRequest {
+    ProductName productName
+}
+ 
+ // Utterance declaration
+ defaultWhatCanIBuyEvent = utterances<Nothing>([
+    "What can I buy?",
+    "What are you selling?",
+    "What comes with a subscription?",
+    "What’s new?",
+    "Which product can I buy?",
+    "What can I choose to buy?"
+])
+
+defaultBuySpecificProductEvent = utterances<BuySpecificProductRequest>([
+    "{productName}",
+    "buy the {productName}",
+    "buy {productName}",
+    "I want to buy {productName}",
+    "I would like to buy {productName}",
+    "I'd like to buy {productName}",
+    "tell me about {productName}",
+    "tell me more about {productName}",
+    "learn more about {productName}",
+    "I want to learn more about {productName}",
+    "I would like to learn more about {productName}",
+    "I'd like to learn more about {productName}"
+])
+
+defaultNoEvent = utterances<Nothing>(
+    [
+        "No",
+        "Nope",
+        "Nothing",
+        "No i'm good",
+        "I'm good",
+        "No thank you",
+        "No thanks",
+        "No i do not",
+        "No i don't",
+        "No i do not want to buy any of these",
+        "No i dont want to buy them",
+        "I do not want anything else",
+    ]
+)
+
+ // Api's declarations
+action InSkillProductListResponse getInSkillProductList()
+action sendBuyDirective(String productId)
+action Nothing delegateFlowForDeny()
+action GetProductIDResponse getProductID(ProductName productName)
+
+dialog Nothing buySpecificProduct(
+    Response chooseProductResponse = dCP, 
+    Response continueSkillResponse = dCS, 
+    Response productNotAvailableResponse = dPNA,
+    Response requestProductResponse= dRP,
+    Event <BuySpecificProductRequest> buySpecificProductEvent = defaultBuySpecificProductEvent,
+    Event<Nothing> whatCanIBuyEvent = defaultWhatCanIBuyEvent,
+    Event<Nothing> noEvent = defaultNoEvent
+) {
+    sample {
+        // U: What can I buy 
+        expect(Invoke, whatCanIBuyEvent)
+
+        // API Call
+        inSkillProductListResponse = getInSkillProductList()
+
+        // A: XXX, Which one would you like to learn more about?
+        response(act = Notify {actionName = getInSkillProductList},
+            payload = ChooseProductPayload { response = inSkillProductListResponse },
+            response = chooseProductResponse)
+    }
+
+    sample {
+        // U: What can I buy 
+        expect(Invoke, whatCanIBuyEvent)
+
+        // API Call
+        inSkillProductListResponse = getInSkillProductList()
+
+        // A: XXX, Which one would you like to learn more about?
+        response(act = Notify {actionName = getInSkillProductList},
+            payload = ChooseProductPayload { response = inSkillProductListResponse },
+            response = chooseProductResponse)
+
+        // No, I don't want to buy any of these.
+        expect(Invoke, noEvent)
+
+         // Delegates flow back to the correct event with a directive
+        delegateFlowForDeny()
+
+        // No worries. You can always ask me about subscription options later. Now, want to replay today’s wellness challenge or try a new one?
+        response(act = Notify {actionName = delegateFlowForDeny},
+            response = continueSkillResponse)
+    }
+
+
+    sample {
+        // U: I want to buy Value subscription
+        buySpecificProductRequest = expect(Invoke, buySpecificProductEvent)
+
+        ensure(
+            RequestArguments { arguments = [getProductID.arguments.productName], response = requestProductResponse},
+        )
+
+        // API Call
+        getProductIDResponse = getProductID(buySpecificProductRequest.productName)
+
+        purchasable = getProductIDResponse.purchasable
+
+        if (purchasable == "true") {
+            sendBuyDirective(productId = getProductIDResponse.productId)
+            // dummy response to pass compile
+            response(dD, Notify{actionName = sendBuyDirective})
+        } else {
+            response(act = Notify {actionName = getProductID},
+                payload = ProductNamePayload { productName = buySpecificProductRequest.productName },
+                response = productNotAvailableResponse)
+        }
+    }
+}

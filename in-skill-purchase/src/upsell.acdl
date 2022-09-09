@@ -1,0 +1,25 @@
+namespace com.amazon.alexa.skill.components.inSkillPurchase.upsell
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.alexa.schema.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import prompts.*
+import slotTypes.*
+import com.amazon.alexa.skill.components.inSkillPurchase.purchase.*
+
+dummy = apla("../response/prompts/dummy_response_apla/document.json")
+
+// API Declaration
+action sendUpsellDirective(String upsellMessage, ProductName productName, InSkillProductListResponse inSkillProductListResponse)
+
+dialog Nothing upsell (String upsellMessage, ProductName productName){
+    sample {
+
+        inSkillProductList = getInSkillProductList()        
+
+        sendUpsellDirective(upsellMessage = upsellMessage, productName = productName, inSkillProductListResponse = inSkillProductList)
+
+        // dummy response to pass compile
+        response(dummy,Notify{actionName = sendUpsellDirective})
+        
+    }
+}

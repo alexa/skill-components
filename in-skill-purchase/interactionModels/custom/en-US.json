@@ -1,0 +1,100 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "types": [
+                {
+                  "name": "ProductName",
+                  "values": [
+                    {
+                      "id": "ValueSubscription",
+                      "name": {
+                        "value": "value subscription"
+                      }
+                    },
+                    {
+                      "id": "PremiumSubscription",
+                      "name": {
+                        "value": "premium subscription"
+                      }
+                    },
+                    {
+                      "id": "EliteSubscription",
+                      "name": {
+                        "value": "elite subscription"
+                      }
+                    }
+                  ]
+                },
+                {
+                    "name": "Purchasable",
+                    "values": [
+                      {
+                        "id": "true",
+                        "name": {
+                          "value": "true"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                        }
+                      },
+                      {
+                        "id": "false",
+                        "name": {
+                          "value": "false"
+                        }
+                      }
+                    ]
+                },
+                {
+                  "name": "ResumeName",
+                  "values": [
+                    {
+                      "id": "Buy",
+                      "name": {
+                        "value": "buy"
+                      }
+                    },
+                    {
+                      "id": "Upsell",
+                      "name": {
+                        "value": "upsell"
+                      }
+                    },
+                    {
+                      "id": "Cancel",
+                      "name": {
+                        "value": "cancel"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "name": "PurchaseResult",
+                  "values": [
+                    {
+                      "id": "Accept",
+                      "name": {
+                        "value": "accept"
+                      }
+                    },
+                    {
+                      "id": "Declined",
+                      "name": {
+                        "value": "declined"
+                      }
+                    },
+                    {
+                      "id": "Error",
+                      "name": {
+                        "value": "error"
+                      }
+                    },
+                    {
+                      "id": "AlreadyPurchase",
+                      "name": {
+                        "value": "already purchase"
+                      }
+                    }
+                  ]
+                } 
+            ]
+        }
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "type": "APL-A",
+    "version": "0.1",
+    "mainTemplate": {
+      "parameters": [
+        "payload"
+      ],
+      "item": {
+        "type": "Selector",
+        "description": "Ask user to choose product by providing a list of eligible products. Cap examples to 3.",
+        "items": [
+          {
+            "when": "${payload.response.inSkillProductList.length == 1}",
+            "type": "Speech",
+            "contentType": "SSML",
+            "content": "<speak>With ${payload.response.inSkillProductList[0].productName}, you can ${payload.response.inSkillProductList[0].productSummary}. Which one would you like to learn more about?</speak>"
+          },
+          {
+            "when": "${payload.response.inSkillProductList.length == 2}",
+            "type": "Speech",
+            "contentType": "SSML",
+            "content": "<speak>With ${payload.response.inSkillProductList[0].productName}, you can ${payload.response.inSkillProductList[0].productSummary} and with ${payload.response.inSkillProductList[1].productName}, you can ${payload.response.inSkillProductList[1].productSummary}. Which one would you like to learn more about?</speak>"
+          },
+          {
+            "when": "${payload.response.inSkillProductList.length >= 3}",
+            "type": "Speech",
+            "contentType": "SSML",
+            "content": "<speak>With ${payload.response.inSkillProductList[0].productName}, you can ${payload.response.inSkillProductList[0].productSummary}; with ${payload.response.inSkillProductList[1].productName}, you can ${payload.response.inSkillProductList[1].productSummary} and with ${payload.response.inSkillProductList[2].productName}, you can ${payload.response.inSkillProductList[2].productSummary}. Which one would you like to learn more about?</speak>"
+          }
+        ]
+      }
+    }
+}   
