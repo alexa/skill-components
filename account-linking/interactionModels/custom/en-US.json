@@ -1,0 +1,25 @@
+{
+    "interactionModel": {
+      "languageModel": {
+        "types": [
+          {
+            "name": "AccountLinkingStatus",
+            "values": [
+              {
+                "id": "linked",
+                "name": {
+                  "value": "linked"
+                }
+              },
+              {
+                "id": "unlinked",
+                "name": {
+                  "value": "unlinked"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
