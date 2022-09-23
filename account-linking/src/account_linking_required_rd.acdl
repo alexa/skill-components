@@ -10,11 +10,11 @@ type isAccountLinkedResponseType {
 }
 
 // Default response
-defaultAccountLinkingRDAPL = apl("../response/display/DefaultAccountLinkingRDAPL/document.json")
-defaultAccountLinkingRDAPL_A = apla("../response/prompts/DefaultAccountLinkingRDAPL-A/document.json")
+dAccountLinkingRDAPL = apl("../response/display/DefaultAccountLinkingRDAPL/document.json")
+dAccountLinkingRDAPL_A = apla("../response/prompts/DefaultAccountLinkingRDAPL-A/document.json")
 defResponse = MultiModalResponse {
-    apla =  defaultAccountLinkingRDAPL_A,
-    apl = defaultAccountLinkingRDAPL
+    apla =  dAccountLinkingRDAPL_A,
+    apl = dAccountLinkingRDAPL
 }
 
 // Skill API Declaration

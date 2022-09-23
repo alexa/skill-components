@@ -85,8 +85,6 @@ dialog Nothing RideHailerDialog {
 ```
 2. Compile the ACDL skill by running  $ askx compile  command from root directory of the skill-package
 
-Note: If compilation failed, fix the errors as per the error description message. You can find some of the common errors https://quip-amazon.com/c491AKmn9bfn/Account-Linking-Reusable-Dialog-Run-book#temp:C:PUd85583ac5582a44cbab8340c50
-
 3. Once compiled successfully, deploy the skill by running  $ askx deploy  command from root directory of the skill-package.
 
 Step 3 : Modify Lambda Methods.
