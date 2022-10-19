@@ -38,18 +38,21 @@ export class SelectItemHandler extends BaseApiHandler {
         super(apiName);
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput){
         const args = util.getApiArguments(handlerInput) as Arguments;
 
-        let currentPage: Page<any>;
+        let currentPage: Page<any> | Promise<Page<any>>;
         if (ListNav.useSession) {
             const sessionState = ListNavSessionState.load(handlerInput);
             currentPage = sessionState.getCurrentPage();
             sessionState.validateArguments(args.listRef, args.page.pageToken);
-        } else {
+        } 
+        else {
             currentPage = args.page;
         }
 
+        currentPage = await currentPage;
+        
         const selectedItem = currentPage.items[args.index-1];
 
         return handlerInput.responseBuilder

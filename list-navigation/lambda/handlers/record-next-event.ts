@@ -7,6 +7,7 @@ import { Response } from "ask-sdk-model";
 
 import { apiNamespace } from '../config';
 import { ListNav } from '../interface';
+import { DDBListProvider } from '../providers/ddb-list-provider';
 import { ListNavSessionState } from '../session-state';
 import { BaseApiHandler } from './base-api-handler';
 
@@ -33,6 +34,11 @@ export class RecordNextEventHandler extends BaseApiHandler {
                 throw new Error("No current page info in list nav session state");
             }
 
+            //Storing currentPageToken in stack to enable reverse pagination, in case of DDBListProvider
+            if(ListNav.getProvider(sessionState.activeList).getName() == DDBListProvider.NAME){
+                sessionState.pageStack?.push(currentPageTokens.currentPageToken);
+            }
+            
             sessionState.upcomingPageToken = currentPageTokens.nextPageToken;
             sessionState.save(handlerInput);
         }

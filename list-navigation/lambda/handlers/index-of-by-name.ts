@@ -48,13 +48,13 @@ export class IndexOfByNameHandler extends BaseApiHandler {
         this.itemNameMatcher = itemNameMatcher;
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput){
         const args = util.getApiArguments(handlerInput) as Arguments;
 
         let currentPage: Page<any>
         if (ListNav.useSession) {
             const sessionState = ListNavSessionState.load(handlerInput);
-            currentPage = sessionState.getCurrentPage();
+            currentPage = await sessionState.getCurrentPage();
             sessionState.validateArguments(args.listRef, args.page.pageToken);
         } else {
             currentPage = args.page;

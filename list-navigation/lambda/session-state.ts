@@ -9,7 +9,7 @@ import { ListProvider, Page } from './list-provider';
 import { ListReference } from './interface';
 import { PageToken } from './list-provider';
 
-// key in session where all the list navigation session start will be stored
+// key in session where all the list navigation session state will be stored
 const sessionKey = "_ac_listNav";
 
 // collection of just the tokens from a page object; used to avoid storing 
@@ -25,6 +25,7 @@ interface PlainSessionState {
     activeList: ListReference;
     upcomingPageToken?: PageToken;
     currentPageTokens?: PageTokens;
+    pageStack?: PageToken[];
 }
 
 // State stored into the session that will be used instead of relying on arguments passed into 
@@ -48,14 +49,19 @@ export class ListNavSessionState {
     // instead of the page token passed via API arguments
     upcomingPageToken?: PageToken;
 
+
+    //Required for pagination in case of DDBListProvider, used by record-event APIs
+    pageStack?: PageToken[];
+
     constructor(plainState: PlainSessionState) {
         this.activeList = plainState.activeList;
         this.upcomingPageToken = plainState.upcomingPageToken;
         this.currentPageTokens = plainState.currentPageTokens;
+        this.pageStack = plainState.pageStack;
     }
 
     // get the current page according to this session state instance
-    getCurrentPage(): Page<any> {
+    getCurrentPage(): Promise<Page<any>>{
         const listRef = this.activeList;
         const listProvider: ListProvider<any> = ListNav.getProvider(listRef);
 
@@ -68,6 +74,7 @@ export class ListNavSessionState {
 
         return listProvider.getPage(currentPageToken, listRef.pageSize);
     }
+
 
     // validate the arguments that were passed into a API call match the state currently stored in
     // the session; if not, log the discrepencies. This will help to identify scenarios where
@@ -93,7 +100,8 @@ export class ListNavSessionState {
         return {
             activeList: this.activeList,
             upcomingPageToken: this.upcomingPageToken,
-            currentPageTokens: this.currentPageTokens
+            currentPageTokens: this.currentPageTokens,
+            pageStack: this.pageStack
         } as PlainSessionState;
     }
 

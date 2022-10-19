@@ -4,7 +4,7 @@
 
 // representation of a page token; simply a raw string as the real representation
 // will differ with each list provider instance
-export type PageToken = string;
+export type PageToken = any;
 
 // a single page of items, contains next/previous tokens to allow for easy navigation
 export interface Page<T> {
@@ -21,7 +21,7 @@ export interface Page<T> {
 
 // alias for deserializer that can produce a list provider instance from
 // a given set of serialized data (format different for each list provider);
-// each list provider tyoe should define their own deserializer
+// each list provider type should define their own deserializer
 export type ListProviderDeserializer = (data: any) => ListProvider<any>;
 
 // interface every list provider must adhere to, contains methods used by
@@ -29,7 +29,7 @@ export type ListProviderDeserializer = (data: any) => ListProvider<any>;
 export interface ListProvider<T> {
     // get a page of items for the given page token and page size; a undefined
     // page token is a request for the first page of items
-    getPage(pageToken: PageToken | undefined, pageSize: number) : Page<T>;
+    getPage(pageToken: PageToken | undefined, pageSize: number) : Promise<Page<T>>;
 
     // called to serialize any state needed by a list provider instance; this
     // state will be passed into the list provider's deserializer on the next

@@ -21,5 +21,5 @@ export abstract class BaseApiHandler implements RequestHandler {
         return util.isApiRequest(handlerInput, this.apiName);
     }
 
-    abstract handle(handlerInput : HandlerInput): Response;
+    abstract handle(handlerInput : HandlerInput): any;
 }

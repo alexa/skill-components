@@ -7,6 +7,8 @@ import { Response } from "ask-sdk-model";
 
 import { apiNamespace } from '../config';
 import { ListNav } from '../interface';
+import { ListProviderRegistry } from '../list-provider';
+import { DDBListProvider } from '../providers';
 import { ListNavSessionState } from '../session-state';
 import { BaseApiHandler } from './base-api-handler';
 
@@ -32,8 +34,15 @@ export class RecordPrevEventHandler extends BaseApiHandler {
                 // current page tokens
                 throw new Error("No current page info in list nav session state");
             }
-
-            sessionState.upcomingPageToken = currentPageTokens.prevPageToken;
+            
+            //The last pageToken entry in the stack is used as the upcomingPageToken, in case of DDBListProvider
+            if(ListNav.getProvider(sessionState.activeList).getName() == DDBListProvider.NAME){
+                sessionState.upcomingPageToken = sessionState.pageStack?.pop();
+            }
+            else{
+                sessionState.upcomingPageToken = currentPageTokens.prevPageToken;
+            }
+            
             sessionState.save(handlerInput);
         }
 

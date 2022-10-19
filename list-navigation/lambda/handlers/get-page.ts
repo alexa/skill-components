@@ -32,25 +32,31 @@ export class GetPageHandler extends BaseApiHandler {
         super(apiName);
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput){
         const args = util.getApiArguments(handlerInput) as Arguments;
 
-        let page : Page<any>;
+        let page : Promise<Page<any>>;
         if (ListNav.useSession) {
             page = this.getNewPageFromSession(handlerInput, args);
-        } else {
+        }
+        else {
             const listRef = args.listRef;
             const listProvider: ListProvider<any> = ListNav.getProvider(listRef);
             page = listProvider.getPage(args.pageToken, listRef.pageSize);
         }
+        const pageResult = await page;
+
+        if (ListNav.useSession){
+            this.saveSessionState(handlerInput, pageResult, args)
+        }
 
         const responsePage = {
-            items: page.items,
-            itemCount: page.items.length,
+            items: pageResult.items,
+            itemCount: pageResult.items.length,
 
-            prevPageToken: page.prevPageToken,
-            pageToken: page.pageToken,
-            nextPageToken: page.nextPageToken
+            prevPageToken: pageResult.prevPageToken,
+            pageToken: pageResult.pageToken,
+            nextPageToken: pageResult.nextPageToken
         };
 
         return handlerInput.responseBuilder
@@ -59,7 +65,7 @@ export class GetPageHandler extends BaseApiHandler {
             .getResponse();
     }
 
-    getNewPageFromSession(handlerInput : HandlerInput, args: Arguments): Page<any> {
+    async getNewPageFromSession(handlerInput : HandlerInput, args: Arguments): Promise<Page<any>>{
         const sessionState = ListNavSessionState.load(handlerInput);
 
         // get list ref out of session instead of arguments
@@ -68,7 +74,14 @@ export class GetPageHandler extends BaseApiHandler {
         
         // get page token out of session instead of arguments
         const pageToken = sessionState.upcomingPageToken;
-        const page = listProvider.getPage(pageToken, listRef.pageSize);
+        let page = await listProvider.getPage(pageToken, listRef.pageSize);
+        
+
+        return page;
+    }
+    saveSessionState(handlerInput : HandlerInput, page: Page<any>, args: Arguments){
+        
+        const sessionState = ListNavSessionState.load(handlerInput);
 
         // save new current page to session
         sessionState.currentPageTokens = {
@@ -81,6 +94,6 @@ export class GetPageHandler extends BaseApiHandler {
 
         sessionState.validateArguments(args.listRef, args.pageToken);
 
-        return page;
     }
 }
+

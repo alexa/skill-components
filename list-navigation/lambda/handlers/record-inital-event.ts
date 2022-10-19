@@ -7,6 +7,7 @@ import { Response } from "ask-sdk-model";
 
 import { apiNamespace } from '../config';
 import { ListNav } from '../interface';
+import { DDBListProvider } from '../providers/ddb-list-provider';
 import { ListNavSessionState } from '../session-state';
 import { BaseApiHandler } from './base-api-handler';
 
@@ -29,6 +30,11 @@ export class RecordInitialEventHandler extends BaseApiHandler {
             // reset page tokens to ensure we start navigating list at beginning, as it's 
             // possible a custom user event was just triggered to restart navigation
             // of a list that was setup before and already navigated some
+
+            //Stack gets initialized, in case of DDBListProvider
+            if(ListNav.getProvider(sessionState.activeList).getName() == DDBListProvider.NAME){
+                sessionState.pageStack = [];
+            }
             sessionState.currentPageTokens = undefined;
             sessionState.upcomingPageToken = undefined;
             sessionState.save(handlerInput);
