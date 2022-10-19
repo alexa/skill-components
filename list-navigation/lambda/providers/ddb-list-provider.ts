@@ -33,20 +33,21 @@ export class DDBListProvider<T> implements ListProvider<T> {
 
         const results = await this.client.send(new ScanCommand(params));
         const lek = results.LastEvaluatedKey;
-        const RAW_DATA:any[] = [];
+        const DATA:any[] = [];
         
+        // DDB Table needs to have label, name and id fields.
         (results.Items || []).forEach(function (element, index, array) {
-            RAW_DATA.push(unmarshall(element));
+            DATA.push(unmarshall(element));
         });
 
-        // modified data to give it a name and label property; only relevant in this particular example, will be made generic before releasing
-        const DATA:any = _.chain(_.range(0, RAW_DATA.length))
-        .map((i) => ({
-            ...RAW_DATA[i],
-            id: i,
-            name: RAW_DATA[i].title,
-            label: `${RAW_DATA[i].title} by ${RAW_DATA[i].author}`
-        })).value();
+        // modified data to give it a name and label property; only relevant in case of the database that was used for testing, will be made generic before releasing
+        // const DATA:any = _.chain(_.range(0, DATA.length))
+        // .map((i) => ({
+        //     ...DATA[i],
+        //     id: i,
+        //     name: DATA[i].title,
+        //     label: `${DATA[i].title} by ${DATA[i].author}`
+        // })).value();
 
         console.log(`DDBListProvider: items are: ${JSON.stringify(DATA)}`);
 
