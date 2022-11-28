@@ -10,6 +10,12 @@
         "description": "Ask user to choose product by providing a list of eligible products. Cap examples to 3.",
         "items": [
           {
+            "when": "${payload.response.inSkillProductList.length == 0}",
+            "type": "Speech",
+            "contentType": "SSML",
+            "content": "No products available for purchase"
+          },
+          {
             "when": "${payload.response.inSkillProductList.length == 1}",
             "type": "Speech",
             "contentType": "SSML",

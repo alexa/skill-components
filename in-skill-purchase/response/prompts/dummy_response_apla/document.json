@@ -8,7 +8,7 @@
       "item": {
         "type": "Speech",
         "contentType": "text",
-        "content": ""
+        "content": "Please wait we are processing your request..."
       }
     }
   }
