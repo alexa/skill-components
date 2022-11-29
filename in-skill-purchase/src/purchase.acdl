@@ -9,7 +9,7 @@ dCP = apla("../response/prompts/choose_product_apla/document.json")
 dCS = apla("../response/prompts/continue_skill_apla/document.json")
 dPNA = apla("../response/prompts/product_not_available_apla/document.json")
 dRP = apla("../response/prompts/request_product_apla/document.json")
-dD = apla("../response/prompts/dummy_response_apla/document.json")
+dL = apla("../response/prompts/loader_response_apla/document.json")
 
 // Type declaration
 type ChooseProductPayload {
@@ -148,8 +148,8 @@ dialog Nothing buySpecificProduct(
 
         if (purchasable == "true") {
             sendBuyDirective(productId = getProductIDResponse.productId)
-            // dummy response to pass compile
-            response(dD, Notify{actionName = sendBuyDirective})
+            // loader response to pass compile
+            response(dL, Notify{actionName = sendBuyDirective})
         } else {
             response(act = Notify {actionName = getProductID},
                 payload = ProductNamePayload { productName = buySpecificProductRequest.productName },
