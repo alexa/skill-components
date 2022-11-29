@@ -1,7 +1,4 @@
-https://github.com/alexa/skill-components/tree/main/in-skill-purchase
-
-In-Skill Purchasing Skill Component
-===================================
+<h1 align= "center"> In-Skill Purchasing Skill Component </h1>
 
 Gather feedback on interactions to help drive skill development.
 
@@ -383,7 +380,7 @@ License
 
 Copyright 2022 Amazon.com, Inc., or its affiliates. All rights reserved.
 You may not use this file except in compliance with the terms and
-conditions set forth in the accompanying [LICENSE]((https://github.com/alexa/skill-components/blob/main/LICENSE) file. THESE MATERIALS
+conditions set forth in the accompanying [LICENSE](https://github.com/alexa/skill-components/blob/main/LICENSE) file. THESE MATERIALS
 ARE PROVIDED ON AN "AS IS" BASIS. AMAZON SPECIFICALLY DISCLAIMS, WITH
 RESPECT TO THESE MATERIALS, ALL WARRANTIES, EXPRESS, IMPLIED, OR
 STATUTORY, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS
