@@ -1,9 +1,6 @@
 <body>
 
-<p align="center"><img width="400" src="./docs/assets/skill-components-icon.png">
-  <br/>
-  <h1 style="text-align:center">Alexa Skill Components</h1>
-</p>
+<h1 align= "center"> Account Linking Skill Component </h1>
 
 <details>
   <summary>Table of contents</summary>
