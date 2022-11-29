@@ -8,7 +8,7 @@ import com.amazon.alexa.skill.components.inSkillPurchase.purchase.*
 
 dCPR = apla("../response/prompts/cancel_product_apla/document.json")
 dPNAR = apla("../response/prompts/product_not_available_for_cancel_apla/document.json")
-dummy = apla("../response/prompts/dummy_response_apla/document.json")
+loader = apla("../response/prompts/loader_response_apla/document.json")
 
 type CancelSpecificProductRequest {
     ProductName productName
@@ -53,8 +53,8 @@ dialog Nothing cancelPurchase (
                 response = productNotAvailableForCancelResponse)
         } else {
             sendCancelDirective(productId = cancelProductId)
-            // dummy response to pass compile
-            response(dummy, Notify{actionName = sendCancelDirective})
+            // loader response to pass compile
+            response(loader, Notify{actionName = sendCancelDirective})
         }
     }
 }
