@@ -1,0 +1,37 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "summary": "Sample skill for ISP reusable component",
+          "examplePhrases": [
+            "Alexa open hello world",
+            "hello",
+            "help"
+          ],
+          "name": "isp-skill",
+          "description": "This is a sample skill for ISP reusable component"
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Sample Testing Instructions.",
+      "category": "KNOWLEDGE_AND_TRIVIA",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "dialogManagement": {
+          "sessionStartDelegationStrategy": {
+            "target": "AMAZON.Conversations"
+          },
+          "dialogManagers": [
+            {
+              "type": "AMAZON.Conversations"
+            }
+          ]
+        }
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}

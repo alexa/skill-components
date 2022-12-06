@@ -1,0 +1,65 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "subscription bot",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "PlaceHolderIntent",
+                    "samples": [
+                        "In case you would like to intent based skill."
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "ProductName",
+                    "values": [
+                      {
+                        "id": "ticket",
+                        "name": {
+                          "value": "ticket",
+                          "synonyms": [
+                            "flight"
+                          ]
+                        }
+                      },
+                      {
+                        "id": "ValueSubscription",
+                        "name": {
+                          "value": "value subscription"
+                        }
+                      },
+                      {
+                        "id": "PremiumSubscription",
+                        "name": {
+                          "value": "premium subscription"
+                        }
+                      },
+                      {
+                        "id": "EliteSubscription",
+                        "name": {
+                          "value": "elite subscription"
+                        }
+                      }
+                    ]
+                  }
+            ]
+        }
+    }
+}

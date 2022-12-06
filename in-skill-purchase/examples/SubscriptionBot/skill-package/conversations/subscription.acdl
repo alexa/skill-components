@@ -1,0 +1,45 @@
+namespace org.yourcompany
+import com.amazon.alexa.skill.components.inSkillPurchase.cancel.cancelPurchase
+import com.amazon.alexa.skill.components.inSkillPurchase.purchase.buySpecificProduct
+import com.amazon.alexa.skill.components.inSkillPurchase.purchase.BuySpecificProductRequest
+import com.amazon.alexa.skill.components.inSkillPurchase.resume.resumeAfterPurchase
+import com.amazon.alexa.skill.components.inSkillPurchase.upsell.upsell
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.alexa.schema.*
+import prompts.*
+import slotTypes.*
+
+
+dialog MainDialog {
+    sample {
+        buySpecificProduct() 
+    }
+}
+
+dialog Nothing CancelDialog {
+    sample {
+        cancelPurchase()
+    }
+}
+
+dialog Nothing ResumeDialog {
+    sample { 
+        resumeAfterPurchase()
+    }
+}
+ 
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
