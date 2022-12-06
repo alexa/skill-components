@@ -1,0 +1,19 @@
+{
+  "name": "isp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@alexa-skill-components/in-skill-purchase": "^0.0.1",
+    "ask-sdk-model": "^1.38.3",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "ask-sdk-local-debug": "^1.1.0"
+  }
+}
