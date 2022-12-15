@@ -1,0 +1,20 @@
+{
+  "type": "APL-A",
+  "version": "0.1",
+  "license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+  "mainTemplate": {
+    "parameters": [
+      "payload"
+    ],
+    "item": {
+      "type": "RandomSelector",
+      "items": [
+        {
+          "type": "Speech",
+          "contentType": "text",
+          "content": "Welcome to book recommendation example skill! say 'What books do you have?' to start a simple interaction"
+        }
+      ]
+    }
+  }
+}

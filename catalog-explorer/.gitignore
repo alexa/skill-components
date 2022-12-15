@@ -1,0 +1,15 @@
+# mac file
+.DS_Store
+# compiled TS code
+dist
+# general build output
+build
+# locally installed node dependencies
+node_modules
+# compiled package artifacts
+*.tgz
+# ask settings
+.ask/
+# test cases coverage
+coverage
+test-report.html

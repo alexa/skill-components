@@ -1,0 +1,78 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.catalog_explorer.properties
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.catalog_explorer.offers.*
+import com.amazon.alexa.skill.components.catalog_explorer.util.*
+import com.amazon.alexa.skill.components.catalog_explorer.types.*
+import com.amazon.alexa.skill.components.catalog_explorer.*
+
+// definition of a catalog property that user can request for the current item
+
+dialog Nothing  requestPropertyValue<SearchConditions, Item>(
+    PropertyConfig<SearchConditions, Item> config,
+    CatalogProperty<Item> property,
+    List<Item> priorRecommendations,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        expect(Invoke, property.getValueEvent)
+        api = property.getValueApi // NOTE: have to assign to name before call due to compiler bug
+        result = api(priorRecommendations,catalogRef)
+
+        performNotifyResponse(
+            NotifyResponseContents {
+                actionName = property.getValueApi,
+                response = property.notifyValueResponse,
+                payload = PropertyValuePayload<Item>{result=result}
+            }
+        )
+    }
+}
+
+dialog RecommendationResult<SearchConditions, Item>  requestPropertyValue_WithPassthrough<SearchConditions, Item>(
+    PropertyConfig<SearchConditions, Item> config,
+    CatalogProperty<Item> property,
+    RecommendationResult<SearchConditions, Item>  priorResult,
+    optional CatalogReference catalogRef
+) {
+    // pass-through sample to represent dialog flow where user does not perform a follow-up
+    sample {
+        priorResult
+    }
+
+    sample {
+         requestPropertyValue(config, property, priorResult.recommendations.items, catalogRef)
+        priorResult
+    }
+}
+dialog RecommendationResult<SearchConditions, Item> requestPropertyValue_withHint<SearchConditions, Item>(
+    PropertyConfig<SearchConditions, Item> config,
+    CatalogProperty<Item> property,
+    RecommendationResult<SearchConditions, Item>  priorResult,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        expect(Invoke, property.getValueEvent)
+        api = property.getValueApi // NOTE: have to assign to name before call due to compiler bug
+        result = api(priorResult.recommendations.items,catalogRef)
+        notifyWithProactiveHint_AffirmOnly(
+            config.offers, 
+            result.items, 
+            NotifyResponseContents {
+                actionName = property.getValueApi,
+                response = property.notifyValueResponse,
+                payload = PropertyValuePayload<Item>{result=result}
+            },
+            result.offer,
+            catalogRef
+        )
+        priorResult
+    }
+}

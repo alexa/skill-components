@@ -1,0 +1,82 @@
+{
+  "type": "APL-A",
+  "version": "0.1",
+  "license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+  "description": "Default, generic response prompt for presenting searcg result",
+  "mainTemplate": {
+    "parameters": [
+      "payload"
+    ],
+    "item": {
+      "type": "Selector",
+      "items": [
+        {
+          "when": "${payload.result.recommendations.items == null || payload.result.recommendations.items.length < 1}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "No items could be found, sorry"
+        },
+        {
+          "when": "${payload.result.rescoped != 0 && payload.result.recommendations.items.length == 1}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "I wasn't able to find any result that precisely matched your request. How about ${payload.result.recommendations.items[0].label}."
+        },
+        {
+          "when": "${payload.result.rescoped != 0 && payload.result.recommendations.items.length == 2}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "I wasn't able to find any result that precisely matched your request. How about ${payload.result.recommendations.items[0].label}, or ${payload.result.recommendations.items[1].label}."
+        },
+        {
+          "when": "${payload.result.rescoped != 0 && payload.result.recommendations.items.length == 3}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "I wasn't able to find any result that precisely matched your request. How about ${payload.result.recommendations.items[0].label}, ${payload.result.recommendations.items[1].label}, or ${payload.result.recommendations.items[2].label}."
+        },
+        {
+          "when": "${payload.result.rescoped != 0 && payload.result.recommendations.items.length == 4}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "I wasn't able to find any result that precisely matched your request. How about ${payload.result.recommendations.items[0].label}, ${payload.result.recommendations.items[1].label}, ${payload.result.recommendations.items[2].label}, or ${payload.result.recommendations.items[3].label}."
+        },
+        {
+          "when": "${payload.result.rescoped != 0 && payload.result.recommendations.items.length == 5}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "I wasn't able to find any result that precisely matched your request. How about ${payload.result.recommendations.items[0].label}, ${payload.result.recommendations.items[1].label}, ${payload.result.recommendations.items[2].label}, ${payload.result.recommendations.items[3].label}, or ${payload.result.recommendations.items[4].label}."
+        },
+        {
+          "when": "${payload.result.recommendations.items.length == 1}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "How about ${payload.result.recommendations.items[0].label}."
+        },
+        {
+          "when": "${payload.result.recommendations.items.length == 2}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "How about ${payload.result.recommendations.items[0].label}, or ${payload.result.recommendations.items[1].label}."
+        },
+        {
+          "when": "${payload.result.recommendations.items.length == 3}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "How about ${payload.result.recommendations.items[0].label}, ${payload.result.recommendations.items[1].label}, or ${payload.result.recommendations.items[2].label}."
+        },
+        {
+          "when": "${payload.result.recommendations.items.length == 4}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "How about ${payload.result.recommendations.items[0].label}, ${payload.result.recommendations.items[1].label}, ${payload.result.recommendations.items[2].label}, or ${payload.result.recommendations.items[3].label}."
+        },
+        {
+          "when": "${payload.result.recommendations.items.length == 5}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "How about ${payload.result.recommendations.items[0].label}, ${payload.result.recommendations.items[1].label}, ${payload.result.recommendations.items[2].label}, ${payload.result.recommendations.items[3].label}, or ${payload.result.recommendations.items[4].label}."
+        }
+      ]
+    }
+  }
+}

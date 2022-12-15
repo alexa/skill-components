@@ -1,0 +1,278 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.catalog_explorer.types
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+//main
+type CatalogExplorationResult<Item> {
+    // the action performed after user finished exploration
+    CatalogActionResult actionPerformed
+    // the action result returned from the API
+    Item item
+}
+// reference to a catalog that can be explored; constructed on the API side
+// and passed into the main reusable dialog exploreCatalog
+type CatalogReference {
+    String id
+}
+
+type PropertyConfig<SearchConditions, Item> {
+    // config for search, navigate, properties, actions, and offers
+    List<SearchPattern<SearchConditions, Item>> searchPatterns
+    NavigationConfig<SearchConditions, Item> navConfig
+    List<CatalogProperty<Item>> properties
+    List<CatalogAction<Item>> catalogActions
+    CatalogOffers<SearchConditions, Item> offers
+}
+
+type DialogConfig<SearchConditions, Item>{
+    // adaptors needed to "tell" the component the length of the search patterns, properties,
+    // and actions lists; needed as there is no current support in ACDL to generate a dynamic
+    // number of samples based on the length of a list
+    Dialog2<PropertyConfig<SearchConditions, Item>, Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> allSearchPathsAdaptor
+    Dialog2<PropertyConfig<SearchConditions, Item>,Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> baseSearchPathsAdaptor
+    Dialog3<PropertyConfig<SearchConditions, Item>, RecommendationResult<SearchConditions, Item>, Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> allFollowUpPathsAdaptor
+    Dialog3<PropertyConfig<SearchConditions, Item>,  List<Item>,Optional <CatalogReference> , CatalogActionResult> allCatalogActionPathsAdaptor
+}
+
+type CatalogConfig<SearchConditions, Item> {
+    PropertyConfig<SearchConditions, Item> propertyConfig
+    DialogConfig<SearchConditions, Item> dialogConfig
+}
+//action
+type ActionResultPayload
+{
+    CatalogActionResult result
+}
+type CatalogAction<Item> {
+    // event to trigger the action
+    Event<Nothing> actionEvent
+
+    // API to perform the action; name of the API must follow pattern 
+    // "performAction_{name}" so we know which action is desired
+    // NOTE: this naming retrictions is due to lack of support in ACDL
+    //       for passing static values in an API
+    Action2<
+        List<Item>, // currently viewed item
+        Optional <CatalogReference>,          
+        CatalogActionResult // result of perfoming the action
+    > performApi
+
+    // reponse used to render the result of the action
+    Response notifyResultResponse
+}
+
+type CatalogActionResult {
+    String actionName
+    String result
+}
+
+//Navigate
+type OrdinalSlotWrapper {
+    // first, second, third, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#ordinal
+    Ordinal ordinal
+}
+
+type IndexSlotWrapper {
+    // number one, two, three, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#number
+    NUMBER index
+}
+
+// root config object bringing together configuration for pagination and item selection
+type NavigationConfig<SearchConditions, Item> {
+    PaginationConfig<SearchConditions, Item> paginationConfig
+    SelectionConfig<SearchConditions, Item> selectionConfig
+}
+type NavigationPayload<SearchConditions, Item>{
+    RecommendationResult<SearchConditions, Item> result
+}
+
+// configuration for next/prev pagination
+type PaginationConfig<SearchConditions, Item> {
+    // event to trigger next/prev
+    Event<Nothing> nextEvent
+    Event<Nothing> prevEvent
+
+    // single getPage API, called with next/prev page token from last search result
+    Action3<
+        SearchConditions,                             // the current search conditions
+        Optional<String>,  
+        Optional<CatalogReference>,                            // page token, can be Nothing for first page
+        RecommendationResult<SearchConditions, Item>  // results for page requested
+    > getPageApi
+
+    Response presentPageResponse
+}
+
+// configuration for item selection
+type SelectionConfig<SearchConditions, Item> {
+    Event<OrdinalSlotWrapper> selectByOrdinalEvent
+    Event<IndexSlotWrapper> selectByIndexEvent
+
+    Action4<
+        SearchConditions,                             // current search conditions
+        Page<Item>,                                   // current page of results
+        NUMBER, 
+        Optional<CatalogReference>,                                    // index to select
+        RecommendationResult<SearchConditions, Item>  // results for selection
+    > selectItemApi
+}
+
+//offers
+type CatalogOffers<SearchConditons, Item> {
+    // event to allow user to accept a offer
+    Event<Nothing> acceptEvent
+
+    Action3<
+        List<Item>,        // current list of items being shown
+        ProactiveOffer,    // the offer that was made
+        Optional<CatalogReference>,
+        CatalogOfferResult // the result of acting on the offer
+    > acceptAction
+
+    // response template used to render a response to the offer being accepted
+    Response acceptResponse
+
+    // NOTE: common deny utterances like "no" and "nope" will only work correctly if the built-in handling
+    //       inside the simulator is overriden for the deployed skill: 
+    //           https://w.amazon.com/bin/view/Digital/Alexa/Conversations/ACDL/Internal/Runbook/#HCan27tmodel22no22utteranceforDenyevent
+    // event to allow user to deny a offer
+    Event<Nothing> denyEvent
+
+}
+
+// Contains details about what kind of proactive offer to perform after a 
+// recommendation is provided to a user
+type ProactiveOffer {
+    // the name of the property or action to offer at
+    optional String propertyName
+    optional String actionName
+}
+
+type CatalogOfferResult {
+    // the original offer that was requested, so the response template can customize behavior
+    // based on what offer was acted upon
+    ProactiveOffer offer
+
+    // the value of the property that was offered (if a property was offered)
+    Optional<String> propertyValue
+    // the result of the action that was offered (if a action was offered)
+    Optional<String> actionResult
+}
+
+type CatalogOfferPayload {
+    CatalogOfferResult result
+}
+
+//search
+type Page<Item> {
+    List<Item> items
+
+    // size of the list of items above
+    // Note: ACDL does have a built-in size() action, but it can't be used to pass the 
+    // size into a API, so need this extra property
+    NUMBER itemCount
+
+    // Note: will be undefined when at beginning of list
+    Optional<String> prevPageToken
+
+    String pageToken
+
+    // Note: will be undefined when at end of list
+    Optional<String> nextPageToken
+}
+type RecommendationResult<SearchConditions, Item> {
+    // a non-Nothing value indicates that a unrecoverable API error occurred; can either store
+    // error content directly in this field or have API pass back fields not represented in
+    // ACDL for the response template to use
+    Literal error
+    // true (non-zero) when the API decided that it wants to provide a recommendation that doesn't actually match the input
+    // search conditions (usually due to exhausting all possible recommendations or just from user navigating to
+    // the next recommendation too many times)
+    // NOTE: would like to use Boolean here, but get error in conversion layer
+    Number rescoped
+
+    // the search conditions to carry forward to further navigate turns in the same interaction; should be
+    // the same as the input search conditions except when "rescoped" property is true
+    SearchConditions searchConditions
+
+    // a page of recommended items
+    Page<Item> recommendations
+
+    // a proactive offer to be provided to the user (if desired)
+    optional ProactiveOffer offer
+}
+type RecommendationPayload<SearchConditions, Item>{
+    RecommendationResult<SearchConditions, Item> result
+}
+
+// a single "way" a user can search for items
+type SearchPattern<SearchConditions, Item> {
+
+    // event used to trigger a search
+    Event<SearchConditions> searchEvent
+
+    // reference to the api called within the adaptors below, needed to
+    // ensure responses refer to the correct API that was called
+    // The name of the search API needs to be suffixed with "_new" or "_refine" to indicate the type
+    // NOTE: this naming retrictions is due to lack of support in ACDL
+    //       for passing static values in an API
+    Action searchApiRef
+
+    // adaptor to call the base case of the search API; need to use adaptor
+    // as api call will require the developer to unroll their search conditions
+    // object into individual properties (until complex entities is supported)
+    Dialog2<
+        SearchConditions, 
+        Optional<CatalogReference>,
+        RecommendationResult<SearchConditions, Item>// results from the search
+    > searchApiAdaptor
+
+    // adaptor to call the variant cases of the search API; needed to work
+    // around issues with optional api arguments in simulator: https://sim.amazon.com/issues/P48666363
+    Dialog2<
+        SearchConditions,// search conditions provided in the search
+        Optional<CatalogReference>,
+        RecommendationResult<SearchConditions, Item>  // results from the search
+    > searchApiVariationsAdaptor
+
+    // response used to render a recommendation result
+    Response searchResponse
+}
+
+//properties
+type CatalogProperty<Item> {
+    // event to trigger property retrieval
+    Event<Nothing> getValueEvent
+    // API to get property value; name of the API must follow pattern 
+    // "getProperty_{name}" so we know which property is desired
+    // NOTE: this naming retrictions is due to lack of support in ACDL
+    //       for passing static values in an API
+    Action2<
+        List<Item>,  // currently viewed item
+        Optional<CatalogReference>,         
+        PropertyValueResult<Item>  // result from retrieving property value
+    > getValueApi
+
+    // response used to render property value
+    Response notifyValueResponse
+}
+type PropertyValuePayload<Item> {
+    PropertyValueResult<Item> result
+}
+
+type PropertyValueResult<Item> {
+    // value of the property
+    String value
+
+    String propertyName
+    // a proactive offer to be provided to the user (if desired)
+    optional ProactiveOffer offer
+
+    List<Item> items
+}
