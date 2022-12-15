@@ -1,0 +1,165 @@
+{
+    "interactionModel": {
+      "languageModel": {
+        "invocationName": "anon book skill",
+        "intents": [
+          {
+            "name": "AMAZON.CancelIntent",
+            "samples": []
+          },
+          {
+            "name": "AMAZON.StopIntent",
+            "samples": []
+          },
+          {
+            "name": "AMAZON.NavigateHomeIntent",
+            "samples": []
+          },
+          {
+            "name": "AMAZON.FallbackIntent",
+            "samples": []
+          },
+          {
+            "name": "PlaceHolderIntent",
+            "samples": [
+              "Placeholder intent needed to compile ACDL skill"
+            ]
+          }
+        ],
+        "types": [
+          {
+            "name": "GENRE",
+            "values": [
+              {
+                "name": {
+                  "value": "science fiction",
+                  "synonyms": [
+                    "sci fi",
+                    "sci-fi"
+                  ]
+                }
+              },
+              {
+                "name": {
+                  "value": "fantasy",
+                  "synonyms": [
+                    "swords and sorcery"
+                  ]
+                }
+              },
+              {
+                "name": {
+                  "value": "romance",
+                  "synonyms": [
+                    "love",
+                    "courtship",
+                    "lovey dovey"
+                  ]
+                }
+              },
+              {
+                "name": {
+                  "value": "horror",
+                  "synonyms": [
+                    "scary"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "name": "AUTHOR",
+            "values": [
+              {
+                "name": {
+                  "value": "Stephen King"
+                }
+              },
+              {
+                "name": {
+                  "value": "Frank Herbert"
+                }
+              },
+              {
+                "name": {
+                  "value": "Phillip K Dick"
+                }
+              },
+              {
+                "name": {
+                  "value": "George R R Martin"
+                }
+              },
+              {
+                "name": {
+                  "value": "Jane Austen"
+                }
+              },
+              {
+                "name": {
+                  "value": "Dan Simmons"
+                }
+              },
+              {
+                "name": {
+                  "value": "Ernest Cline"
+                }
+              },
+              {
+                "name": {
+                  "value": "JK Rowling"
+                }
+              },
+              {
+                "name": {
+                  "value": "Hank Green"
+                }
+              },
+              {
+                "name": {
+                  "value": "Nicholas Sparks"
+                }
+              },
+              {
+                "name": {
+                  "value": "JRR Tolkien"
+                }
+              }
+            ]
+          },
+          {
+            "name": "FORMAT",
+            "values": [
+              {
+                "name": {
+                  "value": "electronic reader",
+                  "synonyms": [
+                    "kindle",
+                    "E reader"
+                  ]
+                }
+              },
+              {
+                "name": {
+                  "value": "physical",
+                  "synonyms": [
+                    "paper",
+                    "paperback",
+                    "hardback"
+                  ]
+                }
+              },
+              {
+                "name": {
+                  "value": "audio",
+                  "synonyms": [
+                    "audible"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
