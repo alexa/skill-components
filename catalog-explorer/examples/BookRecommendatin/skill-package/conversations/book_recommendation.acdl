@@ -1,0 +1,371 @@
+namespace examples.book_recommendation
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.catalog_explorer.*
+import com.amazon.alexa.skill.components.catalog_explorer.types.*
+
+import prompts.*
+import slotTypes.*
+
+/************************
+ * CREATE CATALOG ITEM
+ ************************/
+
+ type BookItem {
+    String title
+    String genre
+    String author
+    String format
+    String summary
+    String label
+ }
+
+
+/************************
+ * SEARCH
+ ************************/
+
+ type SearchConditions {
+    optional AUTHOR author
+    optional GENRE genre
+    optional FORMAT format
+ }
+
+ searchEvent = utterances<SearchConditions>([
+    "What should I read next?",
+    "What books do you have",
+    "Recommend me a book",
+    "Recommend a book by {author}",
+    "Recommend a {genre} book",
+    "Recommend a {genre} book by {author}",
+    "What is a good book on {format}?",
+
+    // NOTE: validation forces us to have an utterance with all slot types in it
+    "Recommend a {genre} book by {author} on {format}"
+])
+refineSearchEvent = utterances<SearchConditions>([
+    "I also want the book to be written by {author}",
+    "I also want the book to be in the {genre} genre",
+
+    // NOTE: validation forces us to have an utterance with all slot types in it
+    "I also want the book to be in {genre} genre by {author} on {format}"
+])
+
+//Defining the actions required for search events
+action RecommendationResult<SearchConditions, BookItem> search_new(optional AUTHOR author, optional GENRE genre, optional FORMAT format, optional CatalogReference catalogRef)
+action RecommendationResult<SearchConditions, BookItem> search_refine(optional AUTHOR author, optional GENRE genre, optional FORMAT format, optional CatalogReference catalogRef)
+
+//Anonymous dialogs for modelling all the new and refine search events supported in the utterance sets
+
+dialog RecommendationResult<SearchConditions, BookItem> searchApiAdaptor(SearchConditions searchConditions, optional CatalogReference catalogRef) {
+    sample {
+        search_new(searchConditions.author, searchConditions.genre, searchConditions.format, catalogRef)
+    }
+}
+
+dialog RecommendationResult<SearchConditions, BookItem> searchApiVariationsAdaptor(SearchConditions searchConditions, optional CatalogReference catalogRef) {
+    sample {
+        search_new(author = searchConditions.author, catalogRef = catalogRef)
+    }
+    sample {
+        search_new(genre = searchConditions.genre, catalogRef = catalogRef)
+    }
+    sample {
+        search_new(format = searchConditions.format, catalogRef = catalogRef)
+    }
+    sample {
+        search_new( genre = searchConditions.genre, author = searchConditions.author, catalogRef = catalogRef)
+    }
+}
+
+dialog RecommendationResult<SearchConditions, BookItem> refineSearchApiAdaptor(SearchConditions searchConditions, optional CatalogReference catalogRef) {
+    sample {
+        search_refine(searchConditions.author,searchConditions.genre,searchConditions.format)
+    }
+}
+
+dialog RecommendationResult<SearchConditions, BookItem> refineSearchApiVariationsAdaptor(SearchConditions searchConditions, optional CatalogReference catalogRef) {
+    sample {
+        search_refine(author = searchConditions.author, catalogRef = catalogRef)
+    }
+    sample {
+        search_refine(genre = searchConditions.genre, catalogRef = catalogRef)
+    }
+}
+
+/************************
+ * NAVIGATE
+ ************************/
+nextEvent = utterances<Nothing>([
+    "next",
+    "next one",
+    "next item",
+    "show me another one",
+    "show me more"
+])
+prevEvent = utterances<Nothing>([
+    "previous",
+    "previous one",
+    "previous one please",
+    "go back",
+    "show me the previous one"
+])
+// first, second, third, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#ordinal
+selectByOrdinalEvent = utterances<OrdinalSlotWrapper>([
+    "show item view on the {ordinal} one",
+    "show me more about the {ordinal} one",
+    "show me the {ordinal} one",
+    "show me the {ordinal}",
+    "the {ordinal}",
+    "{ordinal}"
+])
+// number one, two, three, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#number
+selectByIndexEvent = utterances<IndexSlotWrapper>([
+    "show item view on number {index}",
+    "show me more about number {index}",
+    "show me number {index}",
+    "number {index}",
+    "{index}"
+])
+
+action RecommendationResult<SearchConditions, BookItem> getPage(SearchConditions searchConditions, Optional<String> pageToken, optional CatalogReference catalogRef)
+action RecommendationResult<SearchConditions, BookItem> selectItemApi(SearchConditions searchConditions, Page<BookItem> page, Number index, optional CatalogReference catalogRef)
+
+
+/************************
+ * OFFERS
+ ************************/
+ yesEvent = utterances<Nothing>([
+    "yes", "yeah", "sure", "that would be good"
+])
+// NOTE: common deny utterances like "no" and "nope" will only work correctly if the built-in handling
+//       inside the simulator is overriden for the deployed skill: 
+//           https://w.amazon.com/bin/view/Digital/Alexa/Conversations/ACDL/Internal/RunBook/#HCan27tmodel22no22utteranceforDenyevent
+noEvent = utterances<Nothing>([
+    "no", "nah", "nope", "not feeling it"
+])
+action CatalogOfferResult acceptAction(List<BookItem> items, ProactiveOffer proactiveOffer, optional CatalogReference catalogRef) //names should be exactly same
+
+/************************
+ * PROPERTIES
+ ************************/
+ titlePropertyEvent = utterances<Nothing>([
+    "What is the title?",
+    "What is it called?",
+    "what's the name of the book?",
+    "what's the name?",
+    "tell me the title"
+])
+genrePropertyEvent = utterances<Nothing>([
+    "What is the genre?",
+    "tell me the genre",
+    "What kind of book is"
+])
+authorPropertyEvent = utterances<Nothing>([
+    "Who is the author?",
+    "who wrote it?",
+    "tell me the author"
+])
+formatPropertyEvent = utterances<Nothing>([
+    "What is the format?"
+])
+summaryPropertyEvent = utterances<Nothing>([
+    "What is the summary?",
+    "can you give me a description?",
+    "provide me with a preview",
+    "tell me the summary"
+])
+
+action PropertyValueResult<BookItem> getProperty_title(List<BookItem> items, optional CatalogReference catalogRef)
+action PropertyValueResult<BookItem> getProperty_genre(List<BookItem> items, optional CatalogReference catalogRef)
+action PropertyValueResult<BookItem> getProperty_author(List<BookItem> items, optional CatalogReference catalogRef)
+action PropertyValueResult<BookItem> getProperty_format(List<BookItem> items, optional CatalogReference catalogRef) 
+action PropertyValueResult<BookItem> getProperty_summary(List<BookItem> items, optional CatalogReference catalogRef)
+
+
+/************************
+ * ACTION
+ ************************/
+ purchaseActionEvent = utterances<Nothing>([
+    "buy it",
+    "purchase",
+    "get it for me"
+])
+addToReadingListActionEvent = utterances<Nothing>([
+    "add to reading list",
+    "save it for later"
+])
+sendToPhoneActionEvent = utterances<Nothing>([
+    "send to my phone",
+    "can I see it on my phone?"
+])
+
+action CatalogActionResult performAction_Purchase(List<BookItem> items, optional CatalogReference catalogRef)
+action CatalogActionResult performAction_AddToReadingList(List<BookItem> items, optional CatalogReference catalogRef)
+action CatalogActionResult performAction_SendToPhone(List<BookItem> items, optional CatalogReference catalogRef)
+
+/************************
+ * Anonymous Dialogs
+ ************************/
+
+dialog RecommendationResult<SearchConditions, BookItem> allSearchPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, optional CatalogReference catalogRef) {
+    sample {
+        allSearchPaths_2(config)
+    }
+}
+
+dialog RecommendationResult<SearchConditions, BookItem> baseSearchPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, optional CatalogReference catalogRef) {
+    sample {
+        baseSearchPaths_2(config)
+    }
+}
+
+dialog RecommendationResult<SearchConditions, BookItem> allFollowUpPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, RecommendationResult<SearchConditions, BookItem> priorResult, optional CatalogReference catalogRef) {
+    sample {
+        allFollowUpPaths_5(config, priorResult, catalogRef)
+    }
+}
+
+dialog CatalogActionResult allCatalogActionPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, List<BookItem> items, optional CatalogReference catalogRef) {
+    sample {
+        allCatalogActionPaths_3(config, items, catalogRef)
+    }
+}
+
+/************************
+ * Dummy event and action
+ ************************/
+
+dummyEvent = utterances<Nothing>([
+    "some dummy utterance"
+])
+
+action Nothing dummyAction()
+
+/************************
+ * Main Dialog
+ ************************/
+
+dialog MainDialog{
+    sample {
+
+        //Buidling the new search event configuration
+        newSearch = buildSearchPattern<SearchConditions, BookItem>(
+            searchEvent = searchEvent,
+            searchApiRef = search_new,
+            searchApiAdaptor = searchApiAdaptor,
+            searchApiVariationsAdaptor =  searchApiVariationsAdaptor
+        )
+
+        //Buidling the refine search event configuration
+        refineSearch = buildSearchPattern<SearchConditions, BookItem>(
+            searchEvent = refineSearchEvent,
+            searchApiRef = search_refine,
+            searchApiAdaptor = refineSearchApiAdaptor,
+            searchApiVariationsAdaptor = refineSearchApiVariationsAdaptor
+        )
+
+        //Creating the list of all search event configurations
+        searchPatterns = [
+            newSearch,
+            refineSearch
+        ]
+
+        //Buidling the navigation configuration
+        navigationConfig = buildNavigationConfig<SearchConditions, BookItem>(
+            nextEvent = nextEvent,
+            prevEvent = prevEvent,
+            getPageApi = getPage,
+            selectByOrdinalEvent = selectByOrdinalEvent,
+            selectByIndexEvent = selectByIndexEvent,
+            selectItemApi = selectItemApi
+        )
+
+        //Buidling the Offers configuration
+        catalogOffers = buildCatalogOffers<SearchConditions, BookItem>(
+            acceptEvent = yesEvent,
+            acceptAction = acceptAction,
+            denyEvent = noEvent
+        )
+
+        //Building the configurations for each follow-up property
+        titleProperty = buildCatalogProperty<BookItem>(
+            getValueEvent = titlePropertyEvent,
+            getValueApi = getProperty_title,
+        )
+        gereProperty = buildCatalogProperty<BookItem>(
+            getValueEvent = genrePropertyEvent,
+            getValueApi = getProperty_genre,
+        )
+        authorProperty = buildCatalogProperty<BookItem>(
+            getValueEvent = authorPropertyEvent,
+            getValueApi = getProperty_author,
+        )
+        formatProperty = buildCatalogProperty<BookItem>(
+            getValueEvent = formatPropertyEvent,
+            getValueApi = getProperty_format,
+        )
+        summaryProperty = buildCatalogProperty<BookItem>(
+            getValueEvent = summaryPropertyEvent,
+            getValueApi = getProperty_summary,
+        )
+
+        //Creating the list of all the property configurations
+        catalogProperties = [
+            titleProperty,
+            gereProperty,
+            authorProperty,
+            formatProperty,
+            summaryProperty
+        ]
+
+        //Building the configurations for each action
+        purchaseAction = buildCatalogAction<BookItem>(
+            actionEvent = purchaseActionEvent,
+            performApi = performAction_Purchase
+        )
+        addToReadingListAction = buildCatalogAction<BookItem>(
+            actionEvent = addToReadingListActionEvent,
+            performApi = performAction_AddToReadingList
+        )
+        sendToPhoneAction = buildCatalogAction<BookItem>(
+            actionEvent = sendToPhoneActionEvent,
+            performApi = performAction_SendToPhone
+        )
+
+        //Creating the list of all the action configurations
+        catalogActions = [
+            purchaseAction,
+            addToReadingListAction,
+            sendToPhoneAction
+        ]
+        
+        //Building the main catalog explorer configuration object
+        config = buildCatalogConfig<SearchConditions, BookItem>(
+            searchPatterns,
+            navigationConfig,
+            catalogProperties,
+            catalogActions,
+            catalogOffers,
+            allSearchPathsAdaptor,
+            baseSearchPathsAdaptor,
+            allFollowUpPathsAdaptor,
+            allCatalogActionPathsAdaptor
+        )
+
+        //calling the the catalog explorer component with the configuration object
+        result = exploreCatalog<SearchConditions, BookItem>(config)
+
+        //Below part is just for a workaround that the main deployable dialog cannont
+        //return CatalogExplorationResult which is the return type of the component
+        //so just giving out a dummy response to make return type as Nothing
+        expect(Invoke, dummyEvent)
+        dummyAction()
+        response(
+            act = Notify{success = true, actionName = dummyAction},
+            response = AlexaConversationsWelcome
+        )
+    }
+}

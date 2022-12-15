@@ -1,0 +1,147 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.catalog_explorer
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+import com.amazon.alexa.skill.components.catalog_explorer.types.*
+import com.amazon.alexa.skill.components.catalog_explorer.action.*
+
+dialog CatalogActionResult allCatalogActionPaths_1<SearchConditions, Item> (
+    PropertyConfig<SearchConditions, Item>  config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        performCatalogAction(config.catalogActions[0], items,catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_2<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_1( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[1], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_3<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_2( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[2], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_4<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_3( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[3], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_5<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_4( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[4], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_6<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_5( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[5], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_7<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_6( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[6], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_8<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_7( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[7], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_1
+dialog CatalogActionResult allCatalogActionPaths_9<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_8( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[8], items, catalogRef)
+    }
+}
+// @see allCatalogActionPaths_10
+dialog CatalogActionResult allCatalogActionPaths_10<SearchConditions, Item> (
+    PropertyConfig config,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        allCatalogActionPaths_9( config, items, catalogRef)
+    }
+
+    sample {
+        performCatalogAction( config.catalogActions[9], items, catalogRef)
+    }
+}
