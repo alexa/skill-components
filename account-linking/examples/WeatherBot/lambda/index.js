@@ -1,6 +1,7 @@
 const Alexa = require('ask-sdk-core');
 const util = require('./util');
 const weatherClient = require('./WeatherClient');
+const accountLinking = require('@alexa-skill-components/account-linking');
 
 const GetWeatherApiHandler = {
     canHandle(handlerInput) {
@@ -21,13 +22,16 @@ const GetWeatherApiHandler = {
         // Call a service to get the weather for this location and date.
         const weather = weatherClient.getWeather(cityName, date);
 
-        const response = {
-                cityName: cityName,
-                lowTemp: weather.lowTemperature,
-                highTemp: weather.highTemperature
+        const apiResponse =  {
+            cityName: cityName,
+            lowTemp: weather['lowTemperature'],
+            highTemp: weather['highTemperature']
         };
 
-        return response;
+        return handlerInput.responseBuilder
+            .withApiResponse(apiResponse)
+            .withShouldEndSession(false)
+            .getResponse();
     }
 };
 
