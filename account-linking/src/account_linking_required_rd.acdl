@@ -12,7 +12,8 @@ type isAccountLinkedResponseType {
 // Default response
 dAccountLinkingRDAPL = apl("../response/display/DefaultAccountLinkingRDAPL/document.json")
 dAccountLinkingRDAPL_A = apla("../response/prompts/DefaultAccountLinkingRDAPL-A/document.json")
-defResponse = MultiModalResponse {
+
+defUnlinkedResponse = MultiModalResponse {
     apla =  dAccountLinkingRDAPL_A,
     apl = dAccountLinkingRDAPL
 }
@@ -21,7 +22,7 @@ defResponse = MultiModalResponse {
 action isAccountLinkedResponseType isAccountLinked()
 
 // Dialogs Declarations
-dialog void validateAccountIsLinked(Response linkingRequiredPrompt = defResponse) {
+dialog void validateAccountIsLinked(Response linkingRequiredPrompt = defUnlinkedResponse) {
     sample {
         // <detects absence/presence of access token in request>.
         isAccountLinkedResponse = isAccountLinked()
