@@ -43,8 +43,7 @@ dialog void validateAccountIsLinked(Response linkingRequiredPrompt = defUnlinked
             )
         }
         else {
-            // A: Before I can ..., you need to linked your account. Please visit the Alexa app to link your account. 
-            // {send Account Linking Card}
+            // {send Account is linked prompt}
             response(act = Notify {actionName = isAccountLinked},
                 nextAct = nothing,
                 response = linkedAccountPrompt
