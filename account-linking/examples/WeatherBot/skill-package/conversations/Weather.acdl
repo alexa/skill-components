@@ -9,7 +9,6 @@ import prompts.request_date_apla
 import prompts.request_city_date_apla
 
 import com.amazon.alexa.accountlinking.required.validateAccountIsLinked
-import prompts.AccountLinkingRequiredAPLAPrompt
 
 type CityAndDate {
     optional City cityName
@@ -48,10 +47,7 @@ dialog Nothing Weather {
             RequestArguments {arguments = [getWeather.arguments.cityName, getWeather.arguments.date], response = request_city_date_apla}
         )
 
-        defResponse = MultiModalResponse {
-            apla =  AccountLinkingRequiredAPLAPrompt
-        }
-        validateAccountIsLinked(defResponse)
+        validateAccountIsLinked()
 
 
         weatherResult = getWeather(weatherRequest.cityName, weatherRequest.date)
