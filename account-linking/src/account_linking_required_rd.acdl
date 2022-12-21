@@ -12,16 +12,25 @@ type isAccountLinkedResponseType {
 // Default response
 dAccountLinkingRDAPL = apl("../response/display/DefaultAccountLinkingRDAPL/document.json")
 dAccountLinkingRDAPL_A = apla("../response/prompts/DefaultAccountLinkingRDAPL-A/document.json")
-defResponse = MultiModalResponse {
+
+dAccountLinkedRDAPL = apl("../response/display/DefaultAccountLinkedRDAPL/document.json")
+dAccountLinkedRDAPL_A = apla("../response/prompts/DefaultAccountLinkedRDAPL-A/document.json")
+
+defUnlinkedResponse = MultiModalResponse {
     apla =  dAccountLinkingRDAPL_A,
     apl = dAccountLinkingRDAPL
+}
+
+defLinkedResponse = MultiModalResponse {
+    apla =  dAccountLinkedRDAPL_A,
+    apl = dAccountLinkedRDAPL
 }
 
 // Skill API Declaration
 action isAccountLinkedResponseType isAccountLinked()
 
 // Dialogs Declarations
-dialog void validateAccountIsLinked(Response linkingRequiredPrompt = defResponse) {
+dialog void validateAccountIsLinked(Response linkingRequiredPrompt = defUnlinkedResponse, Response linkedAccountPrompt = defLinkedResponse) {
     sample {
         // <detects absence/presence of access token in request>.
         isAccountLinkedResponse = isAccountLinked()
@@ -32,6 +41,13 @@ dialog void validateAccountIsLinked(Response linkingRequiredPrompt = defResponse
                 nextAct = Bye {},
                 response = linkingRequiredPrompt
             )
-        } 
+        }
+        else {
+            // {send Account is linked prompt}
+            response(act = Notify {actionName = isAccountLinked},
+                nextAct = nothing,
+                response = linkedAccountPrompt
+            )
+        }  
     }
 }

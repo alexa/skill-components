@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@alexa-skill-components/account-linking": "^0.0.2"
+  }
+}
