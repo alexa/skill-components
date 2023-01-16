@@ -7,11 +7,12 @@ import { Response } from "ask-sdk-model";
 
 import { apiNamespace } from '../config';
 import { ListNav } from '../interface';
+import { PagingDirection } from '../list-provider';
 import { ListNavSessionState } from '../session-state';
 import { BaseApiHandler } from './base-api-handler';
 
 // handler for API called when the previous page is requested by the user before the
-// getPage API is called; sets some session state if ListNav.useSession is true
+// getPage API is called; sets some session state if ListNav.useSessionArgs is true
 export class RecordPrevEventHandler extends BaseApiHandler {
     static defaultApiName = `${apiNamespace}.pagination.recordPrevEvent`;
 
@@ -23,9 +24,9 @@ export class RecordPrevEventHandler extends BaseApiHandler {
 
     handle(handlerInput : HandlerInput): Response {
 
-        if (ListNav.useSession) {
+        if (ListNav.useSessionArgs) {
             const sessionState = ListNavSessionState.load(handlerInput);
-            const currentPageTokens = sessionState.currentPageTokens;
+            const currentPageTokens = sessionState.argsState?.currentPageTokens;
 
             if (currentPageTokens == undefined) {
                 // shouldn't be possible, as initial getPage API call should have set the
@@ -33,7 +34,8 @@ export class RecordPrevEventHandler extends BaseApiHandler {
                 throw new Error("No current page info in list nav session state");
             }
 
-            sessionState.upcomingPageToken = currentPageTokens.prevPageToken;
+            sessionState.argsState!.upcomingPageToken = currentPageTokens.prevPageToken;
+            sessionState.argsState!.pagingDirection = PagingDirection.PREVIOUS;
             sessionState.save(handlerInput);
         }
 

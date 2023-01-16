@@ -126,6 +126,8 @@ type BookItem {
 }
 ```
 
+Note: If you're using the [`DDBListProvider`](./docs/REFERENCE.md#class-ddblistprovider), make sure your DynamoDB table has "label" and "name" attributes.
+
 **3. Define actions and events required to use list navigation component**
 
 The following actions are currently required to be defined in your skill's ACDL (due to limitations in ACDL); the names of the actions may be whatever you would like, but the types and argument names must be as defined (referencing your item type defined in the prior step) for the component to function properly.
@@ -262,7 +264,7 @@ exports.handler = Alexa.SkillBuilders.custom()
 
 **2. Setup List Provider**
 
-In the handler for the action you defined to return a list reference, use the [`FixedListProvider`](./docs/REFERENCE.md#class-fixedlistprovider) class bundled with the component (or make your own implementing the [`ListProvider`](./docs/REFERENCE.md#interface-listprovider) interface) to generate the list reference that is passed into the component.
+In the handler for the action you defined to return a list reference, use the [`FixedListProvider`](./docs/REFERENCE.md#class-fixedlistprovider) class or the [`DDBListProvider`](./docs/REFERENCE.md#class-ddblistprovider) class bundled with the component (or make your own implementing the [`ListProvider`](./docs/REFERENCE.md#interface-listprovider) interface) to generate the list reference that is passed into the component.
 
 **Typescript**
 ```

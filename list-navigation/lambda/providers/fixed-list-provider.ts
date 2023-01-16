@@ -16,7 +16,7 @@ export class FixedListProvider<T> implements ListProvider<T> {
         this.list = list;
     }
 
-    getPage(pageToken: PageToken | undefined, pageSize: number) : Page<T> {
+    getPage(pageToken: PageToken | undefined, pageSize: number) : Promise<Page<T>> {
         // parse the first index of the page out of the page token or use 
         // start of list if no page token provided
         let firstIndex = 0;
@@ -48,17 +48,17 @@ export class FixedListProvider<T> implements ListProvider<T> {
             prevPageToken = prevPageStartIndex + "";
         }
 
-        return {
+        return Promise.resolve({
             items: items,
 
             prevPageToken: prevPageToken,
             pageToken: pageToken,
             nextPageToken: nextPageToken
-        };
+        });
     }
 
     serialize(): any {
-        // just serilize whole list
+        // just serialize whole list
         return this.list;
     }
 

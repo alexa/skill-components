@@ -5,7 +5,7 @@
 import { HandlerInput } from 'ask-sdk-core';
 import { Response } from "ask-sdk-model";
 
-import { ListNav, ListProvider, Page } from '..';
+import { ListNav, Page } from '..';
 import { apiNamespace } from '../config';
 import { ListReference } from '../interface';
 import { ListNavSessionState } from '../session-state';
@@ -48,13 +48,13 @@ export class IndexOfByNameHandler extends BaseApiHandler {
         this.itemNameMatcher = itemNameMatcher;
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput): Promise<Response>{
         const args = util.getApiArguments(handlerInput) as Arguments;
 
         let currentPage: Page<any>
-        if (ListNav.useSession) {
+        if (ListNav.useSessionArgs) {
             const sessionState = ListNavSessionState.load(handlerInput);
-            currentPage = sessionState.getCurrentPage();
+            currentPage = await sessionState.getCurrentPage();
             sessionState.validateArguments(args.listRef, args.page.pageToken);
         } else {
             currentPage = args.page;

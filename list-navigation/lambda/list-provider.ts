@@ -4,7 +4,13 @@
 
 // representation of a page token; simply a raw string as the real representation
 // will differ with each list provider instance
-export type PageToken = string;
+export type PageToken = any;
+
+// indicates whether the page being requested is the next page or the previous page
+export enum PagingDirection{
+    PREVIOUS = "previous",
+    NEXT = "next"
+}
 
 // a single page of items, contains next/previous tokens to allow for easy navigation
 export interface Page<T> {
@@ -29,7 +35,8 @@ export type ListProviderDeserializer = (data: any) => ListProvider<any>;
 export interface ListProvider<T> {
     // get a page of items for the given page token and page size; a undefined
     // page token is a request for the first page of items
-    getPage(pageToken: PageToken | undefined, pageSize: number) : Page<T>;
+    // Note: PagingDirection will be undefined for the initial page
+    getPage(pageToken: PageToken | undefined, pageSize: number, pagingDirection: PagingDirection | undefined) : Promise<Page<T>>;
 
     // called to serialize any state needed by a list provider instance; this
     // state will be passed into the list provider's deserializer on the next
