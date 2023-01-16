@@ -18,7 +18,7 @@ interface Arguments {
 }
 
 // simple action to generate a random index between 1 and the list size provided (inclusive);
-// will instead use current page stored in session to determine list size if ListNav.useSession
+// will instead use current page stored in session to determine list size if ListNav.useSessionArgs
 // is true
 export class GenerateRandomIndexHandler extends BaseApiHandler {
     static defaultApiName = `${apiNamespace}.utils.generateRandomIndex`;
@@ -29,12 +29,12 @@ export class GenerateRandomIndexHandler extends BaseApiHandler {
         super(apiName);
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput): Promise<Response> {
         const args = util.getApiArguments(handlerInput) as Arguments
 
         let listSize: number;
-        if (ListNav.useSession) {
-            listSize = this.getListSizeFromSession(handlerInput, args);
+        if (ListNav.useSessionArgs) {
+            listSize = await  this.getListSizeFromSession(handlerInput, args);
         } else {
             listSize = args.listSize;
         }
@@ -47,9 +47,9 @@ export class GenerateRandomIndexHandler extends BaseApiHandler {
             .getResponse();
     }
 
-    getListSizeFromSession(handlerInput : HandlerInput, args: Arguments): number {
+    async getListSizeFromSession(handlerInput : HandlerInput, args: Arguments): Promise<number> {
         const sessionState = ListNavSessionState.load(handlerInput);
-        const currentPage = sessionState.getCurrentPage();
+        const currentPage = await sessionState.getCurrentPage();
         const listSize = currentPage.items.length;
 
         // log any mismatch between arguments passed into this handler and the aguments that should

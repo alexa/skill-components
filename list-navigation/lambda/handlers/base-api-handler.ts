@@ -4,6 +4,8 @@
 
 import { HandlerInput, RequestHandler } from 'ask-sdk-core';
 import { Response } from "ask-sdk-model";
+import { ListNav, ListReference } from '../interface';
+import { ListNavSessionState } from '../session-state';
 
 import * as util from '../util';
 
@@ -21,5 +23,17 @@ export abstract class BaseApiHandler implements RequestHandler {
         return util.isApiRequest(handlerInput, this.apiName);
     }
 
-    abstract handle(handlerInput : HandlerInput): Response;
+    abstract handle(handlerInput : HandlerInput): Response | Promise<Response>;
+
+    // returns activeList from session, when session is used instead of focus or
+    // when there is no active list reference provided in the arguments
+    getActiveList(handlerInput : HandlerInput, listRef: ListReference | undefined): ListReference{
+        if (ListNav.useSessionArgs || listRef === undefined){
+            const sessionState = ListNavSessionState.load(handlerInput);
+            return sessionState.activeList;
+        }
+        else{
+            return listRef;
+        }
+    }
 }

@@ -24,7 +24,7 @@ interface Arguments {
 }
 
 // called to retrieve a specific item from a given page, will pull current page out of 
-// the session state instead of relying on the passed in arguments if ListNav.useSession 
+// the session state instead of relying on the passed in arguments if ListNav.useSessionArgs 
 // is true
 // 
 // Note: needed to work around ACDL issues with indexing into a list and to ensure all 
@@ -38,18 +38,19 @@ export class SelectItemHandler extends BaseApiHandler {
         super(apiName);
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput): Promise<Response>{
         const args = util.getApiArguments(handlerInput) as Arguments;
 
         let currentPage: Page<any>;
-        if (ListNav.useSession) {
+        if (ListNav.useSessionArgs) {
             const sessionState = ListNavSessionState.load(handlerInput);
-            currentPage = sessionState.getCurrentPage();
+            currentPage = await sessionState.getCurrentPage();
             sessionState.validateArguments(args.listRef, args.page.pageToken);
-        } else {
+        } 
+        else {
             currentPage = args.page;
         }
-
+        
         const selectedItem = currentPage.items[args.index-1];
 
         return handlerInput.responseBuilder

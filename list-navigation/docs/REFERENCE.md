@@ -103,8 +103,8 @@ Note: the current run-time behavior is to re-prompt on all responses where the p
 Main static interface to list navigation component on API side
 
 ### Properties
-* `static useSession: boolean`
-    * whether to rely on session (instead of API arguments) to pass data between turns (ListReference and page token)
+* `static useSessionArgs: boolean`
+    * whether to rely on session (instead of API arguments) to pass data between turns (ListReference, page token and pagingDirection)
     * Note: this can be used to work around issues with incorrect/unexpected data being passed into API calls between turns in some navigation interactions and use cases; will no longer be needed if data passing issues can be resolved
     * Defaults to `true` currently
 
@@ -132,8 +132,8 @@ interface every list provider must adhere to, contains methods used by list nav 
 * T: type of each item in the list the provider handles
 
 ### Methods
-* `getPage(pageToken: PageToken | undefined, pageSize: number) : Page<T>`
-    * get a page of items for the given page token and page size; a undefined page token is a request for the first page of items
+* `getPage(pageToken: PageToken | undefined, pageSize: number, pagingDirection: PagingDirection | undefined) : Promise<Page<T>>`
+    * get a page of items for the given page token and page size; an undefined page token is a request for the first page of items; pagingDirection indicates whether the requested page is the next page or the previous one; pagingDirection is undefined when the request is for the first page of items.
 * `serialize(): any`
     * called to serialize any state needed by a list provider instance; this state will be passed into the list provider's deserializer on the next API call
 * `getName(): string`
@@ -146,6 +146,24 @@ List provider for a fixed/static list of items; useful for testing, debugging, o
 * `constructor`
     * Arguments:
         * `list: T[]`: list to be provided
+
+## `class DDBListProvider`
+List provider for a list of items present in a DynamoDB table; each page token is simply a reference to the ExclusiveStartKey i.e. the primary key of the first item in the page being requested.
+
+Note: Ensure the lambda function has READ access to the DynamoDB table, to use this list provider.
+
+### Methods
+* `constructor`
+    * Arguments:
+        * `region: string`: aws region where the DynamoDB table is hosted (ex. "us-east-1")
+        * `tableName: string`: name of the DynamoDB table
+        * `maxPageTokenStackSize: number`
+            * maximum length of pageTokenStack stored in session
+            * Note: this can be configured to avoid cases that may exceed session memory limit
+            * Defaults to `30` currently
+        * `pageTokenStack: PageToken[]`: 
+            * stack of the current page tokens for facilitating navigation
+            * Note: this is required to maintain the provider state between turns and does not need to be provided by the user
 
 
 
