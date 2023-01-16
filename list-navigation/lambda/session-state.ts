@@ -5,11 +5,11 @@
 import { HandlerInput } from 'ask-sdk-core';
 
 import { ListNav } from './interface';
-import { ListProvider, Page } from './list-provider';
+import { ListProvider, Page, PagingDirection } from './list-provider';
 import { ListReference } from './interface';
 import { PageToken } from './list-provider';
 
-// key in session where all the list navigation session start will be stored
+// key in session where all the list navigation session state will be stored
 const sessionKey = "_ac_listNav";
 
 // collection of just the tokens from a page object; used to avoid storing 
@@ -23,23 +23,19 @@ export interface PageTokens {
 // representation of raw state data stored in the session
 interface PlainSessionState {
     activeList: ListReference;
-    upcomingPageToken?: PageToken;
-    currentPageTokens?: PageTokens;
+    providerState: any;
+    argsState?: ArgumentsState;
 }
 
-// State stored into the session that will be used instead of relying on arguments passed into 
-// APIs if ListNav.useSession is true
+// State arguments stored into the session that will be used instead of relying on arguments passed into 
+// APIs if ListNav.useSessionArgs is true
 //
 // Note: simply used to work around issues with passing data in API arguments between turns in some 
 // list nav scenarios, can be removed once data passing via API arguments is fixed
-export class ListNavSessionState {
+export interface ArgumentsState{
 
-    // the list actively being navigated; set when a new list reference is built; used by 
-    // getPage and selectItem APIs instead of relying on list reference passed via API arguments
-    activeList: ListReference;
-
-    // current page being shown for the active list; set by getPage API; used by record-event
-    // APIs called before getPage and by selectItem API instead of relying on the page token
+    // current page being shown for the active list; set by performSearch, getPage and selectItem APIs;
+    // used by record-event APIs called before getPage instead of relying on the page token
     // passed via API arguments
     currentPageTokens?: PageTokens;
 
@@ -47,26 +43,45 @@ export class ListNavSessionState {
     // called before getPage (based on the currentPage below, if it exists); used by getPage API
     // instead of the page token passed via API arguments
     upcomingPageToken?: PageToken;
+    
+    // current paging direction; set by record-event APIs; used by getPage API
+    pagingDirection?: PagingDirection;
+
+}
+
+export class ListNavSessionState {
+
+    // the list actively being navigated; set when a new list reference is built; used by 
+    // getPage and selectItem APIs instead of relying on list reference passed via API arguments
+    activeList: ListReference;
+
+    providerState: any;
+
+    argsState?: ArgumentsState;
 
     constructor(plainState: PlainSessionState) {
         this.activeList = plainState.activeList;
-        this.upcomingPageToken = plainState.upcomingPageToken;
-        this.currentPageTokens = plainState.currentPageTokens;
+        this.providerState = plainState.providerState;
+        this.argsState = plainState.argsState;
     }
 
     // get the current page according to this session state instance
-    getCurrentPage(): Page<any> {
+    getCurrentPage(): Promise<Page<any>>{
         const listRef = this.activeList;
-        const listProvider: ListProvider<any> = ListNav.getProvider(listRef);
+        const providerState = this.providerState;
+        const listProvider: ListProvider<any> = ListNav.getProvider(listRef, providerState);
 
         // if there is no current page set in the session, then we will retrieve the
         // first page of items
         let currentPageToken: PageToken | undefined = undefined;
-        if (this.currentPageTokens != undefined) {
-            currentPageToken = this.currentPageTokens.currentPageToken;
+        if (this.argsState?.currentPageTokens != undefined) {
+            currentPageToken = this.argsState.currentPageTokens.currentPageToken;
         }
-
-        return listProvider.getPage(currentPageToken, listRef.pageSize);
+        let pagingDirection: PagingDirection | undefined = undefined;
+        if (this.argsState?.pagingDirection != undefined) {
+            pagingDirection = this.argsState.pagingDirection;
+        }
+        return listProvider.getPage(currentPageToken, listRef.pageSize, pagingDirection);
     }
 
     // validate the arguments that were passed into a API call match the state currently stored in
@@ -82,7 +97,7 @@ export class ListNavSessionState {
         }
 
         if (currentPageTokenArg != undefined) {
-            const currentPageToken = this.currentPageTokens?.currentPageToken;
+            const currentPageToken = this.argsState?.currentPageTokens?.currentPageToken;
             if (currentPageTokenArg != currentPageToken) {
                 console.log(`SelectItemHandler: current page token mismatch; expected ${currentPageToken}, actual: ${currentPageTokenArg}`);
             }
@@ -92,14 +107,14 @@ export class ListNavSessionState {
     private serialize(): PlainSessionState {
         return {
             activeList: this.activeList,
-            upcomingPageToken: this.upcomingPageToken,
-            currentPageTokens: this.currentPageTokens
+            providerState: this.providerState,
+            argsState: this.argsState
         } as PlainSessionState;
     }
 
     // save this session state into the current skill session
     save(handlerInput : HandlerInput): void {
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes(); 
         const plainState = this.serialize();
         sessionAttributes[sessionKey] = plainState;
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
@@ -119,7 +134,7 @@ export class ListNavSessionState {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         const plainState: PlainSessionState | undefined = sessionAttributes[sessionKey];
         if (plainState == undefined || plainState.activeList == undefined) {
-            throw new Error("No list nav state present in session, plese setup list nav state prior to "+
+            throw new Error("No list nav state present in session, please setup list nav state prior to "+
                 "using component by calling ListNav.buildListReference()");
         }
         console.log(`ListNavSessionState: loaded list nav session state: ${JSON.stringify(plainState)}`);

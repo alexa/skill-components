@@ -11,7 +11,7 @@ import { ListNavSessionState } from '../session-state';
 import { BaseApiHandler } from './base-api-handler';
 
 // handler for API called when navigating a list is just beginning; sets up some
-// session state if ListNav.useSession is true
+// session state if ListNav.useSessionArgs is true
 export class RecordInitialEventHandler extends BaseApiHandler {
     static defaultApiName = `${apiNamespace}.pagination.recordInitialEvent`;
 
@@ -23,14 +23,15 @@ export class RecordInitialEventHandler extends BaseApiHandler {
 
     handle(handlerInput : HandlerInput): Response {
 
-        if (ListNav.useSession) {
+        if (ListNav.useSessionArgs) {
             const sessionState = ListNavSessionState.load(handlerInput);
 
             // reset page tokens to ensure we start navigating list at beginning, as it's 
             // possible a custom user event was just triggered to restart navigation
             // of a list that was setup before and already navigated some
-            sessionState.currentPageTokens = undefined;
-            sessionState.upcomingPageToken = undefined;
+            sessionState.argsState!.currentPageTokens = undefined;
+            sessionState.argsState!.upcomingPageToken = undefined;
+            sessionState.argsState!.pagingDirection = undefined;
             sessionState.save(handlerInput);
         }
 

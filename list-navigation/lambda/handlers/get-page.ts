@@ -7,7 +7,7 @@ import { Response } from "ask-sdk-model";
 
 import { apiNamespace } from '../config';
 import { ListNav, ListReference } from '../interface';
-import { ListProvider, Page } from '../list-provider';
+import { ListProvider, Page, PagingDirection } from '../list-provider';
 import { ListNavSessionState, PageTokens } from '../session-state';
 import * as util from '../util';
 import { BaseApiHandler } from './base-api-handler';
@@ -22,7 +22,7 @@ interface Arguments {
 
 // called to get a specific page from the list being navigated with (identified by a given
 // page token). Will actually rely on data stored in session state instead of arguments passed 
-// in API call if ListNav.useSession is true
+// in API call if ListNav.useSessionArgs is true
 export class GetPageHandler extends BaseApiHandler {
     static defaultApiName = `${apiNamespace}.getPage`;
 
@@ -32,25 +32,33 @@ export class GetPageHandler extends BaseApiHandler {
         super(apiName);
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput): Promise<Response>{
         const args = util.getApiArguments(handlerInput) as Arguments;
 
-        let page : Page<any>;
-        if (ListNav.useSession) {
-            page = this.getNewPageFromSession(handlerInput, args);
-        } else {
-            const listRef = args.listRef;
-            const listProvider: ListProvider<any> = ListNav.getProvider(listRef);
-            page = listProvider.getPage(args.pageToken, listRef.pageSize);
+        let page : Promise<Page<any>>;
+        const listRef = super.getActiveList(handlerInput, args.listRef);
+
+        if (ListNav.useSessionArgs) {
+            page = this.getNewPageFromSession(handlerInput, args, listRef);
         }
+        else {
+            const sessionState = ListNavSessionState.load(handlerInput);
+            const providerState = sessionState.providerState;
+            const listProvider: ListProvider<any> = ListNav.getProvider(listRef, providerState);
+
+            // needs to be refactored for pagingDirection, once support for generics on actions is added
+            const pagingDirection = PagingDirection.NEXT;
+            page = listProvider.getPage(args.pageToken, listRef.pageSize, pagingDirection);
+        }
+        const pageResult = await page;
 
         const responsePage = {
-            items: page.items,
-            itemCount: page.items.length,
+            items: pageResult.items,
+            itemCount: pageResult.items.length,
 
-            prevPageToken: page.prevPageToken,
-            pageToken: page.pageToken,
-            nextPageToken: page.nextPageToken
+            prevPageToken: pageResult.prevPageToken,
+            pageToken: pageResult.pageToken,
+            nextPageToken: pageResult.nextPageToken
         };
 
         return handlerInput.responseBuilder
@@ -59,28 +67,28 @@ export class GetPageHandler extends BaseApiHandler {
             .getResponse();
     }
 
-    getNewPageFromSession(handlerInput : HandlerInput, args: Arguments): Page<any> {
+    async getNewPageFromSession(handlerInput : HandlerInput, args: Arguments, listRef: ListReference): Promise<Page<any>>{
         const sessionState = ListNavSessionState.load(handlerInput);
+        const providerState = sessionState.providerState;
 
-        // get list ref out of session instead of arguments
-        const listRef = sessionState.activeList;
-        const listProvider: ListProvider<any> = ListNav.getProvider(listRef);
+        const listProvider: ListProvider<any> = ListNav.getProvider(listRef, providerState);
         
         // get page token out of session instead of arguments
-        const pageToken = sessionState.upcomingPageToken;
-        const page = listProvider.getPage(pageToken, listRef.pageSize);
+        const pageToken = sessionState.argsState?.upcomingPageToken;
+        const pagingDirection = sessionState.argsState?.pagingDirection;
+        let page = await listProvider.getPage(pageToken, listRef.pageSize, pagingDirection);
 
         // save new current page to session
-        sessionState.currentPageTokens = {
+        sessionState.providerState = listProvider.serialize();
+        sessionState.argsState!.currentPageTokens = {
             prevPageToken: page.prevPageToken,
             currentPageToken: page.pageToken,
             nextPageToken: page.nextPageToken
         } as PageTokens;
-        sessionState.upcomingPageToken = undefined; // will be set again before next call to getPage API
+        sessionState.argsState!.upcomingPageToken = undefined; // will be set again before next call to getPage API
         sessionState.save(handlerInput);
 
         sessionState.validateArguments(args.listRef, args.pageToken);
-
         return page;
     }
 }
