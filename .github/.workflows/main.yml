@@ -1,0 +1,36 @@
+
+name: sync up to codecommit
+
+on:
+  push:
+    tags-ignore:
+      - '*'
+    branches:
+      - development
+
+jobs:
+  sync-catalog-explorer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: Synchronize Github to CodeCommit
+        uses: aaditya1499/-github-to-codecommit-sync-@v1
+        with:
+          repository_name: catalog-explorer
+          aws_region: us-west-2
+          source_branch: development
+          folders_to_copy: catalog-explorer
+          destination_branch: mainline
+          github_after: ${{ github.event.after }}
+          github_before: ${{ github.event.before }}
