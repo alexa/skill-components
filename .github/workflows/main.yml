@@ -25,7 +25,7 @@ jobs:
           aws-region: us-west-2
 
       - name: Synchronize Github to CodeCommit
-        uses: aaditya1499/-github-to-codecommit-sync-@v1
+        uses: aaditya1499/-github-to-codecommit-sync-@v1.1
         with:
           repository_name: catalog-explorer
           aws_region: us-west-2
