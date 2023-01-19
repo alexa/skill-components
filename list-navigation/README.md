@@ -355,6 +355,13 @@ To deploy any changes, run compile and deploy again:
 askx compile && askx deploy
 ```
 
+## Recipes
+
+* [Setup the Fixed List Provider](./docs/RECIPES.md#setup-the-fixed-list-provider)
+* [Setup the DDB List Provider](./docs/RECIPES.md#setup-the-ddb-list-provider)
+* [Creating a custom List Provider](./docs/RECIPES.md#creating-a-custom-list-provider)
+* [Customizing Page Size](./docs/RECIPES.md#customizing-page-size)
+
 ## Reference
 
 Details on all dialogs and API handlers can be found in the [Reference doc](./docs/REFERENCE.md)

@@ -1,7 +1,7 @@
 # List Navigation Explorer Recipes
 
 ## Setup the Fixed List Provider
-In the handler for the action you defined to return a list reference, you can use the [`FixedListProvider`](../REFERENCE.md#class-fixedlistprovider) class bundled with the component to generate the list reference that is passed into the component.
+In the handler for the action you defined to return a list reference, you can use the [`FixedListProvider`](./REFERENCE.md#class-fixedlistprovider) class bundled with the component to generate the list reference that is passed into the component.
 
 ```typescript
 import { Utils, ListNav, FixedListProvider } from '@alexa-skill-components/list-navigation';
@@ -32,7 +32,7 @@ export class GetBooksHandler implements RequestHandler {
 ```
 
 ## Setup the DDB List Provider
-In the handler for the action you defined to return a list reference, you can use the [`DDBListProvider`](../REFERENCE.md#class-ddblistprovider) class bundled with the component to generate the list reference that is passed into the component.
+In the handler for the action you defined to return a list reference, you can use the [`DDBListProvider`](./REFERENCE.md#class-ddblistprovider) class bundled with the component to generate the list reference that is passed into the component.
 
 Note: Ensure the lambda function has READ access to the DynamoDB table, to use this list provider.
 
@@ -66,7 +66,7 @@ export class GetBooksHandler implements RequestHandler {
 
 ## Creating a custom List Provider
 
-By default, the component uses a FixedListProvider provider which is an implementation of [ListProvider interface](../REFERENCE.md#interface-listprovider). To customize this, simply define your own provider class implementing ListProvider with the functions as defined below in your lambda code.
+By default, the component uses a FixedListProvider provider which is an implementation of [ListProvider interface](./REFERENCE.md#interface-listprovider). To customize this, simply define your own provider class implementing ListProvider with the functions as defined below in your lambda code.
 
 
 ```typescript
@@ -110,7 +110,7 @@ ListProviderRegistry.register(CustomProvider.NAME, CustomProvider.deserialize);
 ## Customizing Page Size
 
 By default, the component uses page size as 3 for displaying the number of items in a single page of items. To 
-customize this, simply define your own page size and sent it in the [pageSize](../REFERENCE.md#methods) argument when calling the [`buildListReference`](../REFERENCE.md#methods) function in your lambda code:
+customize this, simply define your own page size and sent it in the [pageSize](./REFERENCE.md#methods) argument when calling the [`buildListReference`](./REFERENCE.md#methods) function in your lambda code:
 
 For reference: [default page size implementation](https://github.com/alexa/skill-components/blob/main/list-navigation/lambda/interface.ts#L60)
 
