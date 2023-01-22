@@ -74,6 +74,7 @@ export class DDBListProvider<T> implements ListProvider<T> {
         let DDBconfig = {
             region : this.region,
             tableName : this.tableName,
+            maxPageTokenStackSize: this.maxPageTokenStackSize,
             pageTokenStack: this.pageTokenStack
         }
         return DDBconfig;
@@ -84,7 +85,7 @@ export class DDBListProvider<T> implements ListProvider<T> {
     }
 
     static deserialize(DDBconfig: any): DDBListProvider<any> {
-        return new DDBListProvider(DDBconfig.region, DDBconfig.tableName, DDBconfig.pageTokenStack);
+        return new DDBListProvider(DDBconfig.region, DDBconfig.tableName, DDBconfig.maxPageTokenStackSize, DDBconfig.pageTokenStack);
     }
 }
 
