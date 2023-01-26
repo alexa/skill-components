@@ -33,7 +33,7 @@ interface Arguments{
 
 // called to return a property value or to perform an action based on the provided proactive offer.
 // Will pull proactiveOffer out of the session state instead of arguments passed 
-// in API call if CatalogExplorer.useSession is true
+// in API call if CatalogExplorer.useSessionArgs is true
 export class AcceptOfferHandler extends BaseApiHandler {
     static defaultApiPrefixName = `${apiNamespace}.acceptOffer`;
 
@@ -49,9 +49,9 @@ export class AcceptOfferHandler extends BaseApiHandler {
         let proactiveOffer: ProactiveOffer;
         const catalogRef = super.getActiveCatalog(handlerInput, args.catalogRef);
 
-        if (CatalogExplorer.useSession){
+        if (CatalogExplorer.useSessionArgs){
             const sessionState = CatalogExplorerSessionState.load(handlerInput);
-            proactiveOffer = sessionState.argsState.proactiveOffer as ProactiveOffer;
+            proactiveOffer = sessionState.argsState?.proactiveOffer as ProactiveOffer;
         }
         else{
             proactiveOffer = args.proactiveOffer;
@@ -62,11 +62,13 @@ export class AcceptOfferHandler extends BaseApiHandler {
             const propertyName = proactiveOffer.propertyName;
             let propertyValueResult: PropertyValueResult ;
 
-            if (CatalogExplorer.useSession) {
+            if (CatalogExplorer.useSessionArgs) {
                 propertyValueResult = GetPropertyHandler.getPropertyValueResultFromSession<Arguments>(handlerInput,args,propertyName,catalogRef);
             }
             else {
-                const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(handlerInput, catalogRef);
+                const sessionState = CatalogExplorerSessionState.load(handlerInput);
+                const providerState = sessionState.providerState;
+                const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
                 const propertyResult = catalogProvider.getProperty(args.items[0], propertyName);
                 propertyValueResult = {
                     value: propertyResult.value,
@@ -84,11 +86,13 @@ export class AcceptOfferHandler extends BaseApiHandler {
             const actionName = proactiveOffer.actionName;
             let actionResult: CatalogActionResult;
 
-            if (CatalogExplorer.useSession) {
+            if (CatalogExplorer.useSessionArgs) {
                 actionResult = PerformActionHandler.getActionResultFromSession<Arguments>(handlerInput,args,actionName,catalogRef);
             }
             else {
-                const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(handlerInput, catalogRef);
+                const sessionState = CatalogExplorerSessionState.load(handlerInput);
+                const providerState = sessionState.providerState;
+                const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
                 const result = catalogProvider.performAction(args.items[0], actionName);
                 actionResult = {
                     result: result,

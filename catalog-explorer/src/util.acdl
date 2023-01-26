@@ -8,6 +8,7 @@ import com.amazon.alexa.ask.conversations.*
 import com.amazon.ask.types.builtins.AMAZON.*
 import com.amazon.alexa.schema.*
 
+
 dialog Nothing generalResponse(
     Action actionPerformed,
     Response responsePrompt,

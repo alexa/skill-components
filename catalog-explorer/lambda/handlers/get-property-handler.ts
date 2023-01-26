@@ -30,7 +30,7 @@ interface Arguments{
 
 // called to get the details for a given property name for the current selected item.
 // Will pull selected item out of the session state instead of arguments passed 
-// in API call if CatalogExplorer.useSession is true
+// in API call if CatalogExplorer.useSessionArgs is true
 export class GetPropertyHandler extends BaseApiHandler {
     static defaultApiPrefixName = `${apiNamespace}.getProperty_`;
 
@@ -56,11 +56,13 @@ export class GetPropertyHandler extends BaseApiHandler {
         let propertyValueResult : PropertyValueResult;
         const catalogRef = super.getActiveCatalog(handlerInput, args.catalogRef);
 
-        if (CatalogExplorer.useSession) {
+        if (CatalogExplorer.useSessionArgs) {
             propertyValueResult = GetPropertyHandler.getPropertyValueResultFromSession<Arguments>(handlerInput, args, propertyName, catalogRef);
         }
         else {
-            const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(handlerInput,catalogRef);
+            const sessionState = CatalogExplorerSessionState.load(handlerInput);
+            const providerState = sessionState.providerState;
+            const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
             const propertyResult = catalogProvider.getProperty(args.items[0], propertyName);
             propertyValueResult = {
                 value: propertyResult.value,
@@ -78,24 +80,24 @@ export class GetPropertyHandler extends BaseApiHandler {
 
     static getPropertyValueResultFromSession<Arguments>(handlerInput: HandlerInput, args: Arguments, propertyName: string, catalogRef: CatalogReference): PropertyValueResult{
         const sessionState = CatalogExplorerSessionState.load(handlerInput);
-
-        const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(handlerInput,catalogRef);
+        const providerState = sessionState.providerState;
+        const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
 
         // get selectedItem from the recommendationResult stored in session state.
         // ideally only one item should be present in recommendations page before calling getProperty API
-        const selectedItem = sessionState.argsState.recommendationResult?.recommendations.items[0];
+        const selectedItem = sessionState.argsState?.recommendationResult?.recommendations.items[0];
         
         const propertyResult = catalogProvider.getProperty(selectedItem, propertyName);
 
         // updating session state arguments
-        sessionState.argsState.proactiveOffer = propertyResult.offer;
+        sessionState.argsState!.proactiveOffer = propertyResult.offer;
         sessionState.save(handlerInput);
         
         return {
             value: propertyResult.value,
             propertyName: propertyName,
             offer: propertyResult.offer,
-            items: sessionState.argsState.recommendationResult?.recommendations.items
+            items: sessionState.argsState?.recommendationResult?.recommendations.items
         } as PropertyValueResult;
     }
 

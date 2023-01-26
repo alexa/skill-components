@@ -9,7 +9,7 @@ import { CatalogExplorer } from '../interface';
 import { CatalogExplorerSessionState } from '../state';
 import { BaseApiHandler } from './base-api-handler';
 
-// session state if CatalogExplorer.useSession is true
+// session state if CatalogExplorer.useSessionArgs is true
 export class RecordInitialEventHandler extends BaseApiHandler {
     static defaultApiName = `${apiNamespace}.navigate.recordInitialEvent`;
 
@@ -21,15 +21,15 @@ export class RecordInitialEventHandler extends BaseApiHandler {
 
     handle(handlerInput : HandlerInput): Response {
 
-        if (CatalogExplorer.useSession) {
+        if (CatalogExplorer.useSessionArgs) {
             const sessionState = CatalogExplorerSessionState.load(handlerInput);
 
             // reset page tokens to ensure we start navigating catalog at beginning, as it's 
             // possible a custom user event was just triggered to restart navigation
             // of a catalog that was setup before and already navigated some
 
-            sessionState.argsState.currentPageTokens = undefined;
-            sessionState.argsState.upcomingPageToken = undefined;
+            sessionState.argsState!.currentPageTokens = undefined;
+            sessionState.argsState!.upcomingPageToken = undefined;
             sessionState.save(handlerInput);
         }
 

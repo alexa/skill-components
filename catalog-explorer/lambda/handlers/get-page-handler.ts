@@ -25,7 +25,7 @@ interface Arguments {
 
 // called to get a specific page from the catalog being navigated with (identified by a given
 // page token). Will rely on data stored in session state instead of arguments passed 
-// in API call if CatalogExplorer.useSession is true
+// in API call if CatalogExplorer.useSessionArgs is true
 export class GetPageHandler extends BaseApiHandler{
     static defaultApiName = `${apiNamespace}.getPage`;
 
@@ -41,12 +41,14 @@ export class GetPageHandler extends BaseApiHandler{
         let recommendationResult: RecommendationResult<any,any>;
         const catalogRef = super.getActiveCatalog(handlerInput, args.catalogRef);
 
-        if (CatalogExplorer.useSession){
+        if (CatalogExplorer.useSessionArgs){
             recommendationResult = this.getNewRecommendationResultFromSession(handlerInput, args, catalogRef);
         }
         else{
-            const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(handlerInput, catalogRef);
-            // needs to be refactored for pagingDirection, once support for generics on actions is added
+            const sessionState = CatalogExplorerSessionState.load(handlerInput);
+            const providerState = sessionState.providerState;
+            const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
+            // needs to be refactored for pagingDirection and current page size, once support for generics on actions is added
             const pagingDirection = PagingDirection.NEXT;
             recommendationResult = catalogProvider.getRecommendationsPage(args.searchConditions, catalogRef.pageSize, args.pageToken, pagingDirection);
         }
@@ -61,31 +63,32 @@ export class GetPageHandler extends BaseApiHandler{
 
     getNewRecommendationResultFromSession(handlerInput: HandlerInput, args: Arguments, catalogRef: CatalogReference): RecommendationResult<any,any>{
         const sessionState = CatalogExplorerSessionState.load(handlerInput);
+        const providerState = sessionState.providerState;
 
-        const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(handlerInput, catalogRef);
+        const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(catalogRef, providerState);
 
         // get arguments from session state
-        const pageToken = sessionState.argsState.upcomingPageToken;
-        const searchConditions = sessionState.argsState.searchConditions;
-        const currPageSize = sessionState.argsState.currentPageSize;
-        const pagingDirection = sessionState.argsState.pagingDirection;
+        const pageToken = sessionState.argsState?.upcomingPageToken;
+        const searchConditions = sessionState.argsState?.searchConditions;
+        const currPageSize = sessionState.argsState?.currentPageSize;
+        const pagingDirection = sessionState.argsState?.pagingDirection;
 
         if (pagingDirection === undefined) {
             throw new Error("Paging Direction not present in session")
         }
-        const recommendationResult = catalogProvider.getRecommendationsPage(searchConditions,currPageSize, pageToken, pagingDirection);
+        const recommendationResult = catalogProvider.getRecommendationsPage(searchConditions,currPageSize!, pageToken, pagingDirection);
 
         // updating session state arguments
-        sessionState.providerState[catalogRef.id] = catalogProvider.serialize();
-        sessionState.argsState.currentPageTokens = {
+        sessionState.providerState = catalogProvider.serialize();
+        sessionState.argsState!.currentPageTokens = {
             prevPageToken: recommendationResult.recommendations.prevPageToken,
             currentPageToken: pageToken,
             nextPageToken: recommendationResult.recommendations.nextPageToken
         } as PageTokens;
-        sessionState.argsState.recommendationResult = recommendationResult;
-        sessionState.argsState.searchConditions = recommendationResult.searchConditions;
-        sessionState.argsState.upcomingPageToken = undefined; // will be set again before next call to getPage API
-        sessionState.argsState.proactiveOffer = recommendationResult.offer;
+        sessionState.argsState!.recommendationResult = recommendationResult;
+        sessionState.argsState!.searchConditions = recommendationResult.searchConditions;
+        sessionState.argsState!.upcomingPageToken = undefined; // will be set again before next call to getPage API
+        sessionState.argsState!.proactiveOffer = recommendationResult.offer;
         sessionState.save(handlerInput);
 
         return recommendationResult;

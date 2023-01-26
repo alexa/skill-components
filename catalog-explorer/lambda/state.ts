@@ -21,21 +21,19 @@ export interface PageTokens {
 // representation of raw state data stored in the session
 interface PlainSessionState<SearchConditions, Item> {
     activeCatalog: CatalogReference;
-    providerState: ProviderState;
-    argsState: ArgumentsState<SearchConditions, Item>
+    providerState: any;
+    argsState?: ArgumentsState<SearchConditions, Item>
 }
 
-export type ProviderState = Record<string, any>;
-
 // State arguments stored into the session that will be used instead of relying on arguments passed into 
-// APIs if CatalogExplorer.useSession is true
+// APIs if CatalogExplorer.useSessionArgs is true
 //
 // Note: simply used to work around issues with passing data in API arguments between turns in some 
 // catalog explorer scenarios, can be removed once data passing via API arguments is fixed
 export interface ArgumentsState<SearchConditions, Item>{
     // current number of items in each page, updated by selectItem API 
     // to enable item by item pagination, reset by performSearch API
-    currentPageSize: number;
+    currentPageSize?: number;
 
     // current offer being provided to the user; set by performSearch, getPage,
     // selectItem and getProperty APIs
@@ -73,23 +71,15 @@ export class CatalogExplorerSessionState<SearchConditions, Item>  {
     
     // state data required by the catalog provider;
     // used to reconstruct catalog provider instance
-    providerState: ProviderState = {};
+    providerState: any;
     
     // arguments stored into the session
-    argsState: ArgumentsState<SearchConditions, Item>;
+    argsState?: ArgumentsState<SearchConditions, Item>;
 
     constructor(plainState: PlainSessionState<SearchConditions, Item>) {
         this.activeCatalog = plainState.activeCatalog;
         this.providerState = plainState.providerState;
-        this.argsState = {
-            currentPageSize: plainState.argsState.currentPageSize,    
-            proactiveOffer: plainState.argsState.proactiveOffer,
-            upcomingPageToken : plainState.argsState.upcomingPageToken,
-            currentPageTokens : plainState.argsState.currentPageTokens,
-            searchConditions : plainState.argsState.searchConditions,
-            recommendationResult : plainState.argsState.recommendationResult,
-            pagingDirection : plainState.argsState.pagingDirection
-        }
+        this.argsState = plainState.argsState;
     }
 
     private serialize(): PlainSessionState<SearchConditions, Item> {

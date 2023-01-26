@@ -50,7 +50,8 @@ export class SearchHandler extends BaseApiHandler {
 
         // get catalog reference out of session, instead of arguments
         const catalogRef = sessionState.activeCatalog;
-        const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(handlerInput,catalogRef);
+        const providerState = sessionState.providerState;
+        const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(catalogRef, providerState);
 
         // get search conditions from arguments
         let newSearchConditions = util.getResolvedApiSlotValues(handlerInput);
@@ -59,23 +60,23 @@ export class SearchHandler extends BaseApiHandler {
         delete newSearchConditions["catalogRef"];
 
         if (searchType === "refine") {
-            const searchConditionsFromSession = sessionState.argsState.searchConditions;
+            const searchConditionsFromSession = sessionState.argsState?.searchConditions;
             const refinedSearchConditions = { ...searchConditionsFromSession, ...newSearchConditions };
             newSearchConditions = refinedSearchConditions;
         }
         const recommendationResult = catalogProvider.performSearch(newSearchConditions, catalogRef.pageSize);
 
         // updating session state arguments
-        sessionState.providerState[catalogRef.id] = catalogProvider.serialize();
-        sessionState.argsState.recommendationResult = recommendationResult;
-        sessionState.argsState.searchConditions = recommendationResult.searchConditions;
-        sessionState.argsState.currentPageSize = catalogRef.pageSize;  // reset currentPageSize after a search has been performed
-        sessionState.argsState.currentPageTokens = {
+        sessionState.providerState = catalogProvider.serialize();
+        sessionState.argsState!.recommendationResult = recommendationResult;
+        sessionState.argsState!.searchConditions = recommendationResult.searchConditions;
+        sessionState.argsState!.currentPageSize = catalogRef.pageSize;  // reset currentPageSize after a search has been performed
+        sessionState.argsState!.currentPageTokens = {
             prevPageToken: recommendationResult.recommendations.prevPageToken,
             currentPageToken: undefined,
             nextPageToken: recommendationResult.recommendations.nextPageToken
         } as PageTokens;
-        sessionState.argsState.proactiveOffer = recommendationResult.offer;
+        sessionState.argsState!.proactiveOffer = recommendationResult.offer;
         sessionState.save(handlerInput);
 
         return recommendationResult;

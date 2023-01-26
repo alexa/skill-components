@@ -3,7 +3,6 @@
 </p>
 
 
-With the Catalog Explorer Skill Component, you can enable users of your skill to easily search, navigate, select items, get properties, and perform actions through a catalog of items you provide. To use the Alexa Skill components, [sign up for the developer preview](https://build.amazonalexadev.com/2022-Skill-Components-Interest.html). We actively update these components and look forward to improving them with your feedback. To get the latest version, check back here often.
 
 **Note:** Alexa Skill Components are provided as a pre-production alpha release in developer preview, with limited support. Our goal is to solicit feedback on our approach and design as we work toward general availability. While we make every effort to minimize issues with this pre-production alpha release, we can't promise backward compatibility or a rapid turn-around on bug fixes.
 
@@ -13,6 +12,7 @@ With the Catalog Explorer Skill Component, you can enable users of your skill to
     * [When to use this component](#when-to-use-this-component)
     * [Example Interaction](#example-interaction)
 * [Getting Started Process](#getting-started-process)
+* [Recipes](#recipes)
 * [Reference](#reference)
 * [Example skill](#example-skill)
 * [Known issues](#known-issues)
@@ -690,6 +690,16 @@ Deploy any changes, compile your code, and then deploy again.
 ```
 askx compile && askx deploy
 ```
+
+## Recipes
+
+* [Creating a custom Catalog Provider](./docs/RECIPES.md#creating-a-custom-catalog-provider)
+* [Creating a custom fixed list provider](./docs/RECIPES.md#creating-a-custom-fixed-list-provider)
+* [Customizing Page Size](./docs/RECIPES.md#customizing-page-size)
+
+## Reference
+
+Details on all dialogs and API handlers can be found in the [Reference doc](./docs/REFERENCE.md)
 
 ## Example skill
 

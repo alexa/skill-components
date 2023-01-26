@@ -44,6 +44,7 @@ export interface PropertyResult{
     offer?: ProactiveOffer;
 }
 
+// indicates whether the page being requested is the next page or the previous page
 export enum PagingDirection{
     PREVIOUS = "previous",
     NEXT = "next"
