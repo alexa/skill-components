@@ -1,0 +1,36 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+namespace com.amazon.alexa.skill.components.catalog_explorer.action
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+import com.amazon.alexa.skill.components.catalog_explorer.offers.*
+import com.amazon.alexa.skill.components.catalog_explorer.util.*
+import com.amazon.alexa.skill.components.catalog_explorer.types.*
+import com.amazon.alexa.skill.components.catalog_explorer.*
+
+dialog Nothing catalogActionResponse(
+    Action actionAPI,
+    Response response,
+    CatalogActionResult result
+) {
+    sample {
+        generalResponse(actionAPI, response, ActionResultPayload{result=result})
+    }
+}
+
+dialog CatalogActionResult performCatalogAction<Item>(
+    CatalogAction<Item> catalogAction,
+    List<Item> items,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        expect(Invoke, catalogAction.actionEvent)
+        api = catalogAction.performApi // NOTE: We have to assign to name before calling it due to compiler bug
+        actionResult = api(items,catalogRef)
+        catalogActionResponse(api , catalogAction.notifyResultResponse, actionResult)
+        actionResult
+    }
+}

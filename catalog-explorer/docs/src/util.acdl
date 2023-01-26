@@ -1,0 +1,53 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.catalog_explorer.util
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+
+dialog Nothing generalResponse(
+    Action actionPerformed,
+    Response responsePrompt,
+    Thing payload,
+    optional Literal error
+) {
+    sample {
+        response(
+            act = Notify{success = true, actionName = actionPerformed}, 
+            response = responsePrompt,
+            payload = payload
+        )
+    }
+}
+
+
+type NotifyResponseContents {
+    Action actionName
+    Response response
+    Thing payload
+}
+
+// Helper method to perform a Notify Response by combining the last action details from
+// a helper object with a optional nextAct argument; useful for when the basic details
+// of a notify are determined by one dialog and the next act is determined by another
+// (as combo responses like Notify+Offer need to be made in a single response() call now)
+//
+// IMRPROVE: this would be easier if we could curry a function and complete it's call later;
+//           or if we could split up combo responses into two different lines ACDL code
+dialog Nothing performNotifyResponse(
+    NotifyResponseContents notifyResponseContents,
+    optional ResponseAct nextAct
+) {
+    sample {
+        response(
+            act = Notify{success = true, actionName = notifyResponseContents.actionName}, 
+            nextAct = nextAct,
+            response = notifyResponseContents.response,
+            payload = notifyResponseContents.payload
+        )
+    }
+}

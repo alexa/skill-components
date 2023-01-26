@@ -1,0 +1,250 @@
+// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.catalog_explorer
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+import com.amazon.alexa.skill.components.catalog_explorer.types.*
+dPAR= apla("../response/prompts/defaultPerformActionResponse/document.json")
+dPPR= apla("../response/prompts/defaultPresentPageResponse/document.json")
+dPRR= apla("../response/prompts/defaultPropertyResultResponse/document.json")
+dSRR= apla("../response/prompts/defaultSearchResultResponse/document.json")
+dAOR= apla("../response/prompts/defaultAcceptOfferResponse/document.json")
+
+defaultAcceptEvent = utterances<Nothing>([
+    "yes",
+    "yeah"
+  ])
+  defaultDenyEvent = utterances<Nothing>([
+     "no",
+     "nope"
+  ])
+
+  dialog CatalogOffers<SearchConditions, Item> buildCatalogOffers<SearchConditions, Item>(
+      Event<Nothing> acceptEvent=defaultAcceptEvent,
+      Event<Nothing> denyEvent=defaultDenyEvent,
+      Action3<
+          List<Item>,        
+          ProactiveOffer,   
+          Optional<CatalogReference>,  
+          CatalogOfferResult 
+      > acceptAction,
+      Response acceptResponse=dAOR
+  ) {
+      sample{
+          CatalogOffers<SearchConditions, Item> {
+              acceptEvent = acceptEvent,
+              acceptAction = acceptAction,
+              denyEvent =  denyEvent,
+              acceptResponse=acceptResponse
+          }
+      }  
+  }
+  
+
+defaultNextEvent = utterances<Nothing>([
+    "next",
+    "next one",
+    "next item",
+    "show me another one",
+    "show me more"
+])
+defaultPrevEvent = utterances<Nothing>([
+    "previous",
+    "previous one",
+    "previous one please",
+    "go back",
+    "show me the previous one"
+])
+defaultSelectByOrdinalEvent = utterances<OrdinalSlotWrapper>([
+    "show item view on the {ordinal} one",
+    "show me more about the {ordinal} one",
+    "show me the {ordinal} one",
+    "show me the {ordinal}",
+    "the {ordinal}",
+    "{ordinal}"
+])
+defaultSelectByIndexEvent = utterances<IndexSlotWrapper>([
+    "show item view on number {index}",
+    "show me more about number {index}",
+    "show me number {index}",
+    "number {index}",
+    "{index}"
+])
+defaultAcceptEvent = utterances<Nothing>([
+    "yes",
+    "yeah"
+  ])
+defaultDenyEvent = utterances<Nothing>([
+    "no",
+    "nope"
+])
+
+dialog  CatalogAction<Item> buildCatalogAction<Item>(
+    Event<Nothing> actionEvent,
+    Action2< 
+        List<Item>,    
+        Optional<CatalogReference>,           
+        CatalogActionResult 
+    > performApi,
+    Response notifyResultResponse=dPAR
+) {
+    sample{
+        CatalogAction<Item>
+        {
+            actionEvent = actionEvent,
+            performApi = performApi,
+            notifyResultResponse = notifyResultResponse,
+        }
+    }
+   
+}
+
+dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchConditions, Item>(
+    Event<Nothing> nextEvent = defaultNextEvent,
+    Event<Nothing> prevEvent = defaultPrevEvent,
+    Action3<
+        SearchConditions,                             
+        Optional<String>,   
+        Optional<CatalogReference>,                          
+        RecommendationResult<SearchConditions, Item> 
+    > getPageApi,
+
+    Response presentPageResponse=dPPR,
+    Event<OrdinalSlotWrapper> selectByOrdinalEvent=defaultSelectByOrdinalEvent,
+    Event<IndexSlotWrapper> selectByIndexEvent=defaultSelectByIndexEvent,
+    Action4<
+        SearchConditions,                             // current search conditions
+        Page<Item>,                                   // current page of results
+        NUMBER,    
+        Optional<CatalogReference>,                               // index to select
+        RecommendationResult<SearchConditions, Item>  // results for selection
+    > selectItemApi
+    
+) {
+     sample {
+        paginationConfig = PaginationConfig<SearchConditions, Item> {
+            nextEvent = nextEvent,
+            prevEvent = prevEvent,
+            getPageApi = getPageApi,
+            presentPageResponse = presentPageResponse
+        }
+        selectionConfig = SelectionConfig<SearchConditions, Item>{
+            selectByOrdinalEvent = selectByOrdinalEvent,
+            selectByIndexEvent = selectByIndexEvent,
+            selectItemApi = selectItemApi
+        }
+
+        /*return*/ NavigationConfig<SearchConditions, Item> {
+            paginationConfig = paginationConfig,
+            selectionConfig = selectionConfig
+        }
+     }
+}
+
+dialog CatalogProperty<Item> buildCatalogProperty<Item>(
+    Event<Nothing> getValueEvent,
+    Action2<
+        List<Item>,     
+        Optional<CatalogReference>,           
+        PropertyValueResult<Item>  
+    > getValueApi,
+    Response notifyValueResponse = dPRR
+) {
+    sample{
+        CatalogProperty<Item>
+        {
+            getValueEvent = getValueEvent,
+            getValueApi = getValueApi,
+            notifyValueResponse = notifyValueResponse,
+        }
+    }  
+}
+
+dialog SearchPattern<SearchConditions, Item> buildSearchPattern<SearchConditions, Item>(
+    Event<SearchConditions> searchEvent,
+    Action searchApiRef,
+    Dialog2<
+        SearchConditions,  
+        Optional<CatalogReference>,       
+        RecommendationResult<SearchConditions, Item>  
+    > searchApiAdaptor,
+    Dialog2<
+        SearchConditions,      
+        Optional<CatalogReference>,     
+        RecommendationResult<SearchConditions, Item>  
+    > searchApiVariationsAdaptor,
+    Response searchResponse = dSRR
+) 
+{
+    sample{
+        /*return*/ SearchPattern<SearchConditions, Item> {
+            searchEvent = searchEvent,
+            searchApiRef = searchApiRef,
+            searchApiAdaptor = searchApiAdaptor,
+            searchApiVariationsAdaptor = searchApiVariationsAdaptor,
+            searchResponse = searchResponse
+        } 
+    }
+    
+}
+
+dialog CatalogOffers<SearchConditions, Item> buildCatalogOffers<SearchConditions, Item>(
+    Event<Nothing> acceptEvent=defaultAcceptEvent,
+    Event<Nothing> denyEvent=defaultDenyEvent,
+    Action3<
+        List<Item>,        
+        ProactiveOffer,   
+        Optional<CatalogReference>,  
+        CatalogOfferResult 
+    > acceptAction,
+    Response acceptResponse=dAOR
+) {
+    sample{
+        CatalogOffers<SearchConditions, Item> {
+            acceptEvent = acceptEvent,
+            acceptAction = acceptAction,
+            denyEvent =  denyEvent,
+            acceptResponse=acceptResponse
+        }
+    }  
+}
+
+dialog CatalogConfig<SearchConditions, Item> buildCatalogConfig<SearchConditions, Item>(
+    List<SearchPattern<SearchConditions, Item>> searchPatterns,
+    NavigationConfig<SearchConditions,Item> navConfig,
+    List<CatalogProperty<Item>> properties,
+    List<CatalogAction<Item>> catalogActions,
+    CatalogOffers<SearchConditions, Item> offers,
+    Dialog2<PropertyConfig<SearchConditions, Item>, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item> > allSearchPaths,
+    Dialog2<PropertyConfig<SearchConditions, Item>,  Optional<CatalogReference>,RecommendationResult<SearchConditions, Item>> baseSearchPaths,
+    Dialog3<PropertyConfig<SearchConditions, Item>, RecommendationResult<SearchConditions, Item>, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item>> allFollowUpPaths,
+    Dialog3<PropertyConfig<SearchConditions, Item>, List<Item>,  Optional<CatalogReference>,CatalogActionResult> allCatalogActionPaths
+) {
+    sample{
+
+        propertyConfig = PropertyConfig<SearchConditions, Item> {
+            searchPatterns = searchPatterns,
+            navConfig = navConfig,
+            properties = properties,
+            catalogActions = catalogActions,
+            offers = offers,
+        }
+
+        dialogConfig = DialogConfig<SearchConditions, Item> {
+            allSearchPathsAdaptor = allSearchPaths,
+            baseSearchPathsAdaptor= baseSearchPaths,
+            allFollowUpPathsAdaptor = allFollowUpPaths,
+            allCatalogActionPathsAdaptor = allCatalogActionPaths   
+        }
+
+        CatalogConfig<SearchConditions, Item> {
+            propertyConfig = propertyConfig,
+            dialogConfig = dialogConfig
+        }
+    }
+   
+}
