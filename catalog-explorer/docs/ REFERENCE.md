@@ -74,6 +74,152 @@ Used to build the configuration that can be passed into exploreCatalog; all conf
         * `CatalogReference catalogRef`:  Reference to the catalog of items
     * Returns: RecommendationResult which consists of recommended items after search. 
 
+### buildCatalogAction
+
+Used to build the catalog action object which is passed in catalog config object.
+
+### Type Parameters
+
+* Item
+    * The type of each item in the list
+
+### Arguments
+
+* Event<Nothing> actionEvent (required)
+    * Set of utterances which will be said by the user to perform the action which will then trigger the performApi action.
+* Action2<List<Item>,Optional<CatalogReference>,CatalogActionResult>performApi (required)
+    * Action which is triggered by the actionEvent. Consist of the logic which is needed to perform that action.
+    * Arguments:
+        * List items :  List of items which the user needs to explore. 
+        * CatalogReference catalogRef:  Reference to the catalog of items
+    * Returns: CatalogActionResult which consists of what action was performed and Item which returns what item was selected. 
+*  Response notifyResultResponse (optional)
+    * Response to notify about the action result. This can be overridden. The component consist of default response. 
+
+### buildNavigationConfig
+
+Used to build the navigation object which is passed in catalog config object.
+
+### Type Parameters
+
+* Item
+    * The type of each item in the list
+* SearchConditions
+    * A type which has properties on the basis of which the user can perform search. 
+
+### Arguments
+
+* Event<Nothing> nextEvent (optional)
+    * Set of utterances which will be said by the user to navigate next. 
+* Event<Nothing> prevEvent (optional)
+    * Set of utterances which will be said by the user to previous next. 
+* Action3<SearchConditions,Optional<String>,Optional<CatalogReference>,RecommendationResult<SearchConditions, Item>> getPageApi  (required)
+    * Action which is triggered by the nextEvent or prevEvent Consist of the logic which is needed to perform that action.
+    * Arguments:
+        * SearchConditions :  Condition on the basis of which api will fetch the right page
+        * Optional<String>:  Option to pass the page token
+        * Optional<CatalogReference> : Reference to list to allow user to search, navigate, etc. through it. 
+    * Returns: RecommendationResult which consists of recommended items after search. 
+*   Response presentPageResponse (required)
+    * Response to present a page of recommendation result while navigating through the catalog
+* Event<OrdinalSlotWrapper> selectByOrdinalEvent (optional)
+    * Set of utterances which will be said by the user to select by ordinal (for example. first, second...)
+* Eventvent<IndexSlotWrapper> selectByIndexEvent (optional)
+    * Set of utterances which will be said by the user to select by index (for example. one, two...)
+
+* Action4<SearchConditions,Page<Item>,NUMBER,Optional<CatalogReference>,RecommendationResult<SearchConditions, Item>> selectItemApi  (required)
+    * Action which is triggered by the selectByOrdinalEvent or selectByIndexEvent. Consist of the logic which is needed to perform that action.
+    * Arguments:
+        * SearchConditions :  Condition on the basis of which api will fetch the right page
+        * Page<Item>: Page of items which has to be presented as result
+        * NUMBER:  Index of the selected item. 
+        * CatalogReference catalogRef:  Reference to the catalog of items
+    * Returns: RecommendationResult which consists of recommended items after search. 
+
+### buildCatalogProperty
+
+Used to build the catalog property object which is passed in catalog config object.
+
+### Type Parameters
+
+* Item
+    * The type of each item in the list
+
+### Arguments
+
+* Event<Nothing> getValueEvent (required)
+    * Set of utterances which will be said by the user to get value of a particular property
+* Action2<List<Item>,Optional<CatalogReference>,PropertyValueResult<Item>>getValueApi (required)
+    * Action which is triggered by the getValueEvent. Consist of the logic which is needed to get the value of the mentioned property
+    * Arguments:
+        * List items :  List of items which the user needs to explore. 
+        * CatalogReference catalogRef:  Reference to the catalog of items
+    * Returns: PropertyValueResult which consists of what property was asked and what’s is value was.
+*  Response notifyValueResponse (optional)
+    * Response to notify about the action result. This can be overridden. The component consist of default response. 
+
+### buildCatalogOffers
+
+Used to build the catalog property object which is passed in catalog config object.
+
+### Type Parameters
+
+* Item
+    * The type of each item in the list
+
+### Arguments
+
+* Event<Nothing> acceptEvent (required)
+    * Set of utterances which will be said by the user to accept the offer.
+* Event<Nothing> denyEvent (required)
+    * Set of utterances which will be said by the user to deny the offer.
+
+Action3<List<Item>,ProactiveOffer,Optional<CatalogReference>,CatalogOfferResult> acceptAction (required)
+
+    * Action which is triggered by the acceptEvent. Consist of the logic which is needed to performed when the offer is accepted. 
+    * Arguments:
+        * List items :  List of items which the user needs to explore. 
+        * ProactiveOffer : Consist of properties on which user can give hints. 
+        * CatalogReference catalogRef:  Reference to the catalog of items
+    * Returns: CatalogOfferResult which consists of what was offered and was it accepted or not. 
+*  Response acceptResponse (optional)
+    * Response which is sent when the offer is accepted.
+
+### buildSearchPattern
+
+Used to build the search pattern object which is passed in catalog config object.
+
+### Type Parameters
+
+    * Item
+        * The type of each item in the list
+    * SearchConditions
+        * A type which has properties on the basis of which the user can perform search. 
+
+### Arguments
+
+*  Event<SearchConditions> searchEvent (required)
+    * Set of utterances which will be said by the user to perform search
+
+* Action searchApiRef (required)
+    * Reference of the action which is triggered by the searchEvent. Consist of the logic which is needed to performed the search.  
+* Dialog2<SearchConditions, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item> > searchApiAdaptor (required)
+    * constructed by the user to search on the basis of all search conditions. It calls the searchApiRef action and passes all searchConditions as arguments. 
+    * Arguments:
+        * SearchConditions :  Condition on the basis of which api will fetch the right page
+        * CatalogReference catalogRef:  Reference to the catalog of items
+    * Returns: RecommendationResult which consists of recommended items after search. 
+* Dialog2<SearchConditions, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item> > searchApiVariationsAdaptor (required)
+    * constructed by the user to search on the basis of all search conditions. It calls the searchApiRef action and passes all searchConditions as arguments. 
+    * Arguments:
+        * SearchConditions :  Condition on the basis of which api will fetch the right page
+        * CatalogReference catalogRef:  Reference to the catalog of items
+    * Returns: RecommendationResult which consists of recommended items after search. 
+*  Response searchResponse (optional)
+    * Response which consists of the search result.
+
+
+
 ## Important API Classes and Types
 
 ### `class CatalogExplorer`
