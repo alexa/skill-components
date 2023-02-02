@@ -42,9 +42,14 @@ export const getApiSlots = (handlerInput: HandlerInput) => {
 
 // util to get the resolved value from a slot value object
 export const getSlotResolvedValue = (slot: SlotValue) => {
-    const firstAuthority = _.first(_.get(slot, 'resolutions.resolutionsPerAuthority'));
-    const firstAuthorityValue = _.first(_.get(firstAuthority, 'values'));
-    return _.get(firstAuthorityValue, 'value.name');
+    const resolutionsPerAuthority = _.get(slot, 'resolutions.resolutionsPerAuthority');
+    for (const resolutionPerAuthority of resolutionsPerAuthority) {
+        if (_.get(resolutionPerAuthority,'status.code') === "ER_SUCCESS_MATCH") {
+            const firstAuthorityValue = _.first(_.get(resolutionPerAuthority, 'values'));
+            return _.get(firstAuthorityValue, 'value.name');
+        }
+    }
+    return null;
 };
 
 // util to get a object containing the resolved slot values for all slots in a API request
@@ -67,9 +72,14 @@ export const modifyRecommendationResultRescoped = (recommendationResult: Recomme
 
 // util to get the id of the resolved value in a slot value object
 export const getSlotResolvedId = (slot: SlotValue) => {
-    const firstAuthority = _.first(_.get(slot, 'resolutions.resolutionsPerAuthority'));
-    const firstAuthorityValue = _.first(_.get(firstAuthority, 'values'));
-    return _.get(firstAuthorityValue, 'value.id');
+    const resolutionsPerAuthority = _.get(slot, 'resolutions.resolutionsPerAuthority');
+    for (const resolutionPerAuthority of resolutionsPerAuthority) {
+        if (_.get(resolutionPerAuthority,'status.code') === "ER_SUCCESS_MATCH") {
+            const firstAuthorityValue = _.first(_.get(resolutionPerAuthority, 'values'));
+            return _.get(firstAuthorityValue, 'value.id');
+        }
+    }
+    return null;
 };
 
 // util to get a object containing the ids of the resolved slot values for a API request

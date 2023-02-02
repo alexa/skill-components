@@ -377,7 +377,7 @@ Create a set of utterances users might try in order to follow up on properties.
 Create the action called when a follow-up utterance is detected
 
   ```
-  action PropertyValueResult getProperty_title(BookItem book, optional CatalogReference catalogRef)
+  action PropertyValueResult<BookItem> getProperty_title(List<BookItem> books, optional CatalogReference catalogRef)
   ```
 
 **Dialog**
@@ -411,7 +411,7 @@ Create a set of utterances users might try in order to make a purchase.
 Create the action called when a follow-up utterance is detected.
 
 ```
-action CatalogActionResult performAction_Purchase(BookItem book, optional CatalogReference catalogRef)
+action CatalogActionResult performAction_Purchase(List<BookItem> books, optional CatalogReference catalogRef)
 ```
 
 **Dialog**
@@ -611,7 +611,7 @@ Import and register the request handlers provided by the component into the skil
   For an example, see [Example skill](#example-skill).
 
   ```
-  const CatalogExplorer = require('@alexa-skill-components/catalog-explorer')
+  const CatalogExplorer = require('@alexa-skill-components/catalog-explorer').CatalogExplorer
 
   ...
 
