@@ -16,6 +16,11 @@ import examples.books_nav.common.*
 import prompts.presentItemPrompt
 import slotTypes.TITLE
 
+multiModalPresentItem = MultiModalResponse {
+    apl = PresentItemAPL,
+    apla = presentItemPrompt
+  }
+
 // event and action to start pagination and retrieve a reference to the list to navigate through
 startEvent = utterances<Nothing>(["What books do you have?"])
 action ListReference getBooks()
@@ -76,7 +81,7 @@ dialog Nothing SimplePagination() {
         // follow-up response to tell user about some details of the selected book
         response(
             act = Notify { actionName = endSession },
-            response = presentItemPrompt,
+            response = multiModalPresentItem,
             payload = BookItemPayload { book = book }
         )
     }

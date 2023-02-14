@@ -9,7 +9,24 @@ import com.amazon.alexa.ask.conversations.*
 import com.amazon.alexa.schema.*
 import prompts.*
 import slotTypes.*
+import displays.*
 
+multiModalWelcome = MultiModalResponse {
+    apl = WelcomeAPL,
+    apla = AlexaConversationsWelcome
+  }
+ mySkill = skill(
+    locales = [Locale.en_US],
+    dialogs = [MainDialog,CancelDialog,ResumeDialog],
+    skillLevelResponses = SkillLevelResponses
+        {
+            welcome = multiModalWelcome,
+            out_of_domain = AlexaConversationsOutOfDomain,
+            bye = AlexaConversationsBye,
+            reqmore = AlexaConversationsRequestMore,
+            provide_help = AlexaConversationsProvideHelp
+        }
+   )
 
 dialog MainDialog {
     sample {

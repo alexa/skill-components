@@ -11,8 +11,32 @@ import com.amazon.alexa.skill.components.catalog_explorer.types.*
 dPAR= apla("../response/prompts/defaultPerformActionResponse/document.json")
 dPPR= apla("../response/prompts/defaultPresentPageResponse/document.json")
 dPRR= apla("../response/prompts/defaultPropertyResultResponse/document.json")
-dSRR= apla("../response/prompts/defaultSearchResultResponse/document.json")
 dAOR= apla("../response/prompts/defaultAcceptOfferResponse/document.json")
+
+dVPAR= apl("../response/display/defaultPerformActionVisualResponse/document.json")
+dVPPR= apl("../response/display/defaultPresentPageVisualResponse/document.json")
+dVPRR= apl("../response/display/defaultPropertyResultVisualResponse/document.json")
+dVAOR= apl("../response/display/defaultAcceptOfferVisualResponse/document.json")
+
+multiModalPerformActionResponse = MultiModalResponse {
+    apla = dPAR,
+    apl = dVPAR 
+}
+
+multiModalPresentPageResponse = MultiModalResponse {
+    apla = dPPR,
+    apl = dVPPR 
+}
+
+multiModalPropertyResultResponse = MultiModalResponse {
+    apla = dPRR,
+    apl = dVPRR 
+}
+
+multiModalAcceptOfferResponse = MultiModalResponse {
+    apla = dAOR,
+    apl = dVAOR 
+}
 
 defaultNextEvent = utterances<Nothing>([
     "next",
@@ -35,6 +59,14 @@ defaultSelectByOrdinalEvent = utterances<OrdinalSlotWrapper>([
     "show me the {ordinal}",
     "the {ordinal}",
     "{ordinal}"
+])
+defaultSelectByRelativePositionEvent = utterances<RelativePositionSlotWrapper>([
+    "show item view on the {relativePosition} one",
+    "show me more about the {relativePosition} one",
+    "show me the {relativePosition} one",
+    "show me the {relativePosition}",
+    "the {relativePosition}",
+    "{relativePosition}"
 ])
 defaultSelectByIndexEvent = utterances<IndexSlotWrapper>([
     "show item view on number {index}",
@@ -59,7 +91,7 @@ dialog  CatalogAction<Item> buildCatalogAction<Item>(
         Optional<CatalogReference>,           
         CatalogActionResult 
     > performApi,
-    Response notifyResultResponse=dPAR
+    Response notifyResultResponse=multiModalPerformActionResponse
 ) {
     sample{
         CatalogAction<Item>
@@ -82,8 +114,9 @@ dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchCond
         RecommendationResult<SearchConditions, Item> 
     > getPageApi,
 
-    Response presentPageResponse=dPPR,
+    Response presentPageResponse=multiModalPresentPageResponse,
     Event<OrdinalSlotWrapper> selectByOrdinalEvent=defaultSelectByOrdinalEvent,
+    Event<RelativePositionSlotWrapper> selectByRelativePositionEvent=defaultSelectByRelativePositionEvent,
     Event<IndexSlotWrapper> selectByIndexEvent=defaultSelectByIndexEvent,
     Action4<
         SearchConditions,                             // current search conditions
@@ -103,6 +136,7 @@ dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchCond
         }
         selectionConfig = SelectionConfig<SearchConditions, Item>{
             selectByOrdinalEvent = selectByOrdinalEvent,
+            selectByRelativePositionEvent = selectByRelativePositionEvent,
             selectByIndexEvent = selectByIndexEvent,
             selectItemApi = selectItemApi
         }
@@ -121,7 +155,7 @@ dialog CatalogProperty<Item> buildCatalogProperty<Item>(
         Optional<CatalogReference>,           
         PropertyValueResult<Item>  
     > getValueApi,
-    Response notifyValueResponse = dPRR
+    Response notifyValueResponse = multiModalPropertyResultResponse
 ) {
     sample{
         CatalogProperty<Item>
@@ -146,7 +180,7 @@ dialog SearchPattern<SearchConditions, Item> buildSearchPattern<SearchConditions
         Optional<CatalogReference>,     
         RecommendationResult<SearchConditions, Item>  
     > searchApiVariationsAdaptor,
-    Response searchResponse = dSRR
+    Response searchResponse = multiModalPresentPageResponse
 ) 
 {
     sample{
@@ -170,7 +204,7 @@ dialog CatalogOffers<SearchConditions, Item> buildCatalogOffers<SearchConditions
         Optional<CatalogReference>,  
         CatalogOfferResult 
     > acceptAction,
-    Response acceptResponse=dAOR
+    Response acceptResponse=multiModalAcceptOfferResponse
 ) {
     sample{
         CatalogOffers<SearchConditions, Item> {

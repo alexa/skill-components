@@ -34,6 +34,12 @@ defaultPreviousPageEvent = utterances<Nothing>([
 // Note: short names for response templates are needed to ensure FQN (including namespace) stays under
 //       64 character limit
 defaultPPR = apla("../response/prompts/defaultPresentPageResponse/document.json")
+dPPVR = apl("../response/display/defaultPresentPageVisualResponse/document.json")
+
+defPPR = MultiModalResponse {
+    apla =  defaultPPR,
+    apl = dPPVR
+}
 
 // default selection utterance sets for when the user wants to select a item on the current page by
 // ordinal (first, second, third), index (1, 2, 3), or randomly

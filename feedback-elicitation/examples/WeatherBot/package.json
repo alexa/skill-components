@@ -22,7 +22,7 @@
     "deploy": "npm run build && askx deploy"
   },
   "dependencies": {
-    "@alexa-skill-components/feedback-elicitation": "^0.0.1",
+    "@alexa-skill-components/feedback-elicitation": "../../alexa-skill-components-feedback-elicitation-0.0.5.tgz",
     "ask-sdk-core": "^2.12.1",
     "ask-sdk-model": "^1.38.2",
     "lodash": "^4.17.15"

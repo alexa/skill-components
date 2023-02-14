@@ -115,7 +115,7 @@ dialog NavigationConfig<Item, ItemName> buildNavigationConfig<Item, ItemName>(
     // pagination config
     Event<Nothing> nextPageEvent = defaultNextPageEvent,
     Event<Nothing> prevPageEvent = defaultPreviousPageEvent,
-    Response presentPageResponse = defaultPPR,
+    Response presentPageResponse = defPPR,
 
     // selection config
     Event<OrdinalSlotWrapper> selectItemByOrdinalEvent = defaultSelectItemByOrdinalEvent,

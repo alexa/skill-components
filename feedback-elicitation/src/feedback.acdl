@@ -37,7 +37,7 @@ type RatingResponsePayload {
     RatingRequest ratingResult
 }
 
-@validateArg((rating >= 1 && rating <= 5) || (rating in ["one", "two", "three", "four","five"]), defInvRes, defaultSaveFeedbackAction.arguments.rating)
+@validateArg(rating >= 1 && rating <= 5, defInvRes, defaultSaveFeedbackAction.arguments.rating)
 action RatingRequest defaultSaveFeedbackAction(NUMBER rating)
 
 multiModalFeedbackResponse = MultiModalResponse {

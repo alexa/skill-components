@@ -7,8 +7,27 @@ import com.amazon.alexa.skill.components.catalog_explorer.*
 import com.amazon.alexa.skill.components.catalog_explorer.types.*
 
 import prompts.*
+import displays.*
 import slotTypes.*
 
+ multiModalWelcome = MultiModalResponse {
+    apl = WelcomeAPL,
+    apla = AlexaConversationsWelcome
+  }
+
+ mySkill = skill(
+    locales = [Locale.en_US],
+    dialogs = [MainDialog],
+    skillLevelResponses = SkillLevelResponses
+        {
+            welcome = multiModalWelcome,
+            out_of_domain = AlexaConversationsOutOfDomain,
+            bye = AlexaConversationsBye,
+            reqmore = AlexaConversationsRequestMore,
+            provide_help = AlexaConversationsProvideHelp
+
+        }
+   )
 /************************
  * CREATE CATALOG ITEM
  ************************/
