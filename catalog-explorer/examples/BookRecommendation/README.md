@@ -2,6 +2,13 @@
 
 Catalog Explorer component has been used with the book recommendation skill to explore the the catalogs of books.
 
+### Getting Started
+To test and try out the example skill follow these steps - 
+1. Run `npm run clean-build` from inside the example skill folder to install the dependencies and compile the skill.
+2. Run `askx deploy` to deploy the compiled skill.
+
+These commands can be referred in the scripts section of package.json file [here](https://github.com/alexa/skill-components/blob/main/catalog-explorer/examples/BookRecommendation/package.json#L7-L20)
+
 ### Creating a custom fixed list provider
 The book recommendation skill uses a custom fixed list provider that overrrdies some functions of the provided default FixedProvider so as to extend the functionalities like that of providing hints on item selection and property follow-up and cusotm logic for performing actions.
 
