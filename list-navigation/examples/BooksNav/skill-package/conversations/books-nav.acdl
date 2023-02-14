@@ -9,20 +9,26 @@ import com.amazon.ask.types.builtins.AMAZON.*
 import com.amazon.alexa.schema.*
 
 import prompts.*
-
 import examples.books_nav.pagination.SimplePagination
+import displays.*
+import slotTypes.*
 
+ multiModalWelcome = MultiModalResponse {
+    apl = WelcomeAPL,
+    apla = AlexaConversationsWelcome
+  }
 // main skill action, defining the deployable dialogs and standard
 // responses
-mySkill = skill(
+ mySkill = skill(
     locales = [Locale.en_US],
     dialogs = [SimplePagination],
     skillLevelResponses = SkillLevelResponses
         {
-            welcome = prompts.AlexaConversationsWelcome,
-            out_of_domain = prompts.AlexaConversationsOutOfDomain,
-            bye = prompts.AlexaConversationsBye,
-            reqmore = prompts.AlexaConversationsRequestMore,
-            provide_help = prompts.AlexaConversationsProvideHelp
+            welcome = multiModalWelcome,
+            out_of_domain = AlexaConversationsOutOfDomain,
+            bye = AlexaConversationsBye,
+            reqmore = AlexaConversationsRequestMore,
+            provide_help = AlexaConversationsProvideHelp
         }
-)
+   )
+   

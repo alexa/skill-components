@@ -1,7 +1,7 @@
 {
     "type": "APL",
-    "version": "1.8",
-    "license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+    "version": "2022.1",
+    "license": "Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
     "theme": "dark",
     "import": [
         {
@@ -21,7 +21,8 @@
                 "simpleTextScrollHeightNoFooter": "100%",
                 "simpleTextImageHorizontalSpacing": "@spacingLarge",
                 "simpleTextImageVerticalSpacing": "@spacingMedium",
-                "simpleTextPaddingBottom": "@spacingLarge"
+                "simpleTextPaddingBottom": "@spacingLarge",
+                "simpleLineHeight": "1.5"
             }
         },
         {
@@ -84,7 +85,12 @@
                 },
                 {
                     "name": "primaryText",
-                    "description": "Text for to render below to tile text in the body.",
+                    "description": "Text for to render below the title text in the body.",
+                    "type": "string"
+                },
+                {
+                    "name": "secondaryText",
+                    "description": "Text for to render below the primary text in the body.",
                     "type": "string"
                 },
                 {
@@ -119,7 +125,8 @@
                     {
                         "type": "AlexaBackground",
                         "backgroundColor": "${backgroundColor}",
-                        "backgroundImageSource": "${backgroundImageSource}"
+                        "backgroundImageSource": "${backgroundImageSource}",
+                        "colorOverlay": true
                     },
                     {
                         "when": "${@viewportProfileCategory != @hubRound}",
@@ -137,7 +144,6 @@
                         "type": "AlexaFooter",
                         "hintText": "${footerHintText}",
                         "theme": "${viewport.theme}",
-                        "lang": "${lang}",
                         "width": "100%",
                         "position": "absolute",
                         "bottom": "0"
@@ -176,53 +182,49 @@
                                         "shrink": 1,
                                         "items": [
                                             {
-                                                "description": "Image block",
-                                                "when": "${foregroundImageSource}",
-                                                "type": "AlexaImage",
-                                                "imageSource": "https://d2o906d8ln7ui1.cloudfront.net/images/response_builder/asparagus.jpeg",
-                                                "imageBlurredBackground": true,
-                                                "imageAspectRatio": "${imageCenterAlign ? 'poster_landscape' : 'standard_portrait'}",
-                                                "imageScale": "best-fit"
-                                            },
-                                            {
-                                                "description": "Primary Text and Title Text block",
-                                                "when": "${primaryText || titleText}",
-                                                "type": "Container",
-                                                "width": "100%",
                                                 "shrink": 1,
-                                                "alignItems": "${imageCenterAlign || textAlignment == 'center' ? 'center' : 'start'}",
-                                                "paddingTop": "${foregroundImageLocation == 'top' ? @simpleTextImageVerticalSpacing : '0dp'}",
-                                                "paddingBottom": "${foregroundImageLocation == 'bottom' ? @simpleTextImageVerticalSpacing : '0dp'}",
-                                                "paddingStart": "${foregroundImageLocation == 'left' && foregroundImageSource ? @simpleTextImageHorizontalSpacing : '0dp'}",
-                                                "paddingEnd": "${foregroundImageLocation == 'right' && foregroundImageSource ? @simpleTextImageHorizontalSpacing : '0dp'}",
                                                 "items": [
                                                     {
                                                         "description": "Title Text",
                                                         "when": "${titleText}",
                                                         "type": "Text",
                                                         "width": "100%",
-                                                        "style": "textStyleDisplay6",
+                                                        "style": "textStyleDisplay3",
                                                         "text": "${titleText}",
                                                         "textAlign": "${@viewportProfileCategory == @hubRound ? 'center' : textAlignment}"
-                                                    },
-                                                    {
-                                                        "type": "AlexaRating",
-                                                        "ratingNumber": "${payload.ratingResult.rating}",
-                                                        "ratingText": "${payload.ratingResult.rating}",
-                                                        "paddingTop": "@spacingSmall",
-                                                        "paddingBottom": "@spacingSmall"
                                                     },
                                                     {
                                                         "description": "Primary Text",
                                                         "when": "${primaryText}",
                                                         "type": "Text",
                                                         "spacing": "@spacing2XSmall",
-                                                        "style": "textStyleBody",
+                                                        "style": "textStyleBody2",
                                                         "fontWeight": "@fontWeightLight",
                                                         "text": "${primaryText}",
                                                         "textAlign": "${@viewportProfileCategory == @hubRound ? 'center' : textAlignment}"
+                                                    },
+                                                    {
+                                                        "fontWeight": "@fontWeightLight",
+                                                        "text": "${secondaryText}",
+                                                        "textAlign": "${@viewportProfileCategory == @hubRound ? 'center' : textAlignment}",
+                                                        "lineHeight": "@simpleLineHeight",
+                                                        "description": "Secondary Text",
+                                                        "when": "${secondaryText}",
+                                                        "type": "Text",
+                                                        "style": "textStyleBody",
+                                                        "paddingTop": "@spacingLarge",
+                                                        "spacing": "@spacing2XSmall"
                                                     }
-                                                ]
+                                                ],
+                                                "alignItems": "start",
+                                                "description": "Primary Text and Title Text block",
+                                                "when": "${primaryText || titleText}",
+                                                "type": "Container",
+                                                "width": "100%",
+                                                "paddingTop": "${foregroundImageLocation == 'top' ? @simpleTextImageVerticalSpacing : '0dp'}",
+                                                "paddingBottom": "${foregroundImageLocation == 'bottom' ? @simpleTextImageVerticalSpacing : '0dp'}",
+                                                "paddingStart": "${foregroundImageLocation == 'left' && foregroundImageSource ? @simpleTextImageHorizontalSpacing : '0dp'}",
+                                                "paddingEnd": "${foregroundImageLocation == 'right' && foregroundImageSource ? @simpleTextImageHorizontalSpacing : '0dp'}"
                                             }
                                         ]
                                     }
@@ -238,12 +240,37 @@
         "parameters": [
             "payload"
         ],
-        "item": [
+          "item": [
             {
-                "type": "SimpleText",
-                "primaryText": "Thank you for the feedback! ${payload.ratingResult.rating >= 4 ? 'Glad that you enjoyed the experience' : (payload.ratingResult.rating <= 3 ? 'All right! We will continue to improve' : 'Sorry about that. We will fix the concern soon!')}"
-                
+              "when": "${payload.page.items == null || payload.page.items.length < 1}",
+              "type": "SimpleText",
+              "primaryText": "No items could be found, sorry"
+            },
+            {
+              "when": "${payload.page.items.length == 1}",
+              "type": "SimpleText",
+              "primaryText": "How about ${payload.page.items[0].label}."
+            },
+            {
+              "when": "${payload.page.items.length == 2}",
+              "type": "SimpleText",
+              "primaryText": "How about ${payload.page.items[0].label}, or ${payload.page.items[1].label}."
+            },
+            {
+              "when": "${payload.page.items.length == 3}",
+              "type": "SimpleText",
+              "primaryText": "How about <br><br> 1.${payload.page.items[0].label} <br> 2. ${payload.page.items[1].label} <br> 3. ${payload.page.items[2].label}."
+            },
+            {
+              "when": "${payload.page.items.length == 4}",
+              "type": "SimpleText",
+              "primaryText": "How about <br><br> 1.${payload.page.items[0].label}  <br> 2.${payload.page.items[1].label}  <br> 3.${payload.page.items[2].label}  <br> 4.${payload.page.items[3].label}."
+            },
+            {
+              "when": "${payload.page.items.length == 5}",
+              "type": "SimpleText",
+              "primaryText": "How about  <br><br> 1.${payload.page.items[0].label}  <br> 2.${payload.page.items[1].label} <br> 3.${payload.page.items[2].label} <br> 4.${payload.page.items[3].label} <br> 5.${payload.page.items[4].label}."
             }
-        ]
+          ]
     }
 }

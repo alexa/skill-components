@@ -12,6 +12,44 @@ import com.amazon.ask.types.builtins.AMAZON.*
 import com.amazon.alexa.schema.Nothing
 import com.amazon.alexa.skill.components.feedback_elicitation.*
 import prompts.*
+import displays.*
+
+multiModalWelcome = MultiModalResponse {
+    apl = WelcomeAPL,
+    apla = AlexaConversationsWelcome
+  }
+
+  multiModalweather = MultiModalResponse {
+    apl = weather_apl,
+    apla = weather_apla
+  }
+
+  multiModalCity = MultiModalResponse {
+    apl = request_city_apl,
+    apla = request_city_apla
+  }
+
+  multiModalDate= MultiModalResponse {
+    apl = request_date_apl,
+    apla = request_date_apla
+  }
+  multiModalCityDate= MultiModalResponse {
+    apl = request_city_date_apl,
+    apla = request_city_date_apla
+  }
+
+ mySkill = skill(
+    locales = [Locale.en_US],
+    dialogs = [Weather],
+    skillLevelResponses = SkillLevelResponses
+        {
+            welcome = multiModalWelcome,
+            out_of_domain = AlexaConversationsOutOfDomain,
+            bye = AlexaConversationsBye,
+            reqmore = AlexaConversationsRequestMore,
+            provide_help = AlexaConversationsProvideHelp
+        }
+   )
 
 // Declare a type for the information you want to extract from the utterances
 // In this example, we want to extract the name of a city and date
@@ -60,9 +98,9 @@ dialog Nothing Weather {
 
         //Represents the requirement that the referenced action argument must be given a value
         ensure(
-            RequestArguments {arguments = [getWeather.arguments.cityName], response = request_city_apla},
-            RequestArguments {arguments = [getWeather.arguments.date], response = request_date_apla},
-            RequestArguments {arguments = [getWeather.arguments.cityName, getWeather.arguments.date], response = request_city_date_apla}
+            RequestArguments {arguments = [getWeather.arguments.cityName], response = multiModalCity},
+            RequestArguments {arguments = [getWeather.arguments.date], response = multiModalDate},
+            RequestArguments {arguments = [getWeather.arguments.cityName, getWeather.arguments.date], response = multiModalCityDate}
         )
         // Describe the action that represents the skill's logic to retrieve
         // the result following the above event
@@ -74,7 +112,7 @@ dialog Nothing Weather {
         // declared as a separate JSON-based document outside of ACDL.
         // The ACDL compiler creates the name automatically in the "prompts" namespace.
         elicitRating(
-            notifyResponse = weather_apla, 
+            notifyResponse = multiModalweather, 
             notifyAction = getWeather, 
             payload = ResponsePayload {weatherResult = weatherResult}
         )

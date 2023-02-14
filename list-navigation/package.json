@@ -30,6 +30,8 @@
     "clean-release": "npm run clean && npm install && npm run release"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.262.0",
+    "@aws-sdk/util-dynamodb": "^3.262.0",
     "ask-sdk-core": "^2.10.1",
     "ask-sdk-model": "^1.18.0",
     "lodash": "^4.17.15",
