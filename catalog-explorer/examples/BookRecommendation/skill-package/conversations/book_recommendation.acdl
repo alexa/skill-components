@@ -10,6 +10,9 @@ import prompts.*
 import displays.*
 import slotTypes.*
 
+/************************
+ * CREATE CATALOG ITEM
+ ************************/
  multiModalWelcome = MultiModalResponse {
     apl = WelcomeAPL,
     apla = AlexaConversationsWelcome
@@ -28,9 +31,6 @@ import slotTypes.*
 
         }
    )
-/************************
- * CREATE CATALOG ITEM
- ************************/
 
  type BookItem {
     String title
@@ -140,6 +140,17 @@ selectByOrdinalEvent = utterances<OrdinalSlotWrapper>([
     "the {ordinal}",
     "{ordinal}"
 ])
+
+// middle, bottom, last, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#list-slot-types
+selectByRelativePositionEvent = utterances<RelativePositionSlotWrapper>([
+    "show item view on the {relativePosition} one",
+    "show me more about the {relativePosition} one",
+    "show me the {relativePosition} one",
+    "show me the {relativePosition}",
+    "the {relativePosition}",
+    "{relativePosition}"
+])
+
 // number one, two, three, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#number
 selectByIndexEvent = utterances<IndexSlotWrapper>([
     "show item view on number {index}",
@@ -298,6 +309,7 @@ dialog MainDialog{
             prevEvent = prevEvent,
             getPageApi = getPage,
             selectByOrdinalEvent = selectByOrdinalEvent,
+            selectByRelativePositionEvent = selectByRelativePositionEvent,
             selectByIndexEvent = selectByIndexEvent,
             selectItemApi = selectItemApi
         )

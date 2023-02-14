@@ -28,7 +28,7 @@ export abstract class BaseApiHandler implements RequestHandler {
     // returns activeCatalog from session, when session is used instead of focus or
     // when there is no active catalog reference provided in the arguments
     getActiveCatalog(handlerInput : HandlerInput, catalogRef: CatalogReference | undefined): CatalogReference{
-        if (CatalogExplorer.useSession || catalogRef === undefined){
+        if (CatalogExplorer.useSessionArgs || catalogRef === undefined){
             const sessionState = CatalogExplorerSessionState.load(handlerInput);
             return sessionState.activeCatalog;
         }

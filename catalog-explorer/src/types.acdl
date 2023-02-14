@@ -78,6 +78,11 @@ type OrdinalSlotWrapper {
     Ordinal ordinal
 }
 
+type RelativePositionSlotWrapper {
+    // middle, bottom, last, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#list-slot-types
+    RelativePosition relativePosition
+}
+
 type IndexSlotWrapper {
     // number one, two, three, etc: https://developer.amazon.com/en-US/docs/alexa/custom-skills/slot-type-reference.html#number
     NUMBER index
@@ -112,6 +117,7 @@ type PaginationConfig<SearchConditions, Item> {
 // configuration for item selection
 type SelectionConfig<SearchConditions, Item> {
     Event<OrdinalSlotWrapper> selectByOrdinalEvent
+    Event<RelativePositionSlotWrapper> selectByRelativePositionEvent
     Event<IndexSlotWrapper> selectByIndexEvent
 
     Action4<

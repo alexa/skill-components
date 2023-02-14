@@ -28,7 +28,7 @@ interface Arguments {
 
 // called to perform an action for the current selected item.
 // Will pull selected item out of the session state instead of arguments passed 
-// in API call if CatalogExplorer.useSession is true
+// in API call if CatalogExplorer.useSessionArgs is true
 export class PerformActionHandler extends BaseApiHandler {
     static defaultApiPrefixName = `${apiNamespace}.performAction_`;
 
@@ -54,11 +54,13 @@ export class PerformActionHandler extends BaseApiHandler {
         let catalogActionResult: CatalogActionResult;
         const catalogRef = super.getActiveCatalog(handlerInput, args.catalogRef);
 
-        if (CatalogExplorer.useSession) {
+        if (CatalogExplorer.useSessionArgs) {
             catalogActionResult = PerformActionHandler.getActionResultFromSession<Arguments>(handlerInput, args, actionName, catalogRef);
         }
         else {
-            const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(handlerInput,catalogRef);
+            const sessionState = CatalogExplorerSessionState.load(handlerInput);
+            const providerState = sessionState.providerState;
+            const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
             const actionResult = catalogProvider.performAction(args.items[0], actionName);
             catalogActionResult = {
                 result: actionResult,
@@ -74,12 +76,12 @@ export class PerformActionHandler extends BaseApiHandler {
 
     static getActionResultFromSession<Arguments>(handlerInput: HandlerInput, args: Arguments, actionName: string, catalogRef: CatalogReference): CatalogActionResult {
         const sessionState = CatalogExplorerSessionState.load(handlerInput);
-
-        const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(handlerInput,catalogRef);
+        const providerState = sessionState.providerState;
+        const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
 
         // get selectedItem from the recommendationResult stored in session state.
         // ideally only one item should be present in recommendations page before calling performAction API
-        const selectedItem = sessionState.argsState.recommendationResult?.recommendations.items[0];
+        const selectedItem = sessionState.argsState?.recommendationResult?.recommendations.items[0];
 
         const actionResult = catalogProvider.performAction(selectedItem, actionName);
 

@@ -16,6 +16,7 @@ action Nothing recordInitialEvent()
 action Nothing recordNextEvent()
 action Nothing recordPrevEvent()
 action NUMBER convertOrdinalToIndex(Ordinal ordinal)
+action NUMBER convertRelativePositionToIndex(RelativePosition relativePosition)
 
 // simple action to generate a random index between 1 and the list size provided (inclusive)
 // Note: passing in list size currently commented out as passing such leads to 
@@ -134,6 +135,20 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal<
         result
     }
 }
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelativePosition<SearchConditions, Item>(
+    PropertyConfig<SearchConditions, Item> config,
+    RecommendationResult<SearchConditions, Item> searchResult,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByRelativePositionEvent)
+        index = convertRelativePositionToIndex(slotValues.relativePosition)
+        getItem=config.navConfig.selectionConfig.selectItemApi
+        result = getItem(searchResult.searchConditions, searchResult.recommendations ,index,catalogRef)
+        presentPage(getItem,result,config.navConfig.paginationConfig.presentPageResponse)
+        result
+    }
+}
 dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByIndex<SearchConditions, Item>(
     PropertyConfig<SearchConditions, Item> config,
     RecommendationResult<SearchConditions, Item> searchResult,
@@ -155,6 +170,20 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal_
     sample {
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByOrdinalEvent)
         index = convertOrdinalToIndex(slotValues.ordinal)
+        getItem=config.navConfig.selectionConfig.selectItemApi
+        result = getItem(searchResult.searchConditions, searchResult.recommendations ,index, catalogRef)
+        presentPage_withHint(config,getItem,result,config.navConfig.paginationConfig.presentPageResponse, catalogRef)
+        result
+    }
+}
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelativePosition_withHint<SearchConditions, Item>(
+    PropertyConfig<SearchConditions, Item> config,
+    RecommendationResult<SearchConditions, Item> searchResult,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByRelativePositionEvent)
+        index = convertRelativePositionToIndex(slotValues.relativePosition)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.searchConditions, searchResult.recommendations ,index, catalogRef)
         presentPage_withHint(config,getItem,result,config.navConfig.paginationConfig.presentPageResponse, catalogRef)
@@ -191,6 +220,10 @@ dialog RecommendationResult<SearchConditions, Item> allNavigationPaths<SearchCon
 
     sample {
         navigateSelectItemByOrdinal_withHint(config,searchResult,catalogRef)
+    } 
+
+    sample {
+        navigateSelectItemByRelativePosition_withHint(config,searchResult,catalogRef)
     } 
 
     sample {

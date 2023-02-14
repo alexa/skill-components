@@ -27,7 +27,7 @@ interface Arguments{
 }
 
 // called to retrieve a specific item from a given page, will pull current page out of 
-// the session state instead of relying on the passed in arguments if CatalogExplorer.useSession 
+// the session state instead of relying on the passed in arguments if CatalogExplorer.useSessionArgs 
 // is true
 export class SelectItemHandler extends BaseApiHandler {
     static defaultApiName = `${apiNamespace}.selectItem`;
@@ -44,15 +44,17 @@ export class SelectItemHandler extends BaseApiHandler {
         let recommendationResult : RecommendationResult<any,any>;
         const catalogRef = super.getActiveCatalog(handlerInput, args.catalogRef);
 
-        if(CatalogExplorer.useSession){
+        if(CatalogExplorer.useSessionArgs){
             recommendationResult = this.getNewRecommendationResultFromSession(handlerInput, args, catalogRef);
         }
         else{
             const currentRecommendationsPage = args.page;
-            const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(handlerInput,catalogRef);
+            const sessionState = CatalogExplorerSessionState.load(handlerInput);
+            const providerState = sessionState.providerState;
+            const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
             if (!this.handleIndex(currentRecommendationsPage.itemCount, args.index)){
-                // if index is out of bound return the first element
-                args.index = 1;
+                // if index is out of bound throw an error
+                throw new Error("Index out of bound");
             }
             recommendationResult = catalogProvider.selectItem(currentRecommendationsPage, args.index-1);
             recommendationResult.searchConditions = args.searchConditions;
@@ -70,12 +72,12 @@ export class SelectItemHandler extends BaseApiHandler {
         const sessionState = CatalogExplorerSessionState.load(handlerInput);
 
         let index = args.index;
-        
-        const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(handlerInput,catalogRef);
+        const providerState = sessionState.providerState;
+        const catalogProvider: CatalogProvider<any,any> = CatalogExplorer.getProvider(catalogRef, providerState);
 
         // get arguments from session state
-        const recommendationResultFromSession =  sessionState.argsState.recommendationResult;
-        const searchConditionsFromSession = sessionState.argsState.searchConditions;
+        const recommendationResultFromSession =  sessionState.argsState?.recommendationResult;
+        const searchConditionsFromSession = sessionState.argsState?.searchConditions;
         
         if (recommendationResultFromSession === undefined){
             throw new Error("Recommendation Result from session state in undefined");
@@ -84,23 +86,23 @@ export class SelectItemHandler extends BaseApiHandler {
         const pageFromSession = recommendationResultFromSession.recommendations;
 
         if (!this.handleIndex(pageFromSession.itemCount, index)){
-            // if index is out of bound return the first element
-            index = 1;
+            // if index is out of bound throw an error
+            throw new Error("Index out of bound");
         }
 
         const newRecommendationResult = catalogProvider.selectItem(pageFromSession, index-1);
         newRecommendationResult.searchConditions = searchConditionsFromSession;
         
         // updating session state arguments
-        sessionState.providerState[catalogRef.id] = catalogProvider.serialize();
-        sessionState.argsState.recommendationResult = newRecommendationResult;
-        sessionState.argsState.currentPageSize = 1;  // to enable item by item pagination
-        sessionState.argsState.currentPageTokens = {
+        sessionState.providerState = catalogProvider.serialize();
+        sessionState.argsState!.recommendationResult = newRecommendationResult;
+        sessionState.argsState!.currentPageSize = 1;  // to enable item by item pagination
+        sessionState.argsState!.currentPageTokens = {
             prevPageToken: newRecommendationResult.recommendations.prevPageToken,
             currentPageToken: undefined,
             nextPageToken: newRecommendationResult.recommendations.nextPageToken
         } as PageTokens;
-        sessionState.argsState.proactiveOffer = newRecommendationResult.offer;
+        sessionState.argsState!.proactiveOffer = newRecommendationResult.offer;
         sessionState.save(handlerInput);
 
         return newRecommendationResult;

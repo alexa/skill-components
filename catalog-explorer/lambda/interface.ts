@@ -6,11 +6,12 @@ import { HandlerInput, RequestHandler } from "ask-sdk-core";
 import { v4 as uuidv4 } from 'uuid';
 import { CatalogProviderRegistry, CatalogProvider } from "./catalog-provider";
 
-import { ArgumentsState, CatalogExplorerSessionState, ProviderState } from "./state";
+import { ArgumentsState, CatalogExplorerSessionState } from "./state";
 
 import {
     AcceptOfferHandler,
     ConvertOrdinalToIndexHandler,
+    ConvertRelativePositionToIndexHandler,
     GetPageHandler,
     GetPropertyHandler,
     PerformActionHandler,
@@ -29,8 +30,10 @@ export interface CatalogReference {
     // when catalog reference is generated
     id: string;
 
-    // name of the catalog provider type
+    // name of the catalog provider type and state data required by the catalog provider;
+    // used to reconstruct catalog provider instance
     catalogProviderName: string;
+    state: any;
 
     // number of items in each page
     pageSize: number
@@ -43,7 +46,7 @@ export class CatalogExplorer {
     // Note: this can be used to work around issues with incorrect/unexpected data being passed into API calls
     //       between turns in some navigation interactions and use cases; will no longer be needed if data
     //       passing issues can be resolved
-    static useSession: boolean = true;
+    static useSessionArgs: boolean = true;
 
     // build a catalog reference instance for a given catalog provider instance
     //
@@ -63,23 +66,41 @@ export class CatalogExplorer {
         const catalogRef = {
             id: uuidv4(),
             catalogProviderName: catalogProvider.getName(),
+            state: catalogProvider.serialize(),
             pageSize: pageSize
         } as CatalogReference;
 
         // state data required by the catalog provider is stored;
         // used to reconstruct catalog provider instance
-        const providerState: ProviderState = {};
-        providerState[catalogRef.id] = catalogProvider.serialize();
+        const providerState = catalogProvider.serialize();
 
-        const argsState: ArgumentsState<any,any> = {
-            currentPageSize: pageSize
+        if (this.useSessionArgs){
+            const argsState: ArgumentsState<any,any> = {}
+            // construct new session state instance, where arguments will be stored in session and used
+            const newState = new CatalogExplorerSessionState({ activeCatalog: catalogRef, providerState, argsState });
+            newState.save(handlerInput);
         }
-
-        // construct new session state instance (assuming this catalog is the new active catalog) and store in session
-        const newState = new CatalogExplorerSessionState({ activeCatalog: catalogRef, providerState: providerState, argsState: argsState });
-        newState.save(handlerInput);
+        else{
+            // construct new session state instance, where no arguments will be stored in session
+            const newState = new CatalogExplorerSessionState({ activeCatalog: catalogRef, providerState });
+            newState.save(handlerInput);
+        }
         
         return catalogRef;
+    }
+
+    //enables the skill developer to explicitly set the active CatalogReference into the session, even when useSessionArgs is false
+    static setActiveCatalog(handlerInput: HandlerInput, catalogRef: CatalogReference) : void {
+        const initialProviderState = catalogRef.state;
+        if (this.useSessionArgs){
+            const argsState: ArgumentsState<any,any> = {}
+            const newState = new CatalogExplorerSessionState({ activeCatalog: catalogRef, providerState: initialProviderState, argsState });
+            newState.save(handlerInput);
+        }
+        else{
+            const newState = new CatalogExplorerSessionState({ activeCatalog: catalogRef, providerState: initialProviderState});
+            newState.save(handlerInput);
+        }
     }
 
     static isActiveCatalogSet(handlerInput: HandlerInput): boolean{
@@ -99,13 +120,14 @@ export class CatalogExplorer {
     //
     // Returns: the reconstructed catalog provider instance
     //
-    static getProvider(handlerInput: HandlerInput, catalogRef: CatalogReference): CatalogProvider<any,any> {
-        const sessionState = CatalogExplorerSessionState.load(handlerInput);
+    static getProvider(catalogRef: CatalogReference, providerState?:any): CatalogProvider<any,any> {
         const deserializer = CatalogProviderRegistry.getDeserializer(catalogRef.catalogProviderName);
-        const providerState = sessionState.providerState[catalogRef.id];
 
         if (deserializer == undefined) {
             throw new Error(`No catalog provider registered for ${catalogRef.catalogProviderName}`);
+        }
+        if (providerState == undefined){
+            return deserializer(catalogRef.state);
         }
         return deserializer(providerState);
     }
@@ -133,6 +155,7 @@ export class CatalogExplorer {
         return [
             // util handlers
             new ConvertOrdinalToIndexHandler(),
+            new ConvertRelativePositionToIndexHandler(),
 
             // record-event handlers
             new RecordInitialEventHandler(),
