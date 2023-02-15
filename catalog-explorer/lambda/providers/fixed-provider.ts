@@ -176,7 +176,12 @@ export class FixedProvider<SearchConditions, Item> implements CatalogProvider<Se
         const dataByAttr = _.reduce(searchAttrs, (obj, attr) => {
             return {
                 ...obj,
-                [attr]: _.groupBy(this.list, (item) => item[attr].toLowerCase())
+                [attr]: _.groupBy(this.list, (item) =>  {
+                    if (typeof(item[attr]) === "string"){
+                        return item[attr].toLowerCase()
+                    }
+                    return item[attr]
+                })
             };
         }, {});
  
@@ -185,8 +190,17 @@ export class FixedProvider<SearchConditions, Item> implements CatalogProvider<Se
  
         let matchingData = searchAttrs.length === 0 ? this.list : _.intersection(..._.chain(searchAttrs)
             .map((attr) => {
-                const attrValue = searchConditionsObj[attr].toLowerCase();
-                console.log("Attr: " + attr);
+                let attrValue;
+
+                if (typeof(searchConditionsObj[attr]) === "string"){
+                    attrValue =  searchConditionsObj[attr].toLowerCase()
+                }
+                else{
+                    attrValue = searchConditionsObj[attr];
+                }
+
+                console.log("Attr: ", attr, "\tAttr value:", attrValue);
+
                 if (!attrValue || attrValue === "") {
                     // empty values indicates the value for the attribute was not really provided
                     return this.list;

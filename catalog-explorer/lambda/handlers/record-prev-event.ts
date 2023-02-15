@@ -11,7 +11,7 @@ import { CatalogExplorerSessionState } from '../state';
 import { BaseApiHandler } from './base-api-handler';
 
 // handler for API called when the previous page is requested by the user before the
-// getPage API is called; sets some session state if CatalogExplorer.useSession is true
+// getPage API is called; sets some session state if CatalogExplorer.useSessionArgs is true
 
 export class RecordPrevEventHandler extends BaseApiHandler {
     static defaultApiName = `${apiNamespace}.navigate.recordPrevEvent`;
@@ -24,17 +24,17 @@ export class RecordPrevEventHandler extends BaseApiHandler {
 
     handle(handlerInput : HandlerInput): Response {
 
-        if (CatalogExplorer.useSession) {
+        if (CatalogExplorer.useSessionArgs) {
             const sessionState = CatalogExplorerSessionState.load(handlerInput);
-            const currentPageTokens = sessionState.argsState.currentPageTokens;
+            const currentPageTokens = sessionState.argsState?.currentPageTokens;
 
             if (currentPageTokens == undefined) {
                 // shouldn't be possible, as initial getPage API call should have set the
                 // current page tokens
                 throw new Error("No current page info in catalog explorer session state");
             }
-            sessionState.argsState.upcomingPageToken = currentPageTokens.prevPageToken;
-            sessionState.argsState.pagingDirection = PagingDirection.PREVIOUS;
+            sessionState.argsState!.upcomingPageToken = currentPageTokens.prevPageToken;
+            sessionState.argsState!.pagingDirection = PagingDirection.PREVIOUS;
             sessionState.save(handlerInput);
         }
 

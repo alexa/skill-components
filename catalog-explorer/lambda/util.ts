@@ -42,6 +42,9 @@ export const getApiSlots = (handlerInput: HandlerInput) => {
 
 // util to get the resolved value from a slot value object
 export const getSlotResolvedValue = (slot: SlotValue) => {
+    if (_.get(slot, "resolutions") === undefined){
+        return _.get(slot, "value");
+    }
     const firstAuthority = _.first(_.get(slot, 'resolutions.resolutionsPerAuthority'));
     const firstAuthorityValue = _.first(_.get(firstAuthority, 'values'));
     return _.get(firstAuthorityValue, 'value.name');

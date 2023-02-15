@@ -5,7 +5,7 @@ Catalog Explorer component has been used with the book recommendation skill to e
 ### Getting Started
 To test and try out the example skill follow these steps - 
 1. Run `npm run clean-build` from inside the example skill folder to install the dependencies and compile the skill.
-2. Run `askx deplopy` to deploy the compiled skill.
+2. Run `askx deploy` to deploy the compiled skill.
 
 These commands can be referred in the scripts section of package.json file [here](https://github.com/alexa/skill-components/blob/main/catalog-explorer/examples/BookRecommendation/package.json#L7-L20)
 

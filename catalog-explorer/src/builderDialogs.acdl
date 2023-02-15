@@ -8,6 +8,7 @@ import com.amazon.alexa.ask.conversations.*
 import com.amazon.ask.types.builtins.AMAZON.*
 import com.amazon.alexa.schema.*
 import com.amazon.alexa.skill.components.catalog_explorer.types.*
+
 dPAR= apla("../response/prompts/defaultPerformActionResponse/document.json")
 dPPR= apla("../response/prompts/defaultPresentPageResponse/document.json")
 dPRR= apla("../response/prompts/defaultPropertyResultResponse/document.json")
