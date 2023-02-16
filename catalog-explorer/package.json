@@ -1,6 +1,6 @@
 {
   "name": "@alexa-skill-components/catalog-explorer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "Amazon",
   "description": "Alexa skill component for searching, refining and navigating through a catalog",
   "license": "AmznSL-1.0",

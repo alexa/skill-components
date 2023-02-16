@@ -7,7 +7,7 @@
       "es2015.promise",
       "dom"
     ],
-    "types": [ "jest","node" ],
+    "types": ["jest"],
     "typeRoots": [
       "./node_modules/@types"
     ],
