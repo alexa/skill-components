@@ -1,6 +1,6 @@
 {
   "name": "@alexa-skill-components/feedback-elicitation",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "publisher": "Amazon",
   "description": "Alexa skill component for eliciting feedback from users",
   "license": "AmznSL-1.0",
