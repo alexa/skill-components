@@ -61,7 +61,7 @@ type PaginationConfig<Item> {
     Event<Nothing> nextEvent
     Event<Nothing> prevEvent
 
-    Action2<ListReference<Item>, Optional<String>, Page<Item>> getPageApi
+    Action2<ListReference, Optional<String>, Page<Item>> getPageApi
 
     Response presentPageResponse
 }
@@ -74,7 +74,7 @@ type SelectionConfig<Item, ItemName> {
     Event<ItemNameSlotWrapper<ItemName>> selectByNameEvent
     Event<Nothing> selectRandomlyEvent
 
-    Action3<ListReference<Item>, Page<Item>, ItemName, NUMBER> indexOfByNameApi
+    Action3<ListReference, Page<Item>, ItemName, NUMBER> indexOfByNameApi
 
-    Action3<ListReference<Item>, Page<Item>, NUMBER, Item> selectItemApi
+    Action3<ListReference, Page<Item>, NUMBER, Item> selectItemApi
 }
