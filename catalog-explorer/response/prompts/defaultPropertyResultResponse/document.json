@@ -7,15 +7,13 @@
     "parameters": [
       "payload"
     ],
-    "item": {
-      "type": "Sequential",
-      "items": [
+    "item": 
+    
         {
           "type": "Speech",
           "contentType": "text",
           "content": "${payload.result.propertyName} is ${payload.result.value}. "
         }
-      ]
-    }
+    
   }
 }

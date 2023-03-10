@@ -35,10 +35,10 @@ export class GetPageHandler extends BaseApiHandler{
         super(apiName);
     }
 
-    handle(handlerInput: HandlerInput): Response {
+    async handle(handlerInput: HandlerInput): Promise<Response> {
         const args = util.getApiArguments(handlerInput) as Arguments;
         
-        let recommendationResult: RecommendationResult<any,any>;
+        let recommendationResult: RecommendationResult<any,any> | Promise< RecommendationResult<any,any>>;
         const catalogRef = super.getActiveCatalog(handlerInput, args.catalogRef);
 
         if (CatalogExplorer.useSessionArgs){
@@ -51,7 +51,9 @@ export class GetPageHandler extends BaseApiHandler{
             // needs to be refactored for pagingDirection and current page size, once support for generics on actions is added
             const pagingDirection = PagingDirection.NEXT;
             recommendationResult = catalogProvider.getRecommendationsPage(args.searchConditions, catalogRef.pageSize, args.pageToken, pagingDirection);
+            
         }
+        recommendationResult = await Promise.resolve(recommendationResult)
         //converting rescoped boolean to number, as ACDL does not support boolean datatype
         const modifiedRecommendationResult = util.modifyRecommendationResultRescoped(recommendationResult);
 
@@ -61,12 +63,11 @@ export class GetPageHandler extends BaseApiHandler{
             .getResponse();
     }
 
-    getNewRecommendationResultFromSession(handlerInput: HandlerInput, args: Arguments, catalogRef: CatalogReference): RecommendationResult<any,any>{
+    async getNewRecommendationResultFromSession(handlerInput: HandlerInput, args: Arguments, catalogRef: CatalogReference): Promise<RecommendationResult<any,any>>{
         const sessionState = CatalogExplorerSessionState.load(handlerInput);
         const providerState = sessionState.providerState;
 
         const catalogProvider: CatalogProvider<any, any> = CatalogExplorer.getProvider(catalogRef, providerState);
-
         // get arguments from session state
         const pageToken = sessionState.argsState?.upcomingPageToken;
         const searchConditions = sessionState.argsState?.searchConditions;
@@ -76,8 +77,8 @@ export class GetPageHandler extends BaseApiHandler{
         if (pagingDirection === undefined) {
             throw new Error("Paging Direction not present in session")
         }
-        const recommendationResult = catalogProvider.getRecommendationsPage(searchConditions,currPageSize!, pageToken, pagingDirection);
-
+        let recommendationResult = catalogProvider.getRecommendationsPage(searchConditions,currPageSize!, pageToken, pagingDirection);
+        recommendationResult = await Promise.resolve(recommendationResult)
         // updating session state arguments
         sessionState.providerState = catalogProvider.serialize();
         sessionState.argsState!.currentPageTokens = {

@@ -127,6 +127,7 @@ type SelectionConfig<SearchConditions, Item> {
         Optional<CatalogReference>,                                    // index to select
         RecommendationResult<SearchConditions, Item>  // results for selection
     > selectItemApi
+    Response presentSelectedItemResponse
 }
 
 //offers

@@ -131,7 +131,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal<
         index = convertOrdinalToIndex(slotValues.ordinal)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.searchConditions, searchResult.recommendations ,index,catalogRef)
-        presentPage(getItem,result,config.navConfig.paginationConfig.presentPageResponse)
+        presentPage(getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse)
         result
     }
 }
@@ -145,7 +145,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelative
         index = convertRelativePositionToIndex(slotValues.relativePosition)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.searchConditions, searchResult.recommendations ,index,catalogRef)
-        presentPage(getItem,result,config.navConfig.paginationConfig.presentPageResponse)
+        presentPage(getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse)
         result
     }
 }
@@ -158,7 +158,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByIndex<Se
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByIndexEvent)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.searchConditions, searchResult.recommendations ,slotValues.index,catalogRef)
-        presentPage(getItem,result,config.navConfig.paginationConfig.presentPageResponse)
+        presentPage(getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse)
         result
     }
 }
@@ -172,7 +172,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal_
         index = convertOrdinalToIndex(slotValues.ordinal)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.searchConditions, searchResult.recommendations ,index, catalogRef)
-        presentPage_withHint(config,getItem,result,config.navConfig.paginationConfig.presentPageResponse, catalogRef)
+        presentPage_withHint(config,getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse, catalogRef)
         result
     }
 }
@@ -186,7 +186,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelative
         index = convertRelativePositionToIndex(slotValues.relativePosition)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.searchConditions, searchResult.recommendations ,index, catalogRef)
-        presentPage_withHint(config,getItem,result,config.navConfig.paginationConfig.presentPageResponse, catalogRef)
+        presentPage_withHint(config,getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse, catalogRef)
         result
     }
 }
@@ -200,7 +200,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByIndex_wi
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByIndexEvent)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.searchConditions, searchResult.recommendations, slotValues.index, catalogRef)
-        presentPage_withHint(config,getItem,result,config.navConfig.paginationConfig.presentPageResponse, catalogRef)
+        presentPage_withHint(config,getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse, catalogRef)
         result
     }
 }
