@@ -26,12 +26,12 @@ export class SearchHandler extends BaseApiHandler {
         return util.isApiRequestPrefix(handlerInput, this.apiName);
     }
 
-    handle(handlerInput : HandlerInput): Response {
+    async handle(handlerInput : HandlerInput): Promise<Response >{
         const args = util.getApiArguments(handlerInput) as any;
         const searchType = this.getSearchTypeFromAPI(handlerInput);
-        let recommendationResult : RecommendationResult<any,any>;
+        let recommendationResult : RecommendationResult<any,any> | Promise<RecommendationResult<any,any>>;
         if (searchType === "new" || searchType == "refine"){
-            recommendationResult = this.newSearchSession(handlerInput,searchType);
+            recommendationResult = await Promise.resolve(this.newSearchSession(handlerInput,searchType));
         }
         else {
             throw new Error("Search Type fetched from API is incorrect");
@@ -45,9 +45,9 @@ export class SearchHandler extends BaseApiHandler {
             .getResponse();
     }
 
-    newSearchSession(handlerInput: HandlerInput, searchType : string): RecommendationResult<any,any>{
+    async newSearchSession(handlerInput: HandlerInput, searchType : string): Promise<RecommendationResult<any,any>>{
         const sessionState = CatalogExplorerSessionState.load(handlerInput);
-
+      
         // get catalog reference out of session, instead of arguments
         const catalogRef = sessionState.activeCatalog;
         const providerState = sessionState.providerState;
@@ -64,7 +64,7 @@ export class SearchHandler extends BaseApiHandler {
             const refinedSearchConditions = { ...searchConditionsFromSession, ...newSearchConditions };
             newSearchConditions = refinedSearchConditions;
         }
-        const recommendationResult = catalogProvider.performSearch(newSearchConditions, catalogRef.pageSize);
+        const recommendationResult = await Promise.resolve(catalogProvider.performSearch(newSearchConditions, catalogRef.pageSize));
 
         // updating session state arguments
         sessionState.providerState = catalogProvider.serialize();

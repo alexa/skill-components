@@ -4,7 +4,7 @@
 
 // representation of a page token; simply a raw string as the real representation
 // will differ with each catalog provider instance
-export type PageToken = string;
+export type PageToken = any;
 
 // a single page of items, contains next/previous tokens to allow for easy navigation
 export interface Page<Item>{
@@ -58,7 +58,7 @@ export interface CatalogProvider<SearchConditions, Item> {
     performSearch(
         searchConditions: SearchConditions,
         pageSize: number
-    ): RecommendationResult<SearchConditions, Item>;
+    ): RecommendationResult<SearchConditions, Item> | Promise<RecommendationResult<SearchConditions, Item>>;
     
     // get a page of items for the given search conditions, page token,
     // page size and paging direction
@@ -67,7 +67,7 @@ export interface CatalogProvider<SearchConditions, Item> {
         pageSize: number,
         pageToken: PageToken | undefined,
         pagingDirection: PagingDirection
-    ): RecommendationResult<SearchConditions, Item>;
+    ): RecommendationResult<SearchConditions, Item> | Promise<RecommendationResult<SearchConditions, Item>>;
     
     // selects the item at the given index from the provided page
     selectItem(

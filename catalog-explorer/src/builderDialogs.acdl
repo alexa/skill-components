@@ -13,11 +13,13 @@ dPAR= apla("../response/prompts/defaultPerformActionResponse/document.json")
 dPPR= apla("../response/prompts/defaultPresentPageResponse/document.json")
 dPRR= apla("../response/prompts/defaultPropertyResultResponse/document.json")
 dAOR= apla("../response/prompts/defaultAcceptOfferResponse/document.json")
+dPSR= apla("../response/prompts/defaultPresentSelectedItemResponse/document.json")
 
 dVPAR= apl("../response/display/defaultPerformActionVisualResponse/document.json")
 dVPPR= apl("../response/display/defaultPresentPageVisualResponse/document.json")
 dVPRR= apl("../response/display/defaultPropertyResultVisualResponse/document.json")
 dVAOR= apl("../response/display/defaultAcceptOfferVisualResponse/document.json")
+dVPSR= apl("../response/display/defaultPresentSelectedItemVisualResponse/document.json")
 
 multiModalPerformActionResponse = MultiModalResponse {
     apla = dPAR,
@@ -37,6 +39,11 @@ multiModalPropertyResultResponse = MultiModalResponse {
 multiModalAcceptOfferResponse = MultiModalResponse {
     apla = dAOR,
     apl = dVAOR 
+}
+
+multiModalPresentSelectedItemResponse = MultiModalResponse {
+    apla = dPSR,
+    apl = dVPSR 
 }
 
 defaultNextEvent = utterances<Nothing>([
@@ -114,7 +121,7 @@ dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchCond
         Optional<CatalogReference>,                          
         RecommendationResult<SearchConditions, Item> 
     > getPageApi,
-
+    Response presentSelectedItemResponse=multiModalPresentSelectedItemResponse,
     Response presentPageResponse=multiModalPresentPageResponse,
     Event<OrdinalSlotWrapper> selectByOrdinalEvent=defaultSelectByOrdinalEvent,
     Event<RelativePositionSlotWrapper> selectByRelativePositionEvent=defaultSelectByRelativePositionEvent,
@@ -139,7 +146,8 @@ dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchCond
             selectByOrdinalEvent = selectByOrdinalEvent,
             selectByRelativePositionEvent = selectByRelativePositionEvent,
             selectByIndexEvent = selectByIndexEvent,
-            selectItemApi = selectItemApi
+            selectItemApi = selectItemApi,
+            presentSelectedItemResponse = presentSelectedItemResponse
         }
 
         /*return*/ NavigationConfig<SearchConditions, Item> {
