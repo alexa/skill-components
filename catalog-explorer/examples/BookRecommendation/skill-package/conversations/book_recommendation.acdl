@@ -10,6 +10,9 @@ import prompts.*
 import displays.*
 import slotTypes.*
 
+/************************
+ * CREATE CATALOG ITEM
+ ************************/
  multiModalWelcome = MultiModalResponse {
     apl = WelcomeAPL,
     apla = AlexaConversationsWelcome
@@ -28,10 +31,6 @@ import slotTypes.*
 
         }
    )
-
-/************************
- * CREATE CATALOG ITEM
- ************************/
 
  type BookItem {
     String title
@@ -161,9 +160,17 @@ selectByIndexEvent = utterances<IndexSlotWrapper>([
     "{index}"
 ])
 
-action RecommendationResult<SearchConditions, BookItem> getPage(SearchConditions searchConditions, Optional<String> pageToken, optional CatalogReference catalogRef)
-action RecommendationResult<SearchConditions, BookItem> selectItemApi(SearchConditions searchConditions, Page<BookItem> page, Number index, optional CatalogReference catalogRef)
+selectByNameEvent = utterances<ItemNameSlotWrapper<TITLE>>([
+    "{name}",
+    "{name} would be good",
+    "I like {name}",
+    "{name} sounds interesting",
+    "show me {name}"
+])
 
+action RecommendationResult<SearchConditions, BookItem> getPage(SearchConditions searchConditions, Optional<String> pageToken, optional CatalogReference catalogRef)
+action RecommendationResult<SearchConditions, BookItem> selectItemApi(Page<BookItem> page, Number index, optional SearchConditions searchConditions, optional CatalogReference catalogRef)
+action NUMBER indexOfItemByNameApi(Page<BookItem> page, TITLE name)
 
 /************************
  * OFFERS
@@ -241,25 +248,25 @@ action CatalogActionResult performAction_SendToPhone(List<BookItem> items, optio
  * Anonymous Dialogs
  ************************/
 
-dialog RecommendationResult<SearchConditions, BookItem> allSearchPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, optional CatalogReference catalogRef) {
+dialog RecommendationResult<SearchConditions, BookItem> allSearchPathsAdaptor(PropertyConfig<SearchConditions, BookItem, TITLE> config, optional CatalogReference catalogRef) {
     sample {
         allSearchPaths_2(config)
     }
 }
 
-dialog RecommendationResult<SearchConditions, BookItem> baseSearchPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, optional CatalogReference catalogRef) {
+dialog RecommendationResult<SearchConditions, BookItem> baseSearchPathsAdaptor(PropertyConfig<SearchConditions, BookItem, TITLE> config, optional CatalogReference catalogRef) {
     sample {
         baseSearchPaths_2(config)
     }
 }
 
-dialog RecommendationResult<SearchConditions, BookItem> allFollowUpPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, RecommendationResult<SearchConditions, BookItem> priorResult, optional CatalogReference catalogRef) {
+dialog RecommendationResult<SearchConditions, BookItem> allFollowUpPathsAdaptor(PropertyConfig<SearchConditions, BookItem, TITLE> config, RecommendationResult<SearchConditions, BookItem> priorResult, optional CatalogReference catalogRef) {
     sample {
         allFollowUpPaths_5(config, priorResult, catalogRef)
     }
 }
 
-dialog CatalogActionResult allCatalogActionPathsAdaptor(PropertyConfig<SearchConditions, BookItem> config, List<BookItem> items, optional CatalogReference catalogRef) {
+dialog CatalogActionResult allCatalogActionPathsAdaptor(PropertyConfig<SearchConditions, BookItem, TITLE> config, List<BookItem> items, optional CatalogReference catalogRef) {
     sample {
         allCatalogActionPaths_3(config, items, catalogRef)
     }
@@ -305,14 +312,16 @@ dialog MainDialog{
         ]
 
         //Buidling the navigation configuration
-        navigationConfig = buildNavigationConfig<SearchConditions, BookItem>(
+        navigationConfig = buildNavigationConfig<SearchConditions, BookItem, TITLE>(
             nextEvent = nextEvent,
             prevEvent = prevEvent,
             getPageApi = getPage,
             selectByOrdinalEvent = selectByOrdinalEvent,
             selectByRelativePositionEvent = selectByRelativePositionEvent,
             selectByIndexEvent = selectByIndexEvent,
-            selectItemApi = selectItemApi
+            selectByNameEvent = selectByNameEvent,
+            indexOfItemByNameApi = indexOfItemByNameApi,
+            selectItemApi = selectItemApi,
         )
 
         //Buidling the Offers configuration
@@ -375,7 +384,7 @@ dialog MainDialog{
         ]
         
         //Building the main catalog explorer configuration object
-        config = buildCatalogConfig<SearchConditions, BookItem>(
+        config = buildCatalogConfig<SearchConditions, BookItem, TITLE>(
             searchPatterns,
             navigationConfig,
             catalogProperties,
@@ -388,7 +397,7 @@ dialog MainDialog{
         )
 
         //calling the the catalog explorer component with the configuration object
-        result = exploreCatalog<SearchConditions, BookItem>(config)
+        result = exploreCatalog<SearchConditions, BookItem, TITLE>(config)
 
         //Below part is just for a workaround that the main deployable dialog cannont
         //return CatalogExplorationResult which is the return type of the component

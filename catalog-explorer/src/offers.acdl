@@ -12,8 +12,8 @@ import com.amazon.alexa.skill.components.catalog_explorer.navigate.*
 import com.amazon.alexa.skill.components.catalog_explorer.util.*
 import com.amazon.alexa.skill.components.catalog_explorer.types.*
 
-dialog RecommendationResult<SearchConditions, Item> notifyWithProactiveHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> notifyWithProactiveHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     CatalogOffers<SearchConditions, Item> offers,
     RecommendationResult<SearchConditions, Item> priorResult,
     NotifyResponseContents notifyResponseContents,
@@ -45,8 +45,8 @@ dialog Nothing notifyWithProactiveHint_AffirmOnly<SearchConditions, Item>(
     }
 }
 
-dialog RecommendationResult<SearchConditions, Item> offerHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> offerHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     CatalogOffers<SearchConditions, Item> offers,
     RecommendationResult<SearchConditions, Item> priorResult,
     NotifyResponseContents notifyResponseContents,

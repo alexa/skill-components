@@ -21,28 +21,28 @@ type CatalogReference {
     String id
 }
 
-type PropertyConfig<SearchConditions, Item> {
+type PropertyConfig<SearchConditions, Item, ItemName> {
     // config for search, navigate, properties, actions, and offers
     List<SearchPattern<SearchConditions, Item>> searchPatterns
-    NavigationConfig<SearchConditions, Item> navConfig
+    NavigationConfig<SearchConditions, Item, ItemName> navConfig
     List<CatalogProperty<Item>> properties
     List<CatalogAction<Item>> catalogActions
     CatalogOffers<SearchConditions, Item> offers
 }
 
-type DialogConfig<SearchConditions, Item>{
+type DialogConfig<SearchConditions, Item, ItemName>{
     // adaptors needed to "tell" the component the length of the search patterns, properties,
     // and actions lists; needed as there is no current support in ACDL to generate a dynamic
     // number of samples based on the length of a list
-    Dialog2<PropertyConfig<SearchConditions, Item>, Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> allSearchPathsAdaptor
-    Dialog2<PropertyConfig<SearchConditions, Item>,Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> baseSearchPathsAdaptor
-    Dialog3<PropertyConfig<SearchConditions, Item>, RecommendationResult<SearchConditions, Item>, Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> allFollowUpPathsAdaptor
-    Dialog3<PropertyConfig<SearchConditions, Item>,  List<Item>,Optional <CatalogReference> , CatalogActionResult> allCatalogActionPathsAdaptor
+    Dialog2<PropertyConfig<SearchConditions, Item, ItemName>, Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> allSearchPathsAdaptor
+    Dialog2<PropertyConfig<SearchConditions, Item, ItemName>,Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> baseSearchPathsAdaptor
+    Dialog3<PropertyConfig<SearchConditions, Item, ItemName>, RecommendationResult<SearchConditions, Item>, Optional <CatalogReference> , RecommendationResult<SearchConditions, Item>> allFollowUpPathsAdaptor
+    Dialog3<PropertyConfig<SearchConditions, Item, ItemName>,  List<Item>,Optional <CatalogReference> , CatalogActionResult> allCatalogActionPathsAdaptor
 }
 
-type CatalogConfig<SearchConditions, Item> {
-    PropertyConfig<SearchConditions, Item> propertyConfig
-    DialogConfig<SearchConditions, Item> dialogConfig
+type CatalogConfig<SearchConditions, Item, ItemName> {
+    PropertyConfig<SearchConditions, Item, ItemName> propertyConfig
+    DialogConfig<SearchConditions, Item, ItemName> dialogConfig
 }
 //action
 type ActionResultPayload
@@ -88,10 +88,14 @@ type IndexSlotWrapper {
     NUMBER index
 }
 
+type ItemNameSlotWrapper<ItemName> {
+    ItemName name
+}
+
 // root config object bringing together configuration for pagination and item selection
-type NavigationConfig<SearchConditions, Item> {
+type NavigationConfig<SearchConditions, Item, ItemName> {
     PaginationConfig<SearchConditions, Item> paginationConfig
-    SelectionConfig<SearchConditions, Item> selectionConfig
+    SelectionConfig<SearchConditions, Item, ItemName> selectionConfig
 }
 type NavigationPayload<SearchConditions, Item>{
     RecommendationResult<SearchConditions, Item> result
@@ -115,23 +119,31 @@ type PaginationConfig<SearchConditions, Item> {
 }
 
 // configuration for item selection
-type SelectionConfig<SearchConditions, Item> {
+type SelectionConfig<SearchConditions, Item, ItemName> {
     Event<OrdinalSlotWrapper> selectByOrdinalEvent
     Event<RelativePositionSlotWrapper> selectByRelativePositionEvent
+    Event<ItemNameSlotWrapper<ItemName>> selectByNameEvent
     Event<IndexSlotWrapper> selectByIndexEvent
 
-    Action4<
-        SearchConditions,                             // current search conditions
+    Action2<
         Page<Item>,                                   // current page of results
-        NUMBER, 
-        Optional<CatalogReference>,                                    // index to select
+        ItemName,                                     
+        NUMBER                                        // index to select
+    > indexOfItemByNameApi
+
+    Action4<
+        Page<Item>,                                   // current page of results
+        NUMBER,                                       // index to select
+        Optional<SearchConditions>,                             // current search conditions
+        Optional<CatalogReference>,                                    
         RecommendationResult<SearchConditions, Item>  // results for selection
     > selectItemApi
     Response presentSelectedItemResponse
+    
 }
 
 //offers
-type CatalogOffers<SearchConditons, Item> {
+type CatalogOffers<SearchConditions, Item> {
     // event to allow user to accept a offer
     Event<Nothing> acceptEvent
 

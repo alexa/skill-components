@@ -13,6 +13,7 @@ import {
     ConvertOrdinalToIndexHandler,
     ConvertRelativePositionToIndexHandler,
     GetPageHandler,
+    IndexOfItemByNameHandler,
     GetPropertyHandler,
     PerformActionHandler,
     SearchHandler,
@@ -146,6 +147,7 @@ export class CatalogExplorer {
     // Returns: array of constructed handlers
     static createHandlers(
         getPageApiName: string,
+        indexOfItemByNameApiName: string,
         selectItemApiName: string,
         searchApiName: string,
         getPropertyApiName: string,
@@ -164,6 +166,7 @@ export class CatalogExplorer {
 
             // APIs that have to be defined by skill dev (as they use generics)
             new SearchHandler(searchApiName),
+            new IndexOfItemByNameHandler(indexOfItemByNameApiName),
             new GetPageHandler(getPageApiName),
             new SelectItemHandler(selectItemApiName),
             new AcceptOfferHandler(acceptOfferApiName),

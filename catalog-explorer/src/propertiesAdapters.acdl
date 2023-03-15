@@ -10,8 +10,8 @@ import com.amazon.alexa.schema.*
 import com.amazon.alexa.skill.components.catalog_explorer.types.*
 import com.amazon.alexa.skill.components.catalog_explorer.properties.*
 
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_1<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_1<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -20,8 +20,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_1<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_2<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_2<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -34,8 +34,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_2<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_3<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_3<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -48,8 +48,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_3<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_4<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_4<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -62,8 +62,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_4<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_5<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_5<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -76,8 +76,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_5<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_6<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_6<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -90,8 +90,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_6<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_7<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_7<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -104,8 +104,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_7<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_8<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_8<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -118,8 +118,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_8<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_9<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_9<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -132,8 +132,8 @@ dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_9<SearchCon
     }
 }
 // @see allFollowUpPaths_1
-dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_10<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allFollowUpPaths_10<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
 ) {

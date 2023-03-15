@@ -10,8 +10,8 @@ import com.amazon.alexa.schema.*
 import com.amazon.alexa.skill.components.catalog_explorer.types.*
 import com.amazon.alexa.skill.components.catalog_explorer.action.*
 
-dialog CatalogActionResult allCatalogActionPaths_1<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item>  config,
+dialog CatalogActionResult allCatalogActionPaths_1<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName>  config,
     List<Item> items,
     optional CatalogReference catalogRef
 ) {

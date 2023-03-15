@@ -11,16 +11,16 @@ import com.amazon.alexa.skill.components.catalog_explorer.types.*
 import com.amazon.alexa.skill.components.catalog_explorer.search.*
 
 
-dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_1<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_1<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
         searchForItem_Index0_WithVariations(config,catalogRef)
     }
 }
-dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_1<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_1<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -28,8 +28,8 @@ dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_1<SearchCond
     }
 }
 
-dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_2<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_2<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -40,8 +40,8 @@ dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_2<SearchCon
         searchForItem_Index1_WithVariations(config,catalogRef)
     }
 }
-dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_2<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_2<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -53,8 +53,8 @@ dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_2<SearchCond
     }
 }
 
-dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_3<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_3<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -65,8 +65,8 @@ dialog  RecommendationResult<SearchConditions, Item> baseSearchPaths_3<SearchCon
         searchForItem_Index2_WithVariations(config,catalogRef)
     }
 }
-dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_3<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> allSearchPaths_3<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
