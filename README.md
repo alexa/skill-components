@@ -61,10 +61,10 @@ The following skill components are contained in this package:
 | Component                                   | Description                            | Status          | NPM Package |
 | :-----------------------------------------: | :------------------------------------: | :-------------: | :---------: |
 | [Feedback Elicitation](feedback-elicitation) | Collect user feedback for your skill   | Private Preview | [Here][1]        |
-| [Catalog Explorer](feedback-elicitation) | Explorer a catalog of items including ability to search, refine and perform actions   | Private Preview | [Here][2]        |
-| [List Navigation](feedback-elicitation) | Pre-built experience to navigate through a list of items   | Private Preview | [Here][3]        |
-| [Account Linking](feedback-elicitation) | Simplifies enabling account linking for your skill   | Private Preview | [Here][4]        |
-| [In Skill Purchases](feedback-elicitation) | pre-built experience to enable in-skill purchases   | Private Preview | [Here][5]        |
+| [Catalog Explorer](catalog-explorer) | Explorer a catalog of items including ability to search, refine and perform actions   | Private Preview | [Here][2]        |
+| [List Navigation](list-navigation) | Pre-built experience to navigate through a list of items   | Private Preview | [Here][3]        |
+| [Account Linking](account-linking) | Simplifies enabling account linking for your skill   | Private Preview | [Here][4]        |
+| [In Skill Purchases](in-skill-purchase) | pre-built experience to enable in-skill purchases   | Private Preview | [Here][5]        |
 
 ## How Components Work
 
