@@ -318,8 +318,8 @@ dialog MainDialog{
             getPageApi = getPage,
             selectByOrdinalEvent = selectByOrdinalEvent,
             selectByRelativePositionEvent = selectByRelativePositionEvent,
-            selectByIndexEvent = selectByIndexEvent,
             selectByNameEvent = selectByNameEvent,
+            selectByIndexEvent = selectByIndexEvent,
             indexOfItemByNameApi = indexOfItemByNameApi,
             selectItemApi = selectItemApi,
         )
