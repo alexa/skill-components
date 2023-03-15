@@ -20,6 +20,7 @@ exports.handler = SkillBuilders.custom()
         // are required to be defined by skills using catalog explorer
         ...CatalogExplorer.createHandlers(
             `${skillDomain}.getPage`,
+            `${skillDomain}.indexOfItemByNameApi`,
             `${skillDomain}.selectItemApi`,
             `${skillDomain}.search_`,
             `${skillDomain}.getProperty_`,

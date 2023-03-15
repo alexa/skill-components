@@ -15,8 +15,8 @@ import com.amazon.alexa.skill.components.catalog_explorer.*
 
 // definition of a catalog property that user can request for the current item
 
-dialog Nothing  requestPropertyValue<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog Nothing  requestPropertyValue<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     CatalogProperty<Item> property,
     List<Item> priorRecommendations,
     optional CatalogReference catalogRef
@@ -36,8 +36,8 @@ dialog Nothing  requestPropertyValue<SearchConditions, Item>(
     }
 }
 
-dialog RecommendationResult<SearchConditions, Item>  requestPropertyValue_WithPassthrough<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item>  requestPropertyValue_WithPassthrough<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     CatalogProperty<Item> property,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef
@@ -52,8 +52,8 @@ dialog RecommendationResult<SearchConditions, Item>  requestPropertyValue_WithPa
         priorResult
     }
 }
-dialog RecommendationResult<SearchConditions, Item> requestPropertyValue_withHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> requestPropertyValue_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     CatalogProperty<Item> property,
     RecommendationResult<SearchConditions, Item>  priorResult,
     optional CatalogReference catalogRef

@@ -13,8 +13,8 @@ import com.amazon.alexa.skill.components.catalog_explorer.util.*
 import com.amazon.alexa.skill.components.catalog_explorer.types.*
 import com.amazon.alexa.skill.components.catalog_explorer.*
 
-dialog Nothing recommendationResponse<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog Nothing recommendationResponse<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     SearchPattern<SearchConditions, Item> searchPattern,
      RecommendationResult<SearchConditions, Item>  result
 ) {
@@ -28,8 +28,8 @@ dialog Nothing recommendationResponse<SearchConditions, Item> (
     }
 }
 
-dialog RecommendationResult<SearchConditions, Item> recommendationResponse_withHint<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> recommendationResponse_withHint<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     SearchPattern<SearchConditions, Item> searchPattern,
     RecommendationResult<SearchConditions, Item>  result,
     optional CatalogReference catalogRef
@@ -50,8 +50,8 @@ dialog RecommendationResult<SearchConditions, Item> recommendationResponse_withH
     }
 }
 
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0<SearchConditions, Item> (
-    PropertyConfig<SearchConditions,Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions,Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -62,8 +62,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0<Search
         result
     }
 }
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_withHint<SearchConditions, Item> (
-    PropertyConfig<SearchConditions,Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_withHint<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions,Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -75,8 +75,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_withHi
     }
 }
 
-dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index1<SearchConditions, Item> (
-    PropertyConfig<SearchConditions,Item> config,
+dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index1<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions,Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -88,8 +88,8 @@ dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index1<Searc
         result
     }
 }
-dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index1_withHint<SearchConditions, Item> (
-    PropertyConfig<SearchConditions,Item> config,
+dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index1_withHint<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions,Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -102,8 +102,8 @@ dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index1_withH
     }
 }
 
-dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index2<SearchConditions, Item> (
-    PropertyConfig<SearchConditions,Item> config,
+dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index2<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions,Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -116,8 +116,8 @@ dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index2<Searc
         result
     }
 }
-dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index2_withHint<SearchConditions, Item> (
-    PropertyConfig<SearchConditions,Item> config,
+dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index2_withHint<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions,Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -130,8 +130,8 @@ dialog  RecommendationResult<SearchConditions, Item>  searchForItem_Index2_withH
 }
 
 // IMPROVE: replace with a wrapper Optional reusable dialog once lambdas are supported
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithPassthrough<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithPassthrough<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> priorResult,
     optional CatalogReference catalogRef
 ) {
@@ -145,8 +145,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithPa
     }
 }
 
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVariations<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVariations<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -166,8 +166,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVa
         result
     }
 }
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVariations_withHint<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVariations_withHint<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -188,8 +188,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVa
     }
 }
 
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVariations<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVariations<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -209,8 +209,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVa
         result
     }
 }
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVariations_withHint<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVariations_withHint<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -232,8 +232,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVa
 }
 
 
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index2_WithVariations<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index2_WithVariations<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {
@@ -253,8 +253,8 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index2_WithVa
         result
     }
 }
-dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index2_WithVariations_withHint<SearchConditions, Item> (
-    PropertyConfig<SearchConditions, Item> config,
+dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index2_WithVariations_withHint<SearchConditions, Item, ItemName> (
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
 ) {
     sample {

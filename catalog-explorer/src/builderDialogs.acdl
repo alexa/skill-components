@@ -76,6 +76,7 @@ defaultSelectByRelativePositionEvent = utterances<RelativePositionSlotWrapper>([
     "the {relativePosition}",
     "{relativePosition}"
 ])
+
 defaultSelectByIndexEvent = utterances<IndexSlotWrapper>([
     "show item view on number {index}",
     "show me more about number {index}",
@@ -112,7 +113,7 @@ dialog  CatalogAction<Item> buildCatalogAction<Item>(
    
 }
 
-dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchConditions, Item>(
+dialog NavigationConfig<SearchConditions, Item, ItemName> buildNavigationConfig<SearchConditions, Item, ItemName>(
     Event<Nothing> nextEvent = defaultNextEvent,
     Event<Nothing> prevEvent = defaultPrevEvent,
     Action3<
@@ -125,11 +126,19 @@ dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchCond
     Response presentPageResponse=multiModalPresentPageResponse,
     Event<OrdinalSlotWrapper> selectByOrdinalEvent=defaultSelectByOrdinalEvent,
     Event<RelativePositionSlotWrapper> selectByRelativePositionEvent=defaultSelectByRelativePositionEvent,
+    Event<ItemNameSlotWrapper<ItemName>> selectByNameEvent,
     Event<IndexSlotWrapper> selectByIndexEvent=defaultSelectByIndexEvent,
+
+    Action2<                            // current search conditions
+        Page<Item>,                                   // current page of results
+        ItemName,                                     
+        NUMBER                                        // index to select
+    > indexOfItemByNameApi,
+
     Action4<
-        SearchConditions,                             // current search conditions
         Page<Item>,                                   // current page of results
         NUMBER,    
+        Optional<SearchConditions>,                             // current search conditions
         Optional<CatalogReference>,                               // index to select
         RecommendationResult<SearchConditions, Item>  // results for selection
     > selectItemApi
@@ -142,15 +151,17 @@ dialog NavigationConfig<SearchConditions, Item> buildNavigationConfig<SearchCond
             getPageApi = getPageApi,
             presentPageResponse = presentPageResponse
         }
-        selectionConfig = SelectionConfig<SearchConditions, Item>{
+        selectionConfig = SelectionConfig<SearchConditions, Item, ItemName>{
             selectByOrdinalEvent = selectByOrdinalEvent,
             selectByRelativePositionEvent = selectByRelativePositionEvent,
             selectByIndexEvent = selectByIndexEvent,
+            selectByNameEvent = selectByNameEvent,
+            indexOfItemByNameApi = indexOfItemByNameApi,
             selectItemApi = selectItemApi,
             presentSelectedItemResponse = presentSelectedItemResponse
         }
 
-        /*return*/ NavigationConfig<SearchConditions, Item> {
+        /*return*/ NavigationConfig<SearchConditions, Item, ItemName> {
             paginationConfig = paginationConfig,
             selectionConfig = selectionConfig
         }
@@ -225,20 +236,20 @@ dialog CatalogOffers<SearchConditions, Item> buildCatalogOffers<SearchConditions
     }  
 }
 
-dialog CatalogConfig<SearchConditions, Item> buildCatalogConfig<SearchConditions, Item>(
+dialog CatalogConfig<SearchConditions, Item, ItemName> buildCatalogConfig<SearchConditions, Item, ItemName>(
     List<SearchPattern<SearchConditions, Item>> searchPatterns,
-    NavigationConfig<SearchConditions,Item> navConfig,
+    NavigationConfig<SearchConditions,Item,ItemName> navConfig,
     List<CatalogProperty<Item>> properties,
     List<CatalogAction<Item>> catalogActions,
     CatalogOffers<SearchConditions, Item> offers,
-    Dialog2<PropertyConfig<SearchConditions, Item>, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item> > allSearchPaths,
-    Dialog2<PropertyConfig<SearchConditions, Item>,  Optional<CatalogReference>,RecommendationResult<SearchConditions, Item>> baseSearchPaths,
-    Dialog3<PropertyConfig<SearchConditions, Item>, RecommendationResult<SearchConditions, Item>, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item>> allFollowUpPaths,
-    Dialog3<PropertyConfig<SearchConditions, Item>, List<Item>,  Optional<CatalogReference>,CatalogActionResult> allCatalogActionPaths
+    Dialog2<PropertyConfig<SearchConditions, Item, ItemName>, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item> > allSearchPaths,
+    Dialog2<PropertyConfig<SearchConditions, Item, ItemName>,  Optional<CatalogReference>,RecommendationResult<SearchConditions, Item>> baseSearchPaths,
+    Dialog3<PropertyConfig<SearchConditions, Item, ItemName>, RecommendationResult<SearchConditions, Item>, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item>> allFollowUpPaths,
+    Dialog3<PropertyConfig<SearchConditions, Item, ItemName>, List<Item>,  Optional<CatalogReference>,CatalogActionResult> allCatalogActionPaths
 ) {
     sample{
 
-        propertyConfig = PropertyConfig<SearchConditions, Item> {
+        propertyConfig = PropertyConfig<SearchConditions, Item, ItemName> {
             searchPatterns = searchPatterns,
             navConfig = navConfig,
             properties = properties,
@@ -246,14 +257,14 @@ dialog CatalogConfig<SearchConditions, Item> buildCatalogConfig<SearchConditions
             offers = offers,
         }
 
-        dialogConfig = DialogConfig<SearchConditions, Item> {
+        dialogConfig = DialogConfig<SearchConditions, Item, ItemName> {
             allSearchPathsAdaptor = allSearchPaths,
             baseSearchPathsAdaptor= baseSearchPaths,
             allFollowUpPathsAdaptor = allFollowUpPaths,
             allCatalogActionPathsAdaptor = allCatalogActionPaths   
         }
 
-        CatalogConfig<SearchConditions, Item> {
+        CatalogConfig<SearchConditions, Item, ItemName> {
             propertyConfig = propertyConfig,
             dialogConfig = dialogConfig
         }

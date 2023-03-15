@@ -15,8 +15,8 @@ import com.amazon.alexa.skill.components.catalog_explorer.types.*
 
 // main Catalog Explorer dialog; returns result of a action performed after
 // the user is finished exploring the catalog
-dialog CatalogExplorationResult<Item> exploreCatalog<SearchConditions, Item>(
-    CatalogConfig<SearchConditions, Item> config,
+dialog CatalogExplorationResult<Item> exploreCatalog<SearchConditions, Item, ItemName>(
+    CatalogConfig<SearchConditions, Item, ItemName> config,
     optional CatalogReference catalogRef
    ) 
    { 

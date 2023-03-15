@@ -1,6 +1,7 @@
 export * from "./base-api-handler";
 export * from "./convert-ordinal-to-index";
 export * from "./convert-relative-position-to-index";
+export * from "./index-of-by-name";
 export * from "./accept-offer-handler";
 export * from "./get-page-handler";
 export * from "./get-property-handler";

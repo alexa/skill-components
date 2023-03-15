@@ -40,8 +40,8 @@ dialog Nothing presentPage<SearchConditions, Item>(
     }
 }
 
-dialog RecommendationResult<SearchConditions, Item> presentPage_withHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> presentPage_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     Action api,
     RecommendationResult<SearchConditions, Item> result,
     Response response,
@@ -65,8 +65,8 @@ dialog RecommendationResult<SearchConditions, Item> presentPage_withHint<SearchC
 }
 
 // represents the navigate-next turn, complete with event, API call, and response
-dialog RecommendationResult<SearchConditions, Item> navigateNext<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateNext<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -79,8 +79,8 @@ dialog RecommendationResult<SearchConditions, Item> navigateNext<SearchCondition
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigatePrev<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigatePrev<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -93,8 +93,8 @@ dialog RecommendationResult<SearchConditions, Item> navigatePrev<SearchCondition
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigateNext_withHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateNext_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -107,8 +107,8 @@ dialog RecommendationResult<SearchConditions, Item> navigateNext_withHint<Search
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigatePrevious_withHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigatePrevious_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -121,8 +121,8 @@ dialog RecommendationResult<SearchConditions, Item> navigatePrevious_withHint<Se
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -130,13 +130,13 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal<
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByOrdinalEvent)
         index = convertOrdinalToIndex(slotValues.ordinal)
         getItem=config.navConfig.selectionConfig.selectItemApi
-        result = getItem(searchResult.searchConditions, searchResult.recommendations ,index,catalogRef)
+        result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
         presentPage(getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse)
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelativePosition<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelativePosition<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -144,26 +144,41 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelative
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByRelativePositionEvent)
         index = convertRelativePositionToIndex(slotValues.relativePosition)
         getItem=config.navConfig.selectionConfig.selectItemApi
-        result = getItem(searchResult.searchConditions, searchResult.recommendations ,index,catalogRef)
+        result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
+        presentPage(getItem,result,config.navConfig.paginationConfig.presentPageResponse)
+        result
+    }
+}
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByName<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
+    RecommendationResult<SearchConditions, Item> searchResult,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByNameEvent)
+        indexOfApi = config.navConfig.selectionConfig.indexOfItemByNameApi
+        index = indexOfApi(searchResult.recommendations, slotValues.name)
+        getItem=config.navConfig.selectionConfig.selectItemApi
+        result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
         presentPage(getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse)
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByIndex<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByIndex<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
     sample {
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByIndexEvent)
         getItem=config.navConfig.selectionConfig.selectItemApi
-        result = getItem(searchResult.searchConditions, searchResult.recommendations ,slotValues.index,catalogRef)
+        result = getItem(searchResult.recommendations, slotValues.index, searchResult.searchConditions, catalogRef)
         presentPage(getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse)
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal_withHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -171,13 +186,13 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByOrdinal_
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByOrdinalEvent)
         index = convertOrdinalToIndex(slotValues.ordinal)
         getItem=config.navConfig.selectionConfig.selectItemApi
-        result = getItem(searchResult.searchConditions, searchResult.recommendations ,index, catalogRef)
+        result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
         presentPage_withHint(config,getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse, catalogRef)
         result
     }
 }
-dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelativePosition_withHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelativePosition_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -185,28 +200,44 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelative
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByRelativePositionEvent)
         index = convertRelativePositionToIndex(slotValues.relativePosition)
         getItem=config.navConfig.selectionConfig.selectItemApi
-        result = getItem(searchResult.searchConditions, searchResult.recommendations ,index, catalogRef)
+        result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
+        presentPage_withHint(config,getItem,result,config.navConfig.paginationConfig.presentPageResponse, catalogRef)
+        result
+    }
+}
+
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByName_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
+    RecommendationResult<SearchConditions, Item> searchResult,
+    optional CatalogReference catalogRef
+) {
+    sample {
+        slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByNameEvent)
+        indexOfApi = config.navConfig.selectionConfig.indexOfItemByNameApi
+        index = indexOfApi(searchResult.recommendations, slotValues.name)
+        getItem=config.navConfig.selectionConfig.selectItemApi
+        result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
         presentPage_withHint(config,getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse, catalogRef)
         result
     }
 }
 
-dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByIndex_withHint<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByIndex_withHint<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
     sample {
         slotValues = expect(Invoke, config.navConfig.selectionConfig.selectByIndexEvent)
         getItem=config.navConfig.selectionConfig.selectItemApi
-        result = getItem(searchResult.searchConditions, searchResult.recommendations, slotValues.index, catalogRef)
+        result = getItem(searchResult.recommendations, slotValues.index, searchResult.searchConditions, catalogRef)
         presentPage_withHint(config,getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse, catalogRef)
         result
     }
 }
 
-dialog RecommendationResult<SearchConditions, Item> allNavigationPaths<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allNavigationPaths<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {
@@ -227,6 +258,10 @@ dialog RecommendationResult<SearchConditions, Item> allNavigationPaths<SearchCon
     } 
 
     sample {
+        navigateSelectItemByName_withHint(config,searchResult,catalogRef)
+    }
+
+    sample {
         navigateSelectItemByIndex_withHint(config,searchResult,catalogRef)
     }
 }
@@ -234,8 +269,8 @@ dialog RecommendationResult<SearchConditions, Item> allNavigationPaths<SearchCon
 // all possible permutations of possible navigation turns with a extra sample where navigation is
 // not done
 // IMPROVE: replace with a wrapper Optional reusable dialog once lambdas are supported
-dialog RecommendationResult<SearchConditions, Item> allNavigationPaths_WithPassthrough<SearchConditions, Item>(
-    PropertyConfig<SearchConditions, Item> config,
+dialog RecommendationResult<SearchConditions, Item> allNavigationPaths_WithPassthrough<SearchConditions, Item, ItemName>(
+    PropertyConfig<SearchConditions, Item, ItemName> config,
     RecommendationResult<SearchConditions, Item> searchResult,
     optional CatalogReference catalogRef
 ) {

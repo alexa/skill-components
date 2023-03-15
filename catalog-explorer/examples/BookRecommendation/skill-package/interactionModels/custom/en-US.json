@@ -158,6 +158,96 @@
                 }
               }
             ]
+          },
+          {
+            "name": "TITLE",
+            "values": [
+              {
+                "name": {
+                  "value": "The Shining"
+                }
+              },
+              {
+                "name": {
+                  "value": "It"
+                }
+              },
+              {
+                "name": {
+                  "value": "Pet Sematary"
+                }
+              },
+              {
+                "name": {
+                  "value": "The Green Mile"
+                }
+              },
+              {
+                "name": {
+                  "value": "Under the Dome"
+                }
+              },
+              {
+                "name": {
+                  "value": "Doctor Sleep"
+                }
+              },
+              {
+                "name": {
+                  "value": "Four Past Midnight"
+                }
+              },
+              {
+                "name": {
+                  "value": "Do androids dream of robotic sheep"
+                }
+              },
+              {
+                "name": {
+                  "value": "Dune"
+                }
+              },
+              {
+                "name": {
+                  "value": "A Game of Thrones"
+                }
+              },
+              {
+                "name": {
+                  "value": "Pride and Prejudice"
+                }
+              },
+              {
+                "name": {
+                  "value": "Hyperion"
+                }
+              },
+              {
+                "name": {
+                  "value": "Ready Player One"
+                }
+              },
+              {
+                "name": {
+                  "value": "Harry Potter: Deathly Hallows"
+                }
+              },
+              {
+                "name": {
+                  "value": "The Fault in Our Stars"
+                }
+              },
+              {
+                "name": {
+                  "value": "The Notebook"
+                }
+              },
+              {
+                "name": {
+                  "value": "The Hobbit"
+                }
+              }
+            ]
           }
         ]
       }

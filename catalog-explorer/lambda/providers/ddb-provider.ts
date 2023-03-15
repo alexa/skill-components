@@ -54,7 +54,7 @@ export class DDBListProvider<SearchConditions, Item>  implements CatalogProvider
                 }
             }
             count = seenListEntries.size;
-            console.log("Count", count);
+            console.log("Seen item Count", count);
             console.log("Items in table:", results.Table?.ItemCount)
             if(count === results.Table?.ItemCount)
             {
@@ -222,8 +222,6 @@ export class DDBListProvider<SearchConditions, Item>  implements CatalogProvider
                 excludeList.push(temp[y]);
             }
         }
-        console.log("Exclude List:", excludeList);
-        console.log("DDB key:", key);
         const filterExpression= "NOT #pk IN (" + excludeList.map((_: any, index: string) => ":pk" + index).join(", ") + ")";
         const expressionAttributeNames = { "#pk": key };
         let expressionAttributeValue : any = {};
@@ -232,12 +230,8 @@ export class DDBListProvider<SearchConditions, Item>  implements CatalogProvider
         });
         let unseenList: any[] = [];
         let scanResults: any ;
-        console.log("filterExpression:",filterExpression);
-        console.log("expressionAttributeNames:",expressionAttributeNames);
-        console.log("ExpressionAttributeValues:",expressionAttributeValue);
         do
         {
-            console.log("INSIDE LOOP");
             let scanCommand: ScanCommandInput = {
             Limit : pageSize, 
             TableName : this.tableName,
@@ -322,7 +316,6 @@ export class DDBListProvider<SearchConditions, Item>  implements CatalogProvider
         try {
             const results = await this.client.send(new QueryCommand(params));
             this.lek = results.LastEvaluatedKey;
-            console.log("LEKKKK:",this.lek);
             (results.Items || []).forEach(function (element: any, index: any, array: any) {
                 matchingData.push(unmarshall(element));
             });
