@@ -111,6 +111,14 @@ export class CatalogExplorer {
         }
         return false;
     }
+
+    static getActiveCatalogName(handlerInput: HandlerInput): string | undefined{
+        const sessionState = CatalogExplorerSessionState.getPlainSessionState(handlerInput);
+        if(sessionState && sessionState.activeCatalog){
+            return sessionState.activeCatalog.catalogProviderName;
+        }
+        return undefined;
+    }
     
     // get the catalog provider instance for a catalog reference; reconstructs the catalog provider instance from
     // serialized state in the providerState

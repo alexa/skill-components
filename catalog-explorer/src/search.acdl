@@ -159,7 +159,7 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVa
     sample {
         searchConditions = expect(Invoke, config.searchPatterns[0].searchEvent)
         
-        search=config.searchPatterns[0].searchApiAdaptor
+        search=config.searchPatterns[0].searchApiVariationsAdaptor
         result = search(searchConditions,catalogRef)
 
         recommendationResponse(config, config.searchPatterns[0], result)
@@ -180,7 +180,7 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index0_WithVa
     sample {
         searchConditions = expect(Invoke, config.searchPatterns[0].searchEvent)
 
-        search=config.searchPatterns[0].searchApiAdaptor
+        search=config.searchPatterns[0].searchApiVariationsAdaptor
         result = search(searchConditions,catalogRef)
 
         recommendationResponse(config, config.searchPatterns[0], result)
@@ -202,7 +202,7 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVa
     sample {
         searchConditions = expect(Invoke, config.searchPatterns[1].searchEvent)
 
-        search=config.searchPatterns[1].searchApiAdaptor
+        search=config.searchPatterns[1].searchApiVariationsAdaptor
         result = search(searchConditions,catalogRef)
 
         recommendationResponse(config, config.searchPatterns[1], result)
@@ -223,7 +223,7 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index1_WithVa
     sample {
         searchConditions = expect(Invoke, config.searchPatterns[1].searchEvent)
 
-        search=config.searchPatterns[1].searchApiAdaptor
+        search=config.searchPatterns[1].searchApiVariationsAdaptor
         result = search(searchConditions,catalogRef)
 
         recommendationResponse(config, config.searchPatterns[1], result)
@@ -246,7 +246,7 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index2_WithVa
     sample {
         searchConditions = expect(Invoke, config.searchPatterns[2].searchEvent)
 
-        search=config.searchPatterns[2].searchApiAdaptor
+        search=config.searchPatterns[2].searchApiVariationsAdaptor
         result = search(searchConditions,catalogRef)
 
         recommendationResponse(config, config.searchPatterns[2], result)
@@ -267,7 +267,7 @@ dialog  RecommendationResult<SearchConditions, Item> searchForItem_Index2_WithVa
     sample {
         searchConditions = expect(Invoke, config.searchPatterns[2].searchEvent)
 
-        search=config.searchPatterns[2].searchApiAdaptor
+        search=config.searchPatterns[2].searchApiVariationsAdaptor
         result = search(searchConditions,catalogRef)
 
         recommendationResponse(config, config.searchPatterns[2], result)
