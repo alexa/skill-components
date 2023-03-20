@@ -26,22 +26,4 @@ if (fs.existsSync(skillPackageJsonPath)) {
         });
     })
 }
-    // generateVersionFile(version)
-
-// } else {
-
-// }
-
-// function generateVersionFile(version){
-// const s = `// Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-// // SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
-// // Licensed under the Amazon Software License  http://aws.amazon.com/asl/
-
-// namespace com.amazon.alexa.skill.components.catalog_explorer.version
-
-// version="0.0.2222"`
-// fs.writeFile(skillPackageJsonPath, s, function writeJSON(err) {
-//     if (err) return console.log(err);
-// });
-// }
 
