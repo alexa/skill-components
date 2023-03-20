@@ -1,4 +1,4 @@
-namespace com.amazon.alexa.accountlinking.required
+namespace com.amazon.alexa.skill.components.account_linking.required
 
 import com.amazon.alexa.ask.conversations.*
 import displays.*
