@@ -145,7 +145,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelative
         index = convertRelativePositionToIndex(slotValues.relativePosition)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
-        presentPage(getItem,result,config.navConfig.paginationConfig.presentPageResponse)
+        presentPage(getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse)
         result
     }
 }
@@ -201,7 +201,7 @@ dialog RecommendationResult<SearchConditions, Item> navigateSelectItemByRelative
         index = convertRelativePositionToIndex(slotValues.relativePosition)
         getItem=config.navConfig.selectionConfig.selectItemApi
         result = getItem(searchResult.recommendations, index, searchResult.searchConditions, catalogRef)
-        presentPage_withHint(config,getItem,result,config.navConfig.paginationConfig.presentPageResponse, catalogRef)
+        presentPage_withHint(config,getItem,result,config.navConfig.selectionConfig.presentSelectedItemResponse, catalogRef)
         result
     }
 }
