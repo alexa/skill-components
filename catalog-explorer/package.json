@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist && rm -rf build && rm -rf node_modules && rm -rf *.tgz",
-    "compile-ts": "tsc",
+    "compile-ts": "webpack --config webpack.config.js",
     "compile-acdl": "acc",
     "compile": "npm run compile-ts && npm run compile-acdl",
     "lint": "eslint --fix --max-warnings 0 -c .eslintrc.js 'lambda/**/*.{ts,tsx}'",
