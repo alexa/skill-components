@@ -96,6 +96,14 @@ export class ListNav {
         }
     }
 
+    static getSelectedItem(handlerInput: HandlerInput): any{
+        if (ListNav.useSessionArgs){
+            const sessionState = ListNavSessionState.load(handlerInput);
+            const selectedItem = sessionState.argsState?.selectedItem;
+            return selectedItem;
+        }
+    }
+
     // get the list provider instance for a list reference; reconstructs the list provider instance from
     // serialized state in the list reference object
     //

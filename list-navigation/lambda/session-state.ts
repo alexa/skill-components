@@ -47,6 +47,8 @@ export interface ArgumentsState{
     // current paging direction; set by record-event APIs; used by getPage API
     pagingDirection?: PagingDirection;
 
+    // current selected item
+    selectedItem?: any;
 }
 
 export class ListNavSessionState {
