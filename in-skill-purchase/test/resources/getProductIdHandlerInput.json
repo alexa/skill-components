@@ -93,7 +93,7 @@
             "currentTurnRawASR": null,
             "_utteranceId": null,
             "apiRequest": {
-                "name": "com.alexa.reusable.component.inSkillPurchase.purchase.getProductID",
+                "name": "com.alexa.reusable.component.in_skill_purchase.purchase.getProductID",
                 "arguments": {
                     "productName": "value subscription"
                 },

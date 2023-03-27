@@ -20,7 +20,7 @@
       "deploy-lambda": "npm run compile && echo 'yes' | askx deploy -t skill-infrastructure --ignore-hash"
   },
   "dependencies": {
-      "@alexa-skill-components/in-skill-purchase": "^0.0.1",
+      "@alexa-skill-components/in-skill-purchase": "^0.0.4",
       "@types/node": "^18.8.4",
       "ask-sdk-core": "^2.10.1",
       "ask-sdk-model": "^1.39.0",

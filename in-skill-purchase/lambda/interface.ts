@@ -14,7 +14,7 @@ import {
     SendUpsellDirectiveHandler
 } from './handlers';
 
-export class InSkillPurchase {
+export class in_skill_purchase {
     static createHandlers(): RequestHandler[] {
         return [
         new DelegateFlowForDenyHandler(),

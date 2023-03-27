@@ -44,7 +44,7 @@ const ErrorHandler = {
 };
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
-        ...isp.InSkillPurchase.createHandlers(),
+        ...isp.in_skill_purchase.createHandlers(),
        // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
     )
     .addErrorHandlers(

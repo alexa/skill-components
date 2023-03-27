@@ -93,7 +93,7 @@
             "currentTurnRawASR": null,
             "_utteranceId": null,
             "apiRequest": {
-                "name": "com.alexa.reusable.component.inSkillPurchase.purchase.sendBuyDirective",
+                "name": "com.alexa.reusable.component.in_skill_purchase.purchase.sendBuyDirective",
                 "arguments": {
                     "productId": "amzn1.adg.product.679b0753-8b8f-4b47-8ce3-c43b250a0a3f"
                 },

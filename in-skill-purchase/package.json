@@ -1,6 +1,6 @@
 {
     "name": "@alexa-skill-components/in-skill-purchase",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "Amazon",
     "license": "AmznSL-1.0",
     "description": "Alexa skill component for in-skill purchase",

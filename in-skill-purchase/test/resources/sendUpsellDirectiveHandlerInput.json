@@ -93,7 +93,7 @@
             "currentTurnRawASR": null,
             "_utteranceId": null,
             "apiRequest": {
-                "name": "com.alexa.reusable.component.inSkillPurchase.upsell.sendUpsellDirective",
+                "name": "com.alexa.reusable.component.in_skill_purchase.upsell.sendUpsellDirective",
                 "arguments": {
                     "inSkillProductListResponse": {
                         "inSkillProductList": [

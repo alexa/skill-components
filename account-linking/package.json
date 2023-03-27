@@ -1,6 +1,6 @@
 {
     "name": "@alexa-skill-components/account-linking",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "publisher": "Amazon",
     "description": "Alexa skill component for verifying a account is linked",
     "license": "AmznSL-1.0",
