@@ -5,10 +5,9 @@
     "lib": [
       "es2018",
       "es2015.promise",
-      "dom",
-      "esnext"
+      "dom"
     ],
-    "types": ["jest"],
+    "types": [ "jest","node" ],
     "typeRoots": [
       "./node_modules/@types"
     ],

@@ -1,6 +1,6 @@
 {
   "name": "@alexa-skill-components/catalog-explorer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "Amazon",
   "description": "Alexa skill component for searching, refining and navigating through a catalog",
   "license": "AmznSL-1.0",
@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "clean": "rm -rf dist && rm -rf build && rm -rf node_modules && rm -rf *.tgz",
-    "compile-ts": "webpack --config webpack.config.js",
+    "compile-ts": "tsc",
     "compile-acdl": "acc",
     "compile": "npm run compile-ts && npm run compile-acdl",
     "lint": "eslint --fix --max-warnings 0 -c .eslintrc.js 'lambda/**/*.{ts,tsx}'",
@@ -53,7 +53,7 @@
     "ts-jest": "^26.5.6",
     "ts-loader": "^9.2.0",
     "ts-mockito": "2.5.0",
-    "typescript": "^3.9.9",
+    "typescript": "^5.0.2",
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0"
   },
