@@ -88,7 +88,8 @@ Used to build the catalog action object which is passed in catalog config object
 * Event<Nothing> actionEvent (required)
     * Set of utterances which will be said by the user to perform the action which will then trigger the performApi action.
 * Action2<List<Item>,Optional<CatalogReference>,CatalogActionResult>performApi (required)
-    * Action which is triggered by the actionEvent. Consist of the logic which is needed to perform that action.
+    * Action which is triggered by the actionEvent. Consists of the logic which is needed to perform that action.
+    * The actions defined for performing action after an item selection must be named in a specific way - performAction_{actionName}. For example, performAction_Purchase, performAction_SendToPhone etc.
     * Arguments:
         * List items :  List of items which the user needs to explore. 
         * CatalogReference catalogRef:  Reference to the catalog of items
@@ -150,7 +151,8 @@ Used to build the catalog property object which is passed in catalog config obje
 * Event<Nothing> getValueEvent (required)
     * Set of utterances which will be said by the user to get value of a particular property
 * Action2<List<Item>,Optional<CatalogReference>,PropertyValueResult<Item>>getValueApi (required)
-    * Action which is triggered by the getValueEvent. Consist of the logic which is needed to get the value of the mentioned property
+    * Action which is triggered by the getValueEvent. Consists of the logic which is needed to get the value of the mentioned property
+    * The actions defined for getting properties must be named in a specific way - getProperty_{propertyName}. For example, getProperty_title, getProperty_genre etc.
     * Arguments:
         * List items :  List of items which the user needs to explore. 
         * CatalogReference catalogRef:  Reference to the catalog of items
@@ -202,7 +204,9 @@ Used to build the search pattern object which is passed in catalog config object
     * Set of utterances which will be said by the user to perform search
 
 * Action searchApiRef (required)
-    * Reference of the action which is triggered by the searchEvent. Consist of the logic which is needed to performed the search.  
+    * Reference of the action which is triggered by the searchEvent. Consists of the logic which is needed to perform the search.
+    * The search actions must be named in this format - search_{eventType}. Action name ending with `_new` will trigger a new search and the action name ending with `_refine` will trigger the refine search.
+    
 * Dialog2<SearchConditions, Optional<CatalogReference>, RecommendationResult<SearchConditions, Item> > searchApiAdaptor (required)
     * constructed by the user to search on the basis of all search conditions. It calls the searchApiRef action and passes all searchConditions as arguments. 
     * Arguments:
