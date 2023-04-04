@@ -1,3 +1,12 @@
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Customize inform rating event](#customize-inform-rating-event)
+- [Customize rating validation](#customize-rating-validation)
+- [Customize the save rating response](#customize-the-save-rating-response)
+- [Save ratings to custom database](#save-ratings-to-custom-database)
+- [Gather rating without ending session](#gather-rating-without-ending-session)
+
 ## Customize inform rating event
 By default the component allows the user to respond with simple utterances such as "3" or "my score is 3" to indicate their rating; to customize this "inform rating" event, simply define your own event and pass it into the [`informRatingEvent`](./REFERENCE.md#arguments) argument when calling the [`elicitRating`](./docs/REFERENCE.md#elicitrating) dialog in your ACDL code:
 
@@ -96,7 +105,7 @@ dialog Nothing Main {
 }
 ```
 
-### Customize the save rating response
+## Customize the save rating response
 By default, once a user provides a rating value (and it has been saved), the component will respond with a simple "Thank You!" response; to customize this response, then simply define your own response and pass it into the [`notifySaveRatingResponse`](./REFERENCE.md#arguments) argument when calling the [`elicitRating`](./docs/REFERENCE.md#elicitrating) dialog in your ACDL code:
 
 ```
@@ -147,41 +156,9 @@ dialog Nothing Main {
 }
 ```
 
-### Customize Rating Validation
+## Save ratings to custom database
 
-```
-// Weather.acdl
-namespace examples.weatherbot
-
-import com.amazon.alexa.skill.components.feedback_elicitation.*
-
-type RatingRequest {
-    NUMBER rating
-}
-
-@validateArg(rating >= 1 && rating <= 10, defInvRes, customSaveFeedbackAction.arguments.rating)
-action RatingRequest customSaveFeedbackAction(NUMBER rating)
-
-dialog Nothing Main {
-    sample {
-        ...
-        weatherResult = getWeather(...)
-
-        elicitRating(
-            notifyResponse = weather_apla, 
-            notifyAction = getWeather, 
-            payload = ResponsePayload {weatherResult = weatherResult,
-            //custom action
-            saveRatingAction = customSaveFeedbackAction
-            }
-        )
-    }
-}
-```
-
-### Save ratings to custom database
-
-By default, the provide request handler will simply save the rating to the standard console log (ending up in cloudwatch for AWS lambdas); but the skill dev can customize the handler to record the feedback wherever they would like, such as using the provided RedShift recorder to save the rating to a RedShift table for offline analysis
+By default, the provided request handler will simply save the rating to the standard console log (ending up in cloudwatch for AWS lambdas); but the skill dev can customize the handler to record the feedback wherever they would like, such as using the provided RedShift recorder to save the rating to a RedShift table for offline analysis
 
 ```
 // index.ts
@@ -196,17 +173,18 @@ redshiftClient = RedshiftClient(...)
 export const handler = SkillBuilders.custom()
     .addRequestHandlers(
         new SaveRatingRequestHandler(
-            "com.amazon.alexa.skill.components.feedback_elicitation.defaultSaveFeedbackAction",
-            new RedShiftRatingRecorder(redshiftClient, "myFeedbackTable"),
-            true // Send false, IF you do not want to close the session.
+            apiName = "com.amazon.alexa.skill.components.feedback_elicitation.defaultSaveFeedbackAction",
+            ratingHandler = new RedShiftRatingRecorder(redshiftClient, "myFeedbackTable"),
+            shouldEndSession = true // Send false, IF you do not want to close the session.
         ),
     )
     .lambda();
 ```
+Also, Make sure to pass it to the [`SaveRatingRequestHandler`](./docs/REFERENCE.md#saveratingrequesthandler) in your API code.
 
-### Gather rating without ending session
+## Gather rating without ending session
 
-A boolean value that indicates what should happen after Alexa speaks the response
+By default, the provided request handler will simply end the session after getting feedback from the customer; but to customize this behavior, simply set the [`shouldEndSession`](./REFERENCE.md#shouldEndSession) to false if the skill dev do not want to end the session.
 
 ```
 // index.ts
@@ -218,12 +196,13 @@ import { SaveRatingRequestHandler } from
 export const handler = SkillBuilders.custom()
     .addRequestHandlers(
         new SaveRatingRequestHandler(
-            "com.amazon.alexa.skill.components.feedback_elicitation.defaultSaveFeedbackAction",
-            (rating) => {
+            apiName = "com.amazon.alexa.skill.components.feedback_elicitation.defaultSaveFeedbackAction",
+            ratingHandler = (rating) => {
                 console.log('This is implementation of the rating function, where the rating is ', rating)
             },
-            true // Send false, IF you do not want to close the session.
+            shouldEndSession = true // Send false, IF you do not want to close the session.
         ),
     )
     .lambda();
 ```
+Also, Make sure to pass it to the [`SaveRatingRequestHandler`](./docs/REFERENCE.md#saveratingrequesthandler) in your API code.

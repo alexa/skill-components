@@ -1,6 +1,27 @@
 # Overview
+Skill Components are pre-built voice interactions that let you build exciting new functionality into your Alexa skills quickly and easily. These ready-to-use voice experiences are constructed according to best practices and designed accommodate a multitude of possible user interaction paths. When you import Skill Components into your existing voice models, you can spend less time writing code and more time creating unique features for your skill. 
+
+Five Skill Components are available: List Navigation, Catalog Search & Refine, Feedback Elicitation, Account Linking, and In-Skill Purchasing. This document focuses on the Feedback Elicitation Skill Component, a mechanism for gathering user ratings.
+
 
 # ACDL Reusable Dialogs
+In the Alexa Conversations Description Language (ACDL), you can write reusable dialogs with predefined turns to carry out common tasks. Reusable dialogs enable you to invoke other dialogs by using a syntax similar to function calls. With reusable dialogs, you can write succinct, hierarchical dialogs instead of multiple flattened dialogs.
+
+## Table of Contents
+- [Overview](#overview)
+- [ACDL Reusable Dialogs](#acdl-reusable-dialogs)
+  - [Table of Contents](#table-of-contents)
+  - [elicitRating](#elicitrating)
+    - [Limitations](#limitations)
+    - [Arguments](#arguments)
+    - [Return Value](#return-value)
+    - [Validation](#validation)
+- [API Handlers](#api-handlers)
+  - [SaveRatingRequestHandler](#saveratingrequesthandler)
+    - [Constructor Arguments](#constructor-arguments)
+    - [Rating Recorder](#rating-recorder)
+    - [shouldEndSession](#shouldendsession)
+    - [validateArg annotation](#validatearg-annotation)
 
 ## elicitRating
 
@@ -32,6 +53,16 @@ Dialog to present a result to a user and elicit a (numeric) rating from the user
 * `Response notifySaveRatingResponse`
   * Response template used after a rating value has been provided by the user and saved
   * Defaults to simple built-in response (`defaultSaveResponse`) thanking the user for providing thr feedback
+
+|     | Name                     | Type         | Description                                                                      |
+|:--  |:----------------         | :-----:      |:------------------------------------------------------------------               |
+| 1   | notifyResponse           | Response     | The APLA response prompt to be used for requesting feedback                      |
+| 2   | payload                  | Thing        | Response payload of the previous action called                                   |
+| 3   | notifyAction             | Action       | Action that produced the result being presented to the user, will not be invoked |
+| 4   | informRatingEvent        | Event        | Event for user to provide their rating. Defaults to a built-in set of spoken utterances (`defaultInformRatingEvent`) including "my score is {rating}" and simply "{rating}" |
+| 5   | requestRatingResponse    | Response     | Response template used when user gives a rating that could not be understood. Defaults to built-in response (`defaultInvalidResponse`) requesting the user provide a valid rating, (`payload`) = "The given rating was invalid. Please give this interaction a rating between 1-5, where 5 is the highest rating" |
+| 6   | saveRatingAction         | Action1      | Action that is called when a user provides a rating value. One input argument for the rating value provided by the user. No return value. Defaults to a action bundled with the component(`defaultSaveRatingAction`)          |
+| 7   | notifySaveRatingResponse | Response     | Response template used after a rating value has been provided by the user and saved. Defaults to simple built-in response (`defaultSaveResponse`) thanking the user for providing thr feedback, (`payload`) = "Thank you for the feedback! ${payload.ratingResult.rating >= 4 ? 'Glad that you enjoyed the experience' : (payload.ratingResult.rating <= 3 ? 'All right! We will continue to improve' : 'Sorry about that. We will fix the concern soon!')}"          |
 
 ### Return Value
 
@@ -75,8 +106,7 @@ new SaveRatingRequestHandler(ratingRecorder = new CustomRatingRecorder())
 The shouldEndSession is a boolean value that indicates what should happen after Alexa speaks the response
 * true: The session ends.
 * false or null: Alexa opens the microphone for a few seconds to listen for the user's response. Include a reprompt to give the user a second chance to respond.
-* undefined: The session's behavior depends on the type of Echo device. If the device has a screen and the skill displays screen content, the session stays open for up to 30 more seconds, without opening the microphone to prompt the user for input. For details, see How devices with screens affect the skill session. If the user speaks and precedes their request with the wake word (such as "Alexa,") Alexa sends the request to the skill. Otherwise, Alexa ignores the user's speech. If an Alexa Gadgets event handler is active, the session continues to stay open until the skill calls CustomInterfaceController.StopEventHandler or the event handler expires.
-* reprompt: Used if your service keeps the session open after sending the response (shouldEndSession is false), but the user doesn't respond with anything that maps to an intent defined in your voice interface while the microphone is open. The user has a few seconds to respond to the reprompt before Alexa closes the session.
+Note: Alexa speaks the reprompt when shouldEndSession is false and the user doesn't respond within a few seconds
 
 ### validateArg annotation
 
