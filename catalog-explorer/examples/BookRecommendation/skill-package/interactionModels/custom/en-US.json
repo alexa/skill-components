@@ -1,7 +1,7 @@
 {
     "interactionModel": {
       "languageModel": {
-        "invocationName": "anon book skill",
+        "invocationName": "book recommendation skill",
         "intents": [
           {
             "name": "AMAZON.CancelIntent",
