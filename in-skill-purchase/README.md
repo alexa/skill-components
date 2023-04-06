@@ -200,7 +200,7 @@ The following example code shows the purchase dialog invocation.
 ```
 namespace com.example.skill.name
 
-import com.amazon.alexa.skill.components.in_skill_purchase.purchase.buySpecificProduct 
+import com.amazon.alexa.skill.components.isp.purchase.buySpecificProduct 
 
 dialog Nothing GameDialog {
 
@@ -224,7 +224,7 @@ the ISP component, and then call
 ```
 namespace com.example.skill.name
 
-import com.amazon.alexa.skill.components.in_skill_purchase.upsell.upsell
+import com.amazon.alexa.skill.components.isp.upsell.upsell
 
 dialog Nothing GameDialog {
 
@@ -249,7 +249,7 @@ The following example code shows the cancel dialog invocation.
 ```
 namespace com.example.skill.name
 
-import com.amazon.alexa.skill.components.in_skill_purchase.cancel.cancelPurchase
+import com.amazon.alexa.skill.components.isp.cancel.cancelPurchase
 
 dialog Nothing GameDialog {
 
@@ -274,7 +274,7 @@ The following example code shows the resume dialog invocation.
 ```
 namespace com.example.skill.name
 
-import com.alexa.reusable.component.in_skill_purchase.resume.resumeAfterPurchase
+import com.alexa.reusable.component.isp.resume.resumeAfterPurchase
 
 dialog Nothing GameDialog {
 
@@ -299,12 +299,12 @@ Import the API handlers  into your main Lambda index.js file.
 
 **TypeScript**
 ```
-import { in_skill_purchase } from '@alexa-skill-components/in-skill-purchase';
+import { isp } from '@alexa-skill-components/in-skill-purchase';
 
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
          // your existing handler declarations
-         ...in_skill_purchase.createHandlers(),
+         ...isp.createHandlers(),
     )
     .withApiClient(new DefaultApiClient()) // for monetizationServiceClient
     .lambda();
@@ -318,7 +318,7 @@ const DefaultApiClient = require('ask-sdk-core').DefaultApiClient;
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         // your existing handler declarations
-       ...isp.in_skill_purchase.createHandlers()
+       ...isp.isp.createHandlers()
     )
     .withApiClient(new DefaultApiClient()) // for monetizationServiceClient
     .lambda();

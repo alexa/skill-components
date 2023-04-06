@@ -8,7 +8,7 @@ import prompts.request_city_apla
 import prompts.request_date_apla
 import prompts.request_city_date_apla
 
-import com.amazon.alexa.skill.components.account_linking.required.validateAccountIsLinked
+import com.amazon.alexa.skill.components.acc_linking.required.validateAccountIsLinked
 
 type CityAndDate {
     optional City cityName

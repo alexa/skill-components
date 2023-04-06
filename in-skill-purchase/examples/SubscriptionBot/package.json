@@ -8,7 +8,7 @@
       "clean": "rm -rf dist && rm -rf build && rm -rf node_modules",
       "compile-ts": "webpack --config webpack.config.js",
       "compile-acdl": "askx compile",
-      "compile": "npm run compile-ts && npm run compile-acdl",
+      "compile": "npm run compile-acdl",
       "lint": "eslint --fix --max-warnings 0 -c .eslintrc.js 'src/**/*.{ts,tsx}'",
       "test": "jest --testTimeout=10000",
       "build": "npm run compile",

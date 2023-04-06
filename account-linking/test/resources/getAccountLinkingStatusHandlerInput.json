@@ -93,7 +93,7 @@
             "currentTurnRawASR": null,
             "_utteranceId": null,
             "apiRequest": {
-                "name": "com.amazon.alexa.skill.components.account_linking.required.isAccountLinked",
+                "name": "com.amazon.alexa.skill.components.acc_linking.required.isAccountLinked",
                 "arguments": {}
             }
         }

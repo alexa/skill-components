@@ -1,4 +1,4 @@
-namespace com.amazon.alexa.skill.components.account_linking.required
+namespace com.amazon.alexa.skill.components.acc_linking.required
 
 import com.amazon.alexa.ask.conversations.*
 import displays.*
@@ -10,20 +10,20 @@ type isAccountLinkedResponseType {
 }
 
 // Default response
-dAccountLinkingRDAPL = apl("../response/display/DefaultAccountLinkingRDAPL/document.json")
-dAccountLinkingRDAPL_A = apla("../response/prompts/DefaultAccountLinkingRDAPL-A/document.json")
+dRDAPLN = apl("../response/display/DefaultAccountLinkingRDAPL/document.json")
+dRDAPLAN = apla("../response/prompts/DefaultAccountLinkingRDAPL-A/document.json")
 
-dAccountLinkedRDAPL = apl("../response/display/DefaultAccountLinkedRDAPL/document.json")
-dAccountLinkedRDAPL_A = apla("../response/prompts/DefaultAccountLinkedRDAPL-A/document.json")
+dRDAPLY = apl("../response/display/DefaultAccountLinkedRDAPL/document.json")
+dRDAPLAY = apla("../response/prompts/DefaultAccountLinkedRDAPL-A/document.json")
 
 defUnlinkedResponse = MultiModalResponse {
-    apla =  dAccountLinkingRDAPL_A,
-    apl = dAccountLinkingRDAPL
+    apla =  dRDAPLAN,
+    apl = dRDAPLN
 }
 
 defLinkedResponse = MultiModalResponse {
-    apla =  dAccountLinkedRDAPL_A,
-    apl = dAccountLinkedRDAPL
+    apla =  dRDAPLAY,
+    apl = dRDAPLY
 }
 
 // Skill API Declaration
