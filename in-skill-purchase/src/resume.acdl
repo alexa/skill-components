@@ -1,4 +1,4 @@
-namespace com.amazon.alexa.skill.components.inSkillPurchase.resume
+namespace com.amazon.alexa.skill.components.isp.resume
 import com.amazon.alexa.ask.conversations.*
 import com.amazon.alexa.schema.*
 import com.amazon.ask.types.builtins.AMAZON.*

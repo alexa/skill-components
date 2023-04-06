@@ -159,7 +159,7 @@ The following example is a reusable dialog associated with the ride hailer use c
 ```
 namespace com.example.skill.name
 
-import com.amazon.alexa.accountlinking.required.validateAccountIsLinked
+import com.amazon.alexa.skill.components.acc_linking.required.validateAccountIsLinked
 import prompts.AccountLinkingRequiredAPLAPrompt
 import prompts.AccountLinkingRequiredAPLPrompt
 

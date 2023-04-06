@@ -19,12 +19,13 @@
   ],
   "scripts": {
     "clean": "rm -rf dist && rm -rf build && rm -rf node_modules && rm -rf *.tgz",
+    "sync-component-version": "node ../scripts/sync-component-version.js",
     "compile-ts": "tsc",
     "compile-acdl": "acc",
     "compile": "npm run compile-ts && npm run compile-acdl",
     "lint": "eslint --fix --max-warnings 0 -c .eslintrc.js 'lambda/**/*.{ts,tsx}'",
     "test": "jest --testTimeout=10000",
-    "build": "npm run compile && npm pack",
+    "build": "npm run sync-component-version && npm run compile && npm pack",
     "clean-build": "npm run clean && npm install && npm run build",
     "release": "npm run build && npm run lint && npm run test",
     "clean-release": "npm run clean && npm install && npm run release"

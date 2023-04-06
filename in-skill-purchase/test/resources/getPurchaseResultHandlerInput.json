@@ -97,7 +97,7 @@
             "currentTurnRawASR": null,
             "_utteranceId": null,
             "apiRequest": {
-                "name": "com.alexa.reusable.component.inSkillPurchase.resume.getPurchaseResult",
+                "name": "com.alexa.reusable.component.isp.resume.getPurchaseResult",
                 "arguments": {}
             }
         }

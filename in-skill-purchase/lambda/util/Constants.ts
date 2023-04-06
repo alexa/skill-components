@@ -3,7 +3,7 @@ export class Constants {
     static readonly LAUNCH_REQUEST = 'LaunchRequest';
     
     // Namespace constants
-    static readonly IN_SKILL_PURCHASE_RD_NAMESPACE_AC = 'com.amazon.alexa.skill.components.inSkillPurchase';
+    static readonly IN_SKILL_PURCHASE_RD_NAMESPACE_AC = 'com.amazon.alexa.skill.components.isp';
     static readonly PURCHASE_DIALOG_AC = Constants.IN_SKILL_PURCHASE_RD_NAMESPACE_AC + '.purchase';
     static readonly RESUME_DIALOG_AC = Constants.IN_SKILL_PURCHASE_RD_NAMESPACE_AC + '.resume';
     static readonly UPSELL_DIALOG_AC = Constants.IN_SKILL_PURCHASE_RD_NAMESPACE_AC + '.upsell';
