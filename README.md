@@ -40,7 +40,7 @@ Skill Components are “ready to use” experiences that you can easily add to y
 
 ### 2. Familiarize yourself with Alexa Conversations Skill Development
 
-* [Alexa Conversations](https://developer.amazon.com/en-US/docs/alexa/conversations/about-alexa-conversations.html.)
+* [Alexa Conversations](https://developer.amazon.com/en-US/docs/alexa/conversations/about-alexa-conversations.html)
 * [ACDL Language](https://developer.amazon.com/en-US/docs/alexa/conversations/about-acdl.html) (for writing sample dialog flows)
 * [APL and APL-A](https://developer.amazon.com/en-US/docs/alexa/alexa-presentation-language/add-visuals-and-audio-to-your-skill.html) (for writing audio/visual responses)
 * [Alexa Skills Kit (ASK) Plug-in for VS Code](https://marketplace.visualstudio.com/items?itemName=ask-toolkit.alexa-skills-kit-toolkit)
