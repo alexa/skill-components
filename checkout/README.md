@@ -13,7 +13,6 @@ With the Checkout Skill Component, you can enable users to pay to the business f
 * [Getting Started Process](#getting-started-process)
 * [Reference](#reference)
 * [Example skill](#example-skill)
-* [Known issues](#known-issues)
 * [Feedback](#feedback)
 * [License](#license)
 
@@ -29,7 +28,7 @@ Are you building an app in which your users add items to a cart and can make onl
 
 Following is an example skill interaction that shows different paths a component user might follow. These scenarios are taken from the included [Online Food Ordering example skill](./examples/OnlineFoodOrdering).
 
-### Checkout Without Account Linking
+#### Checkout Without Account Linking
 
 ```
 User  > Buy me 3 burgers
@@ -232,7 +231,11 @@ Add all the possible slot types and slot values in the InteractionModel of the s
                     },
                     {
                         "name": {
-                        "value": "cash on delivery"
+                        "value": "cash on delivery",
+                        "synonyms": [
+                            "cod",
+                            "pay on delivery"
+                        ]
                        }
                     }
                ]
@@ -262,12 +265,12 @@ export const handler = SkillBuilders.custom()
             new CustomProvider()
     ),
     )
-    .lambda();
+.lambda();
 ```
 
 #### Javascript
 
-For an example, see [ OnlineFoodOrdering Example skill](#example-skill).
+For an example, see [ OnlineFoodOrdering Example Skill](#example-skill).
 
 ```
 const Checkout = require('@alexa-skill-components/checkout')
@@ -282,7 +285,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         ...CheckoutComponent.createHandlers(
         new CustomProvider()
     ),
-    .lambda();
+.lambda();
 ```
 
 ### Step 6: Compile and deploy
@@ -310,41 +313,14 @@ For details, see the [Example Skills](#example-skill).
 
 Deploy any changes, compile your code, and then deploy again.
 
+```
 askx compile && askx deploy
+```
 
 ## Example skill
 
 For an example skill, see [OnlineFoodOrdering](./examples/OnlineFoodOrdering).
 
-## Known issues
-
-The following error conditions are thrown as a part of the component and do not affect the overall working of the component, these just logics on the custom provider’s end which can be modified.
-
-#### Mode of Payment
-
-The mode of payment provided by the user are customizable at the skill’s provider end, selecting Credit Card as the mode of payment returns a checkout failure response due to missing card details in order to checkout.
-
-```
-"Checkout Failed! Missing information to checkout with Credit Card as the mode of payment"
-```
-
-On the other hand, for Cash on Delivery, checkout is successful.
-
-```
-"Checkout Success! Your order is placed"
-```
-
-#### Minimum and Maximum Limits
-
-The minimum and maximum limits to checkout specify the ideal range for quantity of items in the cart.
-
-```
-"Your cart subtotal is Rs ${payload.result.total}. It does not meet the minimum amount limit to checkout. Add some more items to your cart."
-```
-
-```
-"Your cart subtotal is Rs ${payload.result.total}. It exceeds the maximum amount limit to checkout."
-```
 
 ## Feedback
 

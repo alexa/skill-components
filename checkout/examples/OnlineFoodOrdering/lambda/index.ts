@@ -10,15 +10,15 @@
   // defined are included below. The order matters - they're processed top to bottom.
 
   export const handler = SkillBuilders.custom()
-  .addRequestHandlers(
-      new CartDetailsHandler(),
-      new PaymentDetailsHandler(),
+    .addRequestHandlers(
+        new CartDetailsHandler(),
+        new PaymentDetailsHandler(),
 
-  // register all the handlers required for checkout component to function;
-  // passing the custom provider within createHandlers
-  ...Checkout.createHandlers(
-    new CustomProvider()
-  )
-  )
+    // register all the handlers required for checkout component to function;
+    // passing the custom provider within createHandlers
+    ...Checkout.createHandlers(
+      new CustomProvider()
+    )
+    )
 
   .lambda();

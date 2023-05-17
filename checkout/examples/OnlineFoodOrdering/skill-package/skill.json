@@ -29,9 +29,6 @@
               "type": "AMAZON.Conversations"
             }
           ]
-        },
-        "endpoint": {
-          "uri": "arn:aws:lambda:us-east-1:778265510060:function:ask-checkoutskill-default-default-1683271627756"
         }
       }
     },
