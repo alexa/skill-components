@@ -65,6 +65,7 @@ The following skill components are contained in this package:
 | [List Navigation](list-navigation) | Pre-built experience to navigate through a list of items   | Private Preview | [Here][3]        |
 | [Account Linking](account-linking) | Simplifies enabling account linking for your skill   | Private Preview | [Here][4]        |
 | [In Skill Purchases](in-skill-purchase) | pre-built experience to enable in-skill purchases   | Private Preview | [Here][5]        |
+| [Checkout](checkout) | Enable users to add items to a cart and make online purchase with a full checkout experience   | Private Preview | [Here][6]        |
 
 ## How Components Work
 
@@ -128,3 +129,4 @@ This library is licensed under the [Amazon Software License](LICENSE).
 [3]:https://www.npmjs.com/package/@alexa-skill-components/list-navigation
 [4]:https://www.npmjs.com/package/@alexa-skill-components/account-linking
 [5]:https://www.npmjs.com/package/@alexa-skill-components/in-skill-purchase
+[6]:https://www.npmjs.com/package/@alexa-skill-components/checkout
