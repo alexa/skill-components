@@ -1,0 +1,221 @@
+namespace examples.checkout_skill
+import com.amazon.alexa.skill.components.checkout.*
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+import prompts.*
+import displays.*
+import slotTypes.*
+    
+   //response for checkout without account linking using burgers
+    multiModalCartResponse= MultiModalResponse {
+        apla = AddToCartResponse
+    }
+    
+    //response for checkout with account linking using pizzas
+    multiModalAddCartResponse= MultiModalResponse {
+        apla = DoAddToCartResponse
+    }
+    
+    //response for mode of payment added
+    multiModalPaymentResponse= MultiModalResponse {
+        apla = AddPaymentResponse
+    }
+    
+    // main skill action, defining the deployable dialogs and standard
+    // responses
+    mySkill = skill(
+        locales = [Locale.en_US],
+        dialogs = [CartCheckout],
+        skillLevelResponses = SkillLevelResponses
+            {
+                welcome = AlexaConversationsWelcome,
+                out_of_domain = AlexaConversationsOutOfDomain,
+                bye = AlexaConversationsBye,
+                reqmore = AlexaConversationsRequestMore,
+                provide_help = AlexaConversationsProvideHelp
+            }
+        )
+    
+    // Declare a type for the information you want to extract from the utterances
+    // In this example, we want to extract the number of items
+    type QuantityOfCart {
+        NUMBER quantity
+        
+    }
+
+    // Declare a type for the mode of payment for checkout
+    type ModeOfPayment{
+        PAYMENTMODE payment
+    }
+    
+    type PaymentResult{
+        PAYMENTMODE payment
+    }
+
+    type AddToCartResult {
+        Number quantity
+    }
+    
+    type PaymentPayload{
+        PaymentResult paymentResult
+    }
+
+    type ResponsePayload {
+        AddToCartResult addToCartResult
+    }
+    
+    //checkout without account linking using burgers
+    addToCartEvent = utterances<QuantityOfCart>(
+        [
+            "Buy me {quantity} burgers",
+            "Buy me {quantity} burger",
+            "I want to buy {quantity} burgers",
+            "Can I have {quantity} burgers",
+            "Add {quantity} burgers to my cart",
+            "Add {quantity} burger to my cart"
+            
+        ]
+    )
+    
+    //checkout with account linking using pizzas
+    checkoutWithAccountLinking = utterances<QuantityOfCart>(
+        [
+            "Buy me {quantity} pizzas",
+            "Buy me {quantity} pizza",
+            "I want to buy {quantity} pizzas",
+            "Can I have {quantity} pizzas",
+            "Add {quantity} pizzas to my cart",
+            "Add {quantity} pizza to my cart"
+        ]
+    )
+
+    //user initiates checkout via these utterances
+    initiateCheckoutEvent = utterances<Nothing>(
+        [
+            "I want to checkout", 
+            "I am ready to checkout", 
+            "I am ready to pay", 
+            "thats all",
+            "thanks", 
+            "lets checkout", 
+            "checkout",
+            "place my order"
+        ]
+    )
+    
+    paymentDetailsEvent = utterances<ModeOfPayment>(
+        [
+            "{payment}",
+            "Select {payment} as the mode of payment",
+            "I want to go with {payment}",
+            "How about {payment}",
+            "{payment} seems a good option!",
+            "Proceed with {payment}",
+            "{payment} always!"
+        ]
+    )
+    
+    action AddToCartResult addToCart(Number quantity)
+    
+    action PaymentResult paymentDetails(PAYMENTMODE payment)
+
+    dummyEvent = utterances<Nothing>([
+        "some dummy utterance"
+    ])
+
+    action Nothing dummyAction()
+ 
+
+    dialog Nothing CartCheckout {
+        //sample for checkout without account linking
+        sample {
+            
+            cartRequest = expect(Invoke, addToCartEvent)
+    
+            ensure(
+                RequestArguments {arguments = [addToCart.arguments.quantity], response = multiModalCartResponse},
+                
+            )
+    
+            addToCartResult = addToCart(cartRequest.quantity)
+    
+            response(
+                act = Notify{success = true, actionName = addToCart}, 
+                response =  multiModalCartResponse, 
+                payload = ResponsePayload {addToCartResult = addToCartResult}
+            )
+
+            paymentRequest = expect(Invoke, paymentDetailsEvent)
+
+            ensure(
+                RequestArguments {arguments = [paymentDetails.arguments.payment], response = multiModalPaymentResponse},
+                
+            )
+            paymentResult = paymentDetails(paymentRequest.payment)
+
+            response(
+                act = Notify{success = true, actionName = paymentDetails}, 
+                response =  multiModalPaymentResponse, 
+                payload = PaymentPayload {paymentResult = paymentResult}
+            )
+
+            Event<Nothing> affirmUtterances = defaultAffirmUtterances
+            
+            checkoutConfig = buildCheckoutConfig(
+                checkoutEvent=initiateCheckoutEvent,
+                affirmUtterances=affirmUtterances
+                
+            )
+            
+            CheckoutWithoutAccountLinking(checkoutConfig)
+        
+            expect(Invoke,dummyEvent)
+    
+            dummyAction()
+            
+            response(
+                act = Notify{success = true, actionName = dummyAction},
+                response = AlexaConversationsWelcome
+            )
+        }
+
+        //sample for checkout with account linking
+        sample {
+            
+            cartRequest = expect(Invoke, checkoutWithAccountLinking)
+
+            ensure(
+                RequestArguments {arguments = [addToCart.arguments.quantity], response = multiModalPaymentResponse},
+                
+            )
+
+            addToCartResult = addToCart(cartRequest.quantity)
+
+            response(
+                act = Notify{success = true, actionName = addToCart}, 
+                response =  multiModalAddCartResponse, 
+                payload = ResponsePayload {addToCartResult = addToCartResult}
+            )
+    
+
+            Event<Nothing> affirmUtterances = defaultAffirmUtterances
+            
+            checkoutConfig = buildCheckoutConfig(
+                checkoutEvent=initiateCheckoutEvent,
+                affirmUtterances=affirmUtterances
+                
+            )
+            
+            Checkout(checkoutConfig)
+        
+            expect(Invoke,dummyEvent)
+    
+            dummyAction()
+            
+            response(
+                act = Notify{success = true, actionName = dummyAction},
+                response = AlexaConversationsWelcome
+            )
+        }
+    }

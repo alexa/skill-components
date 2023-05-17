@@ -1,0 +1,166 @@
+namespace com.amazon.alexa.skill.components.checkout
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+import prompts.*
+import displays.*
+import slotTypes.*
+import com.amazon.alexa.accountlinking.required.validateAccountIsLinked
+
+
+// default utterance sets for user to checkout
+doCheckoutEvent = utterances<Nothing>(
+  [
+    "I want to checkout", 
+    "I am ready to checkout", 
+    "I am ready to pay", 
+    "thats all",
+    "thanks", 
+    "lets checkout", 
+    "checkout",
+    "place my order"
+  ]
+)
+
+defaultAffirmUtterances = utterances<Nothing>(
+  [
+    "correct",
+    "OK",
+    "Yeap",
+    "Yep",
+    "Yes",
+    "Yeah",
+    "Yup",
+    "Positive"
+  ]
+)
+
+
+action CheckoutResult  checkout()
+  
+// fetches the order details in the order validation dialog
+action CheckoutResult validationAction()
+
+
+
+// CheckoutResult type includes the ValidationResult as well
+// Not created a separate type for ValidationResult as it is exactly similar to CheckoutResult
+type CheckoutResult{
+  String errorCode 
+  Number error   //will be boolean - either 0 or 1
+}
+
+type CheckoutConfig{
+  Event<Nothing> checkoutEvent
+  Response checkoutPrompt
+  Response validationPrompt
+  Event<Nothing> affirmUtterances
+}
+
+
+
+type CheckoutResponsePayload{
+  optional CheckoutResult result
+}
+
+
+
+dPCR= apla("../response/prompts/defaultPerformCheckoutResponse/document.json")
+dOVR= apla("../response/prompts/defaultOrderValidationResponse/document.json")
+
+
+multiModalPerformCheckoutResponse = MultiModalResponse {
+    apla = dPCR,
+}
+
+multiModalOrderValidationResponse = MultiModalResponse {
+    apla = dOVR,
+}
+
+
+
+
+dialog CheckoutConfig buildCheckoutConfig(
+
+  Event<Nothing> checkoutEvent = checkoutEvent,
+  Response checkoutPrompt=multiModalPerformCheckoutResponse,
+  Response validationPrompt=multiModalOrderValidationResponse,
+  Event<Nothing> affirmUtterances = defaultAffirmUtterances
+
+) {
+  sample{
+      CheckoutConfig
+      {
+          checkoutEvent = checkoutEvent,
+          checkoutPrompt = checkoutPrompt,
+          validationPrompt = validationPrompt,
+          affirmUtterances=affirmUtterances
+    
+      }
+  }
+ 
+}
+
+//CheckoutFlow reusable dialog to be called in Checkout - With and Without account linking
+dialog CheckoutResult CheckoutFlow(
+  CheckoutConfig config
+){
+  sample{
+    // order validation dialog
+    // fetches the order details
+    validationResult = validationAction() 
+
+      //error of type validation result
+    if (validationResult.error == 1) {
+          response(
+            act = Notify{actionName = validationAction, success=true},
+            payload = CheckoutResponsePayload{ result = validationResult},
+            response = config.validationPrompt
+          )
+      } 
+    else{
+      response(
+        act = Notify{actionName = validationAction, success=true},
+        payload = CheckoutResponsePayload{ result = validationResult},
+        response = config.validationPrompt
+      )
+      expect (Invoke, config.affirmUtterances)
+
+    checkoutResult = checkout()
+
+    response(
+      act = Notify{actionName = checkout, success=true},
+      payload = CheckoutResponsePayload{ result = checkoutResult},
+      response = config.checkoutPrompt
+    )
+    /* return */ checkoutResult
+  }
+  }
+}
+
+
+dialog CheckoutResult CheckoutWithoutAccountLinking(
+  CheckoutConfig config
+)
+{
+  sample {
+
+    expect(Invoke, config.checkoutEvent)
+
+    CheckoutFlow(config)
+}
+}
+
+dialog CheckoutResult Checkout(
+  CheckoutConfig config
+){
+  sample{
+    expect(Invoke, config.checkoutEvent)
+
+    //account linking action
+    validateAccountIsLinked()
+    
+
+    CheckoutFlow(config)
+  }
+}

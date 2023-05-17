@@ -1,0 +1,74 @@
+{
+	"type": "APL-A",
+	"version": "0.1",
+	"license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+	"description": "Default, generic response prompt for presenting a page of items to a user; assumes all items have a 'label' field and only supports up to 5 items per page",
+	"mainTemplate": {
+	  "parameters": [
+		"payload"
+	  ],
+	  "item": {
+		"type": "Sequential",
+		"items": [
+		  {
+			"type": "Selector",
+			"items": [
+				{
+					"type": "Speech",
+					"when": "${payload.result.error == 1 && payload.result.errorCode == 'MINIMUM_AMOUNT'}",
+					"contentType": "text",
+					"description": "Default case, where the cart subtotal is below a minimum amount",
+					"content": "Your cart subtotal is Rs ${payload.result.total}. It does not meet the minimum amount limit to checkout. Add some more items to your cart."
+				},
+				{
+					"type": "Speech",
+					"when": "${payload.result.error == 1 && payload.result.errorCode == 'MAXIMUM_AMOUNT'}",
+					"contentType": "text",
+					"description": "Default case, where the cart subtotal exceeds a maximum amount.",
+					 "content": "Your cart subtotal is Rs ${payload.result.total}. It exceeds the maximum amount limit to checkout."
+				},
+				{
+					"type": "Speech",
+					"when": "${payload.result.error == 1 && payload.result.errorCode == 'CREDIT_CARD'}",
+					"contentType": "text",
+					"content": "Checkout Failed! Missing information to checkout with Credit Card as the mode of payment"
+				},
+				{
+					"type": "Speech",
+					"when": "${payload.result.error == 1 && payload.result.errorCode == 'EMPTY_CART'}",
+					"contentType": "text",
+					"description": "Default case, where the cart still needs items.",
+					"content": "Your cart is empty. What else would you like?"
+				},
+				{
+					"type": "Speech",
+					"when": "${payload.result.error == 1 && payload.result.errorCode == 'MORE_THAN_100_ITEMS'}",
+					"contentType": "text",
+					"description": "Default case, where the cart still needs items.",
+					 "content": "Your cart has more than 100 items. Please remove some items before checkout."
+				},
+				{
+					"type": "Speech",
+					"description": "Error case, had trouble getting cart from database.",
+					"when": "${payload.result.error == 1 && payload.result.errorCode == 'CART_NOT_FOUND' }",
+					"contentType": "text",
+					"content": "Sorry, I'm having trouble with your cart."
+				}
+			]
+		  },
+		  {
+			"type": "Selector",
+			"items": [
+				{
+					"when":"${payload.result.error == 0 && payload.result.errorCode == 'SUBTOTAL' }",
+					"type": "Speech",
+					"contentType": "text",
+					"description": "subtotal was found. Return subtotal",
+					"content": "Your subtotal is Rs ${payload.result.total}. Would you like to checkout?"
+				}
+			]
+		  }
+		]
+	  }
+	}
+  }

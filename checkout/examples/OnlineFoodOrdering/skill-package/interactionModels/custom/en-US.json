@@ -1,0 +1,52 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "sample checkout skill",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "PlaceHolderIntent",
+                    "samples": [
+                        "In case you would like to intent based skill."
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "PAYMENTMODE",
+                    "values": [
+                      {
+                        "name": {
+                          "value": "credit card"
+                        }
+                      },
+                      {
+                        "name": {
+                          "value": "cash on delivery",
+                          "synonyms": [
+                            "cod",
+                            "pay on delivery"
+                          ]
+                        }
+                      }
+                    ]
+               }
+            ]
+    }
+}
+}
