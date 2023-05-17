@@ -1,0 +1,28 @@
+{
+  "type": "APL-A",
+  "version": "0.1",
+  "license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+  "description": "Default, generic response prompt for showing the details of the cancelled booking.",
+  "mainTemplate": {
+    "parameters": [
+      "payload"
+    ],
+    "item": {
+      "type": "Selector",
+      "items": [
+        {
+					"type": "Speech",
+					"when": "${payload.result.error == 1 && payload.result.errorCode == 'CREDIT_CARD'}",
+					"contentType": "text",
+					"content": "Checkout Failed! Missing information to checkout with Credit Card as the mode of payment"
+				},
+        {
+          "when": "${payload.result.error == 0}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "Checkout Success! Your order is placed"
+        }
+      ]
+    }
+  }
+}
