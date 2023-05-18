@@ -261,7 +261,7 @@ export const skillDomain = "examples.checkout_skill";
 export const handler = SkillBuilders.custom()
     .addRequestHandlers(
         ...
-        ...CheckoutComponent.createHandlers(
+        ...Checkout.createHandlers(
             new CustomProvider()
     ),
     )
@@ -282,7 +282,7 @@ export const skillDomain = "examples.checkout_skill";
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         ...
-        ...CheckoutComponent.createHandlers(
+        ...Checkout.createHandlers(
         new CustomProvider()
     ),
 .lambda();
