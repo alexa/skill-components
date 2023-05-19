@@ -1,0 +1,1 @@
+export const skillDomain = "examples.sample_checkout_skill";
