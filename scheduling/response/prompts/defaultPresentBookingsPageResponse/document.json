@@ -1,0 +1,52 @@
+{
+  "type": "APL-A",
+  "version": "0.1",
+  "license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+  "description": "Default, generic response prompt for presenting a page of items to a user; assumes all items have a 'label' field and only supports up to 5 items per page",
+  "mainTemplate": {
+    "parameters": [
+      "payload"
+    ],
+    "item": {
+      "type": "Selector",
+      "items": [
+        {
+          "when": "${payload.page.items == null || payload.page.items.length < 1}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "No bookings could be found, sorry"
+        },
+        {
+          "when": "${payload.page.items.length == 1}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "You have booked: ${payload.page.items[0].label}."
+        },
+        {
+          "when": "${payload.page.items.length == 2}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "You have booked: ${payload.page.items[0].label}, ${payload.page.items[1].label}."
+        },
+        {
+          "when": "${payload.page.items.length == 3}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "You have booked: ${payload.page.items[0].label}, ${payload.page.items[1].label}, ${payload.page.items[2].label}."
+        },
+        {
+          "when": "${payload.page.items.length == 4}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "You have booked: ${payload.page.items[0].label}, ${payload.page.items[1].label}, ${payload.page.items[2].label}, ${payload.page.items[3].label}."
+        },
+        {
+          "when": "${payload.page.items.length == 5}",
+          "type": "Speech",
+          "contentType": "text",
+          "content": "You have booked: ${payload.page.items[0].label}, ${payload.page.items[1].label}, ${payload.page.items[2].label}, ${payload.page.items[3].label}, ${payload.page.items[4].label}."
+        }
+      ]
+    }
+  }
+}

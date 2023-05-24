@@ -1,0 +1,38 @@
+// Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.scheduling.modify
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.scheduling.types.*
+
+dialog SchedulingResult modifyBooking<SchedulingInfo, BookingItem>
+(   
+    ModifyBookingConfig<SchedulingInfo, BookingItem> config
+){
+    
+    sample{
+
+        modifiedSI = expect(Invoke, config.modifyEvent) // take utterances as an input
+
+        modifyDialog = config.modifyApiAdaptor
+        result = modifyDialog(config.prevBookingInfo, modifiedSI)
+
+        response(
+            response = config.ModifyBookingResponse,
+
+            act = Notify {
+              success = true,
+              actionName = config.modifyApiRef
+            },
+            payload = SchedulingResultPayload{
+              result = result
+            }
+          )
+        result
+    }
+}

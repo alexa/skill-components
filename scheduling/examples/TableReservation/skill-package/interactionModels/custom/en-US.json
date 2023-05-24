@@ -1,0 +1,63 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "table booking latest show",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "PlaceHolderIntent",
+                    "samples": [
+                        "In case you would like to intent based skill."
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "values": [
+                    {
+                        "name": {
+                            "value": "Fork and Fame"
+                        }
+                    },
+                    {
+                        "name": {
+                            "value": "Umami Junction"
+                        }
+                    },
+                    {
+                        "name": {
+                            "value": "The Spice Grotto"
+                        }
+                    },
+                    {
+                        "name": {
+                            "value": "The Crispy Cauldron"
+                        }
+                    },
+                    {
+                        "name": {
+                            "value": "The Hungry Pachyderm"
+                        }
+                    }
+                    ],
+                    "name": "Restaurants"
+              }
+            ]
+        }
+    }
+}

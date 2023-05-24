@@ -1,0 +1,174 @@
+// Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.scheduling
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.scheduling.types.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+
+defaultAffirmUtterances = utterances<Nothing>(
+    [
+      "correct",
+      "OK",
+      "Yeap",
+      "Yep",
+      "Yes",
+      "Yeah",
+      "Yup",
+      "Positive"
+    ]
+  )
+  
+defSR = apla("../response/prompts/defaultScheduleResultResponse/document.json")
+
+defSRP = MultiModalResponse{
+    apla = defSR
+}
+
+defaultShowUtterances = utterances<Nothing>(
+    [
+      "Show bookings",
+      "Show reservations",
+      "Show me my reservations",
+      "Show me my bookings",
+      "Show me my existing bookings",
+      "Show me my exisitng reservations",
+      "Show reservations",
+      "What reservations do I have",
+      "What bookings do I have",
+      "Do I have any reservations",
+      "Do I have any bookings",
+      "Any upcoming reservations",
+      "Any upcoming bookings"
+    ]
+)
+
+defPB = apla("../response/prompts/defaultPresentBookingsPageResponse/document.json")
+
+defPBP = MultiModalResponse{
+    apla = defPB
+}
+
+defMR = apla("../response/prompts/defaultModifyResponse/document.json")
+
+defMRP = MultiModalResponse{
+  apla = defMR
+}
+
+defaultCancelUtterances = utterances<Nothing>(
+    [
+      "cancel it",
+      "cancel this booking",
+      "I want to cancel this booking",
+      "cancel this one"
+    ]
+  )
+
+defCR = apla("../response/prompts/defaultCancelResponse/document.json")
+
+defCRP = MultiModalResponse{
+  apla = defCR
+}
+
+dialog ScheduleWithSlotElicitationConfig<SchedulingInfo> buildScheduleWithSlotElicitationConfig<SchedulingInfo>(
+    Event<SchedulingInfo> scheduleEvent,
+    Action scheduleApiRef,
+    Dialog1<SchedulingInfo, SchedulingResult> scheduleApiAdaptor,
+    Response ScheduleConfirmationResponse,
+    Dialog0<Nothing> ensureDialog,
+    Dialog1<SchedulingInfo, Thing> PayloadAdaptor,
+    Response schedulingResultResponse = defSRP,
+    Event<Nothing> affirmUtterances = defaultAffirmUtterances
+) {
+    sample{
+        ScheduleWithSlotElicitationConfig<SchedulingInfo> {
+            scheduleEvent = scheduleEvent,
+            scheduleApiRef = scheduleApiRef,
+            scheduleApiAdaptor = scheduleApiAdaptor,
+            ScheduleConfirmationResponse = ScheduleConfirmationResponse,
+            ensureDialog = ensureDialog,
+            PayloadAdaptor = PayloadAdaptor,
+            schedulingResultResponse = schedulingResultResponse,
+            affirmUtterances = affirmUtterances
+        }
+    }
+}
+
+dialog ScheduleConfig<SchedulingInfo> buildScheduleConfig<SchedulingInfo>(
+    SchedulingInfo schedulingInfo,
+    Action scheduleApiRef,
+    Dialog1<SchedulingInfo, SchedulingResult> scheduleApiAdaptor,
+    Response schedulingResultResponse = defSRP
+) {
+    sample{
+        ScheduleConfig<SchedulingInfo> {
+            schedulingInfo = schedulingInfo,
+            scheduleApiRef = scheduleApiRef,
+            scheduleApiAdaptor = scheduleApiAdaptor,
+            schedulingResultResponse = schedulingResultResponse
+        }
+    }
+}
+
+dialog ShowBookingsConfig<BookingItem, BookingName> buildShowBookingConfig<BookingItem, BookingName>(
+    Action2<ListReference, Optional<String>, Page<BookingItem>> getBookingsPageApi,
+    Action3<ListReference, Page<BookingItem>, NUMBER, BookingItem> selectBookingApi,
+    Event<ItemNameSlotWrapper<BookingName>> selectBookingByNameEvent,
+    Action3<ListReference, Page<BookingItem>, BookingName, NUMBER> indexOfBookingByNameApi,
+    Event<Nothing> showBookingUtterances = defaultShowUtterances,
+    Response presentBookingsPageResponse = defPBP
+) {
+    sample{
+        ShowBookingsConfig<BookingItem, BookingName>{
+            getBookingsPageApi = getBookingsPageApi,
+            selectBookingApi = selectBookingApi,
+            selectBookingByNameEvent = selectBookingByNameEvent,
+            indexOfBookingByNameApi = indexOfBookingByNameApi,
+            showBookingUtterances = showBookingUtterances,
+            presentBookingsPageResponse = presentBookingsPageResponse
+        }
+    }
+}
+
+dialog ModifyBookingConfig<SchedulingInfo, BookingItem> buildModifyBookingConfig<SchedulingInfo, BookingItem>(
+    Event<SchedulingInfo> modifyEvent,
+    BookingItem prevBookingInfo,
+    Action modifyApiRef,
+    Dialog2<BookingItem ,SchedulingInfo, SchedulingResult> modifyApiAdaptor,
+    Response ModifyBookingResponse = defMRP
+) {
+    sample{
+        ModifyBookingConfig<SchedulingInfo, BookingItem>{
+            modifyEvent = modifyEvent,
+            prevBookingInfo = prevBookingInfo,
+            modifyApiRef = modifyApiRef,
+            modifyApiAdaptor = modifyApiAdaptor,
+            ModifyBookingResponse = ModifyBookingResponse
+        }
+    }
+}
+
+dialog CancelBookingConfig<BookingItem> buildCancelBookingConfig<BookingItem>(
+    BookingItem prevBookingInfo,
+    Action cancelApiRef,
+    Dialog1<BookingItem, SchedulingResult> cancelApiAdaptor,
+    Event<Nothing> cancelBookingUtterances = defaultCancelUtterances,
+    Response CancelBookingResponse = defCRP
+) {
+    sample{
+        CancelBookingConfig<BookingItem>{
+            prevBookingInfo = prevBookingInfo,
+            cancelApiRef = cancelApiRef,
+            cancelApiAdaptor = cancelApiAdaptor, 
+            cancelBookingUtterances = cancelBookingUtterances,
+            CancelBookingResponse = CancelBookingResponse
+        }
+    }
+}

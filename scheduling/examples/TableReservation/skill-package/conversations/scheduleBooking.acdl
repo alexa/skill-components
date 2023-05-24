@@ -1,0 +1,125 @@
+// Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace examples.table_booking
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.scheduling.*
+import com.amazon.alexa.skill.components.scheduling.types.*
+
+import prompts.*
+import slotTypes.Restaurants
+
+type SchedulingInfo{
+    optional Restaurants restaurantName
+    optional DATE date
+    optional TIME time
+}
+
+type BookingItem{
+    String restaurantName
+    String date
+    String time
+}
+
+scheduleEvent = utterances<SchedulingInfo>(
+    [
+        "Reserve a table for me",
+        "Book a table at {restaurantName} for {date} at {time}",
+        "Book a table",
+        "Reserve a table for me",
+        "Please book a table for me",
+        "I want to have a reservation",
+        "I want to have a reservation at {restaurantName}",
+        "I want to have a reservation for {date}",
+        "I want to have a reservation for {date}, {time}",
+        "Book a table at {restaurantName}",
+        "I want to book a table for {date}"
+    ]
+)
+
+action SchedulingResult bookTicketAction(Restaurants restaurantName, DATE date, TIME time)
+
+dialog SchedulingResult bookTicketActionAdaptor(SchedulingInfo schedulingInfo){
+    sample{
+        bookTicketAction(schedulingInfo.restaurantName, schedulingInfo.date, schedulingInfo.time)
+    }
+}
+
+resAPLA = apla("../response/prompts/RequestRestaurantPrompt/document.json")
+dateAPLA = apla("../response/prompts/RequestDatePrompt/document.json")
+timeAPLA = apla("../response/prompts/RequestTimePrompt/document.json")
+
+resAPL = apl("../response/display/SelectRestaurantAPL/document.json")
+dateAPL = apl("../response/display/EnterDateAPL/document.json")
+timeAPL = apl("../response/display/EnterTimeAPL/document.json")
+
+defRes = MultiModalResponse{
+    apla = resAPLA,
+    apl = resAPL
+}
+defDate = MultiModalResponse{
+    apla = dateAPLA,
+    apl = dateAPL
+}
+defTime = MultiModalResponse{
+    apla = timeAPLA,
+    apl = timeAPL
+}
+
+confAPLA = apla("../response/prompts/ScheduleConfirmationResponse/document.json")
+
+defConf = MultiModalResponse{
+    apla = confAPLA
+}
+
+defSchPrompt = apla("../response/prompts/ScheduleResultResponse/document.json")
+
+defSchResp = MultiModalResponse{
+    apla = defSchPrompt
+}
+
+dialog Thing payloadAdaptor(
+    SchedulingInfo schedulingInfo
+){
+    sample{
+        sc = SchedulingInfo{
+            restaurantName = schedulingInfo.restaurantName,
+            date = schedulingInfo.date,
+            time = schedulingInfo.time
+        }
+        //return
+        sc
+    }
+}
+
+dialog ensureDialog(){
+    sample{
+        ensure(
+        RequestArguments {arguments = [bookTicketAction.arguments.restaurantName], response = defRes},
+        RequestArguments {arguments = [bookTicketAction.arguments.date], response = defDate},
+        RequestArguments {arguments = [bookTicketAction.arguments.time], response = defTime}
+        )
+    }
+}
+
+dialog SampleDialog {
+    sample {
+        
+        scheduleConfig = buildScheduleWithSlotElicitationConfig<SchedulingInfo>(
+            scheduleEvent = scheduleEvent,
+            scheduleApiRef = bookTicketAction,
+            scheduleApiAdaptor = bookTicketActionAdaptor,
+            ScheduleConfirmationResponse = defConf,
+            ensureDialog = ensureDialog,
+            PayloadAdaptor = payloadAdaptor,
+            schedulingResultResponse = defSchResp
+        )
+
+        result = ScheduleWithSlotElicitation<SchedulingInfo>(scheduleConfig)
+    }
+}

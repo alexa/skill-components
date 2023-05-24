@@ -1,0 +1,165 @@
+// Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace examples.table_booking
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.scheduling.*
+import com.amazon.alexa.skill.components.scheduling.show.*
+import com.amazon.alexa.skill.components.scheduling.modify.*
+import com.amazon.alexa.skill.components.scheduling.cancel.*
+import com.amazon.alexa.skill.components.scheduling.types.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+
+import prompts.*
+import slotTypes.Restaurants
+
+action Page<BookingItem> getBookingsApi(
+    ListReference listRef,
+    Optional<String> pageToken)
+
+action BookingItem selectBookingApi(
+    ListReference listRef,
+    Page<BookingItem> page,
+    NUMBER index)
+
+    
+selectBookingByTitleEvent = utterances<ItemNameSlotWrapper<Restaurants>>(
+    defaultSelectItemByNameUtterances)
+
+action NUMBER indexOfBookingByNameApi(
+    ListReference listRef, 
+    Page<BookingItem> page, 
+    Restaurants name)
+
+// payload type used in follow-up response after navigation is done (after user selects a book)
+type SchedulingInfoPayload {
+    BookingItem booking
+}
+
+// action to present selected booking and continue the session
+action Nothing continueSession(BookingItem booking)
+
+defaultModifyUtterances = utterances<SchedulingInfo>(
+    [
+      "Please change time to {time}",
+      "Please change timing to {time}",
+      "Please change the date to {date}",
+      "Please change the date of the reservation to {date}",
+      "Change time to {time}",
+      "Change date to {date}",
+      "Please change time to {time} and date to {date}",
+      "Please change the date to {date} and time to {time}",
+      "I want to change time to {time}",
+      "I want to change date to {date}",
+      "I want to change the date to {date} and time to {time}"
+    ]
+  )
+
+defModifyPrompt = apla("../response/prompts/ModifyResultResponse/document.json")
+
+defModifyResp = MultiModalResponse{
+apla = defModifyPrompt
+}
+
+action SchedulingResult modifyAction(String restaurantName, optional DATE date, optional TIME time)
+
+dialog SchedulingResult modifyActionResult(
+    BookingItem prevBookingInfo,
+    SchedulingInfo newInfo
+){  
+    sample{
+        modifyAction(restaurantName = prevBookingInfo.restaurantName, date = newInfo.date, time = newInfo.time)
+    }
+    sample{
+        modifyAction(restaurantName = prevBookingInfo.restaurantName, date = newInfo.date)
+    }
+    sample{
+        modifyAction(restaurantName = prevBookingInfo.restaurantName, time = newInfo.time)
+    }
+}
+
+action SchedulingResult cancelAction(String restaurantName)
+
+defCancelPrompt = apla("../response/prompts/CancelResponse/document.json")
+
+defCancelResp = MultiModalResponse{
+  apla = defCancelPrompt
+}
+
+dialog SchedulingResult cancelAdaptor(
+    BookingItem prevInfo
+){
+    sample{
+        cancelAction(prevInfo.restaurantName)
+    }
+}
+
+dialog ShowWithModify{
+    sample{
+        showBookingConfig = buildShowBookingConfig<BookingItem, Restaurants>(
+            getBookingsPageApi = getBookingsApi,
+            selectBookingApi = selectBookingApi,
+            selectBookingByNameEvent = selectBookingByTitleEvent,
+            indexOfBookingByNameApi = indexOfBookingByNameApi
+        )
+
+        booking =  showBookings<BookingItem, Restaurants>(showBookingConfig)
+
+        continueSession(booking)
+
+        // follow-up response to tell user about some details of the selected booking
+        response(
+            act = Notify { actionName = continueSession },
+            response = presentBookingPrompt,
+            payload = SchedulingInfoPayload { booking = booking }
+            )
+        
+        modifyConfig = buildModifyBookingConfig<SchedulingInfo, BookingItem>(
+            modifyEvent = defaultModifyUtterances,
+            prevBookingInfo = booking,
+            modifyApiRef = modifyAction,
+            modifyApiAdaptor = modifyActionResult,
+            ModifyBookingResponse = defModifyResp
+        )
+
+        result = modifyBooking<SchedulingInfo, BookingItem>(modifyConfig)
+    }
+}
+
+dialog ShowWithCancel{
+    sample{
+        showBookingConfig = buildShowBookingConfig<BookingItem, Restaurants>(
+            getBookingsPageApi = getBookingsApi,
+            selectBookingApi = selectBookingApi,
+            selectBookingByNameEvent = selectBookingByTitleEvent,
+            indexOfBookingByNameApi = indexOfBookingByNameApi
+        )
+
+        booking =  showBookings<BookingItem, Restaurants>(showBookingConfig)
+
+        continueSession(booking)
+
+        // follow-up response to tell user about some details of the selected booking
+        response(
+            act = Notify { actionName = continueSession },
+            response = presentBookingPrompt,
+            payload = SchedulingInfoPayload { booking = booking }
+            )
+
+        cancelConfig = buildCancelBookingConfig<BookingItem>(
+            prevBookingInfo = booking,
+            cancelApiRef = cancelAction,
+            cancelApiAdaptor = cancelAdaptor,
+            CancelBookingResponse = defCancelResp
+        )
+
+        result = cancelBooking<BookingItem>(cancelConfig)
+    }
+}
