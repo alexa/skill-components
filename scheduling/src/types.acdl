@@ -1,0 +1,100 @@
+// Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.scheduling.types
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.list_navigation.*
+import com.amazon.alexa.skill.components.list_navigation.types.*
+
+//return type for Schedule, ScheduleWithSlotElicitation, modifyBooking and cancelBooking reusable dialogs
+type SchedulingResult {
+    // true (non-zero) when returned after successfully scheduling, modifying or cancelling a reservation
+    Number schedulingSuccess
+
+    // details of the booking can be stored in this field or have API pass back fields not represented in
+    // ACDL for the response template to use
+    String details
+}
+
+//payload for scheduling result, used in responses
+type SchedulingResultPayload{
+    SchedulingResult result
+  }
+
+//configuration for displaying the list of bookings, used by showBookings reusable dialog
+type ShowBookingsConfig<BookingItem, BookingName>{
+    Action2<ListReference, Optional<String>, Page<BookingItem>> getBookingsPageApi
+    Action3<ListReference, Page<BookingItem>, NUMBER, BookingItem> selectBookingApi
+    
+    // for selection by name
+    Event<ItemNameSlotWrapper<BookingName>> selectBookingByNameEvent
+    Action3<ListReference, Page<BookingItem>, BookingName, NUMBER> indexOfBookingByNameApi
+
+    Event<Nothing> showBookingUtterances
+    Response presentBookingsPageResponse
+}
+
+//configuration for modifying a booking, used by modifyBooking reusable dialog
+type ModifyBookingConfig<SchedulingInfo, BookingItem>{
+    //event used to modify a booking
+    Event<SchedulingInfo> modifyEvent
+
+    //details of the booking to be modified
+    BookingItem prevBookingInfo
+    
+    //reference to the 
+    Action modifyApiRef
+
+    Dialog2<BookingItem ,SchedulingInfo, SchedulingResult> modifyApiAdaptor
+
+    Response ModifyBookingResponse
+}
+
+//configuration for scheduling a reservation after retrieving and confirming the scheduling information
+//used by ScheduleWithSlotElicitation reusable dialog
+type ScheduleWithSlotElicitationConfig<SchedulingInfo>{
+    // event used to trigger a new scheduling instance
+    Event<SchedulingInfo> scheduleEvent
+
+    //
+    Action scheduleApiRef
+    Dialog1<SchedulingInfo, SchedulingResult> scheduleApiAdaptor
+
+    Response ScheduleConfirmationResponse
+
+    Dialog0<Nothing> ensureDialog
+
+    Dialog1<SchedulingInfo, Thing> PayloadAdaptor
+
+    Response schedulingResultResponse
+
+    Event<Nothing> affirmUtterances
+}
+
+//configuration for scheduling a reservation with provided scheduling information
+//used by Schedule reusable dialog
+type ScheduleConfig<SchedulingInfo>{
+    //provided scheduling information
+    SchedulingInfo schedulingInfo
+    Action scheduleApiRef
+    Dialog1<SchedulingInfo, SchedulingResult> scheduleApiAdaptor
+    Response schedulingResultResponse
+}
+
+//configuration for cancelling a booking, used by cancelBooking reusable dialog
+type CancelBookingConfig<BookingItem>{
+    BookingItem prevBookingInfo
+    
+    Action cancelApiRef
+
+    Dialog1<BookingItem, SchedulingResult> cancelApiAdaptor 
+
+    Event<Nothing> cancelBookingUtterances
+
+    Response CancelBookingResponse
+}

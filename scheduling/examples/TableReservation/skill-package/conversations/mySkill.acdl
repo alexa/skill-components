@@ -1,0 +1,27 @@
+// Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace examples.table_booking
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import prompts.*
+import examples.table_booking.*
+
+// main skill action, defining the deployable dialogs and standard
+// responses
+mySkill = skill(
+    locales = [Locale.en_US],
+    dialogs = [SampleDialog, ShowWithModify, ShowWithCancel],
+    skillLevelResponses = SkillLevelResponses
+        {
+            welcome = prompts.AlexaConversationsWelcome,
+            out_of_domain = prompts.AlexaConversationsOutOfDomain,
+            bye = prompts.AlexaConversationsBye,
+            reqmore = prompts.AlexaConversationsRequestMore,
+            provide_help = prompts.AlexaConversationsProvideHelp
+        }
+)

@@ -1,0 +1,34 @@
+{
+    "type": "APL-A",
+    "version": "0.1",
+    "license": "Copyright 2022 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+    "description": "Default, generic response prompt for showing the result of the scheduling performed.",
+    "mainTemplate": {
+      "parameters": [
+        "payload"
+      ],
+      "item": {
+        "type": "Sequential",
+        "items": [
+          {
+            "type": "Selector",
+            "items": [
+              {
+                "when": "${payload.result.schedulingSuccess == 1}",
+                "type": "Speech",
+                "contentType": "text",
+                "content": "${payload.result.details}"
+              },
+              {
+                "when": "${payload.result.schedulingSuccess == 0}",
+                "type": "Speech",
+                "contentType": "text",
+                "content": "Modify failed. Please try again,"  
+              }
+            ]
+          }
+          
+        ]
+      }
+    }
+  }

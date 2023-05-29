@@ -1,0 +1,80 @@
+// Copyright 2023 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0
+// Licensed under the Amazon Software License  http://aws.amazon.com/asl/
+
+namespace com.amazon.alexa.skill.components.scheduling
+
+import com.amazon.alexa.ask.conversations.*
+import com.amazon.ask.types.builtins.AMAZON.*
+import com.amazon.alexa.schema.*
+
+import com.amazon.alexa.skill.components.scheduling.types.*
+
+dialog SchedulingResult ScheduleWithSlotElicitation<SchedulingInfo>(
+  ScheduleWithSlotElicitationConfig<SchedulingInfo> config
+){
+    sample{
+        getSchedulingInfo = expect (Invoke, config.scheduleEvent)
+
+        infoPayloadAdaptor = config.PayloadAdaptor
+        infoPayload = infoPayloadAdaptor(getSchedulingInfo)
+        
+        ensureDialog = config.ensureDialog        
+        ensureDialog()
+
+        response(
+            response = config.ScheduleConfirmationResponse,
+
+            act = ConfirmAction {
+              actionName = config.scheduleApiRef
+            },
+
+            payload = infoPayload
+          )
+        
+        expect (Affirm, config.affirmUtterances)
+        
+        scheduleDialog = config.scheduleApiAdaptor
+        scheduleResult = scheduleDialog(getSchedulingInfo)
+
+        response(
+            response = config.schedulingResultResponse,
+
+            act = Notify {
+              success = true,
+              actionName = config.scheduleApiRef
+            },
+            payload = SchedulingResultPayload{
+              result = scheduleResult
+            }
+          )
+        
+        // return
+        scheduleResult
+    }
+}
+
+dialog SchedulingResult Schedule<SchedulingInfo>(
+  ScheduleConfig<SchedulingInfo> config
+){
+  sample{
+        scheduleDialog = config.scheduleApiAdaptor
+        scheduleResult = scheduleDialog(config.schedulingInfo)
+
+        response(
+            response = config.schedulingResultResponse,
+
+            act = Notify {
+              success = true,
+              actionName = config.scheduleApiRef
+            },
+            payload = SchedulingResultPayload{
+              result = scheduleResult
+            }
+          )
+        
+        // return
+        scheduleResult
+  }
+}
+

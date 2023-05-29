@@ -1,0 +1,29 @@
+{
+    "type": "APL",
+    "version": "2023.1",
+    "theme": "dark",
+    "license": "Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.\nSPDX-License-Identifier: LicenseRef-.amazon.com.-AmznSL-1.0\nLicensed under the Amazon Software License  http://aws.amazon.com/asl/",
+    "mainTemplate": {
+        "parameters": [
+            "payload"
+        ],
+        "items": [
+            {
+                "type": "Container",
+                "items": [
+                    {
+                        "text": "What's your preferred date for the reservation?",
+                        "fontSize": "56dp",
+                        "textAlign": "center",
+                        "textAlignVertical": "center",
+                        "type": "Text",
+                        "height": "100%",
+                        "width": "100%"
+                    }
+                ],
+                "height": "100%",
+                "width": "100%"
+            }
+        ]
+    }
+}
