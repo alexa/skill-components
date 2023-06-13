@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@alexa-skill-components/checkout": "^0.0.1",
-    "@aws-sdk/client-dynamodb": "^3.266.1",
+    "@aws-sdk/client-dynamodb": "^3.351.0",
     "@types/node": "^18.8.4",
     "ask-sdk-core": "^2.10.1",
     "ask-sdk-model": "^1.39.0",
